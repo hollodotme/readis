@@ -1,0 +1,15 @@
+.idea/
+
+# vagrant
+.vagrant/
+vagrant/
+!env/vagrant/
+
+# composer
+vendor/
+composer.lock
+
+# locally generated docs
+build/api/
+build/phpdox/
+build/logs/
