@@ -16,11 +16,12 @@
   },
   "require": {
     "php": ">=5.5",
-    "ext-redis": "*"
+    "ext-redis": "*",
+    "twig/twig": "@stable"
   },
   "autoload": {
     "psr-4": {
-      "hollodotmet\\RedisStatus\\": "src/"
+      "hollodotme\\RedisStatus\\": "src/"
     }
   },
   "autoload-dev": {

@@ -2,7 +2,7 @@
 
 # vagrant
 .vagrant/
-vagrant/
+vagrant
 !env/vagrant/
 
 # composer
@@ -13,3 +13,6 @@ composer.lock
 build/api/
 build/phpdox/
 build/logs/
+
+# local configs
+config/servers.php

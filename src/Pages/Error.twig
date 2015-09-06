@@ -1,0 +1,22 @@
+{% extends "Theme.twig" %}
+
+{% block page_title %}
+    <title>Error</title>
+{% endblock %}
+
+{% block stylesheets %}{% endblock %}
+
+{% block content %}
+
+    <h1>Whoops! An error occurred...</h1>
+
+    <h3>{{ errorName }}</h3>
+    <p>
+        {{ error.getMessage }}
+    </p>
+
+    <pre>{{ error.getTraceAsString }}</pre>
+
+{% endblock %}
+
+{% block javascripts %}{% endblock %}
