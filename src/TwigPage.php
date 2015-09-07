@@ -46,6 +46,49 @@ final class TwigPage
 		$twigEnvironment = new \Twig_Environment( $twigLoader );
 		$twigEnvironment->addExtension( new \Twig_Extension_Debug() );
 
+		$dateFormatter = new \IntlDateFormatter(
+			null,
+			\IntlDateFormatter::MEDIUM,
+			\IntlDateFormatter::NONE
+		);
+
+		$dateTimeFormatter = new \IntlDateFormatter(
+			null,
+			\IntlDateFormatter::MEDIUM,
+			\IntlDateFormatter::SHORT
+		);
+
+		$twigEnvironment->addFilter( $this->getIntlDateFilter( 'formatDate', $dateFormatter ) );
+		$twigEnvironment->addFilter( $this->getIntlDateFilter( 'formatDateTime', $dateTimeFormatter ) );
+
 		return $twigEnvironment;
+	}
+
+	/**
+	 * @param string             $name
+	 * @param \IntlDateFormatter $formatter
+	 *
+	 * @return \Twig_SimpleFilter
+	 */
+	private function getIntlDateFilter( $name, \IntlDateFormatter $formatter )
+	{
+		return new \Twig_SimpleFilter(
+			$name,
+			function ( $dateValue ) use ( $formatter )
+			{
+				if ( $dateValue instanceof \DateTimeInterface )
+				{
+					return $formatter->format( $dateValue->getTimestamp() );
+				}
+				elseif ( is_string( $dateValue ) )
+				{
+					return $formatter->format( $dateValue );
+				}
+				else
+				{
+					return '';
+				}
+			}
+		);
 	}
 }

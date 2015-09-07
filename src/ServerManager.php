@@ -6,8 +6,10 @@
 
 namespace hollodotme\RedisStatus;
 
+use hollodotme\RedisStatus\DTO\SlowLogEntry;
 use hollodotme\RedisStatus\Exceptions\CannotConnectToServer;
 use hollodotme\RedisStatus\Interfaces\ProvidesConnectionData;
+use hollodotme\RedisStatus\Interfaces\ProvidesSlowLogData;
 
 /**
  * Class ServerManager
@@ -47,6 +49,8 @@ final class ServerManager
 		{
 			throw ( new CannotConnectToServer() )->withConnectionData( $connectionData );
 		}
+
+		$this->redis->set('Test', 'Test');
 	}
 
 	/**
@@ -68,10 +72,24 @@ final class ServerManager
 	/**
 	 * @param int $limit
 	 *
-	 * @return array
+	 * @return array|ProvidesSlowLogData[]
 	 */
 	public function getSlowLogs( $limit = 100 )
 	{
-		return $this->redis->slowlog( 'get', $limit );
+		return array_map(
+			function ( array $slowLogData )
+			{
+				return new SlowLogEntry( $slowLogData );
+			},
+			$this->redis->slowlog( 'get', $limit )
+		);
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getServerInfo()
+	{
+		return $this->redis->info();
 	}
 }
