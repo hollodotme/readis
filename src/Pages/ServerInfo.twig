@@ -32,9 +32,17 @@
 
     <div>
 
+        {% set keysDb0 = manager.dumpKeys(0) %}
+
         <!-- Nav tabs -->
         <ul class="nav nav-tabs" role="tablist">
             <li role="presentation" class="active">
+                <a href="#keys" aria-controls="keys" role="tab" data-toggle="tab">
+                    Keys
+                    <span class="badge">{{ keysDb0|length }}</span>
+                </a>
+            </li>
+            <li role="presentation">
                 <a href="#slow-logs" aria-controls="slow-logs" role="tab" data-toggle="tab">
                     Slow logs
                     <span class="badge">{{ slowLogLength }}</span>
@@ -48,17 +56,18 @@
                 <a href="#config" aria-controls="config" role="tab"
                    data-toggle="tab">Config</a>
             </li>
-            <li role="presentation">
-                <a href="#keys" aria-controls="keys" role="tab"
-                   data-toggle="tab">Keys</a>
-            </li>
         </ul>
 
         <!-- Tab panes -->
         <div class="tab-content">
-            <div role="tabpanel" class="tab-pane active" id="slow-logs">
+            <div role="tabpanel" class="tab-pane active" id="keys">
 
-                {% include "Includes/SlowLogs.twig" %}
+                {% include "Includes/Keys.twig" %}
+
+            </div>
+            <div role="tabpanel" class="tab-pane" id="slow-logs">
+
+            {% include "Includes/SlowLogs.twig" %}
 
             </div>
             <div role="tabpanel" class="tab-pane" id="info">
@@ -71,11 +80,6 @@
 
                 {% include "Includes/KeyValueTable.twig"
                 with {'keyCaption': 'Config key', 'valueCaption': 'Config value', 'keyValues': serverConfig} %}
-
-            </div>
-            <div role="tabpanel" class="tab-pane" id="keys">
-
-                {% include "Includes/Keys.twig" %}
 
             </div>
         </div>
