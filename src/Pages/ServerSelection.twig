@@ -6,29 +6,36 @@
 
 {% block stylesheets %}{% endblock %}
 
+{% block breadcrumb %}
+    <ul class="breadcrumb">
+        <li class="active">
+            Server selction
+        </li>
+    </ul>
+{% endblock %}
+
 {% block content %}
-
-    <h1>Server selection</h1>
-
-    <div class="small text-muted">
-        {{ servers|length }} servers configured
-    </div>
-
-    <hr>
 
     <div class="row">
         {% for index, server in servers %}
             <div class="col-xs-6 col-md-3">
-                <a href="?server={{ index }}" class="thumbnail">
-                    <h3>{{ server.getName }}</h3>
-                    <ul>
-                        <li>Host: {{ server.getHost }}</li>
-                        <li>Port: {{ server.getPort }}</li>
-                        <li>Timeout: {{ server.getTimeout }}s</li>
-                        <li>Retry interval: {{ server.getRetryInterval }}ms</li>
-                        <li>Using auth: {% if server.getAuth is null %}no{% else %}yes{% endif %}</li>
-                    </ul>
-                </a>
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <a href="?server={{ index }}">
+                            <h3 class="panel-title">{{ server.getName }}</h3>
+                        </a>
+                    </div>
+                    <div class="panel-body">
+                        <ul>
+                            <li>Host: {{ server.getHost }}</li>
+                            <li>Port: {{ server.getPort }}</li>
+                            <li>Timeout: {{ server.getTimeout }}s</li>
+                            <li>Retry interval: {{ server.getRetryInterval }}ms</li>
+                            <li>Using auth: {% if server.getAuth is null %}no{% else %}yes{% endif %}</li>
+                        </ul>
+                    </div>
+                </div>
             </div>
         {% else %}
             <div class="col-xs-12">

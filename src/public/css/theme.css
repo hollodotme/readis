@@ -1,6 +1,6 @@
 body {
-    min-height: 2000px;
-    padding-top: 70px;
+    margin-top: 60px;
+    margin-bottom: 50px;
 }
 
 .tab-pane {
@@ -9,4 +9,32 @@ body {
     border-bottom: 1px solid #ddd;
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
+}
+
+.tab-pane .container {
+    padding: 10px;
+}
+
+.footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    /* Set the fixed height of the footer here */
+    height: 40px;
+    background-color: rgba(245, 245, 245, 0.6);
+}
+
+.footer .container p {
+    padding: 10px 0;
+}
+
+.github-fork-ribbon-wrapper.left-bottom .github-fork-ribbon {
+    top: 80px;
+    left: -43px;
+
+    -webkit-transform: rotate(45deg);
+    -moz-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    -o-transform: rotate(45deg);
+    transform: rotate(45deg);
 }

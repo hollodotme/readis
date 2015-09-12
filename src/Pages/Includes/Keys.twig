@@ -1,0 +1,25 @@
+<div class="container">
+    <form id="key-select-form" role="form">
+        <input type="hidden" name="keydb" value="">
+    </form>
+
+    <div>
+        <div class="dropdown" id="database-select">
+            <button class="btn btn-default" type="button" data-toggle="dropdown" aria-haspopup="true"
+                    aria-expanded="false">
+                <span id="current-db">Select database</span>
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                {% for i in 0..serverConfig.databases-1 %}
+                    <li>
+                        <a data-keydb="{{ i }}">DB {{ i }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+</div>
+
+{% include "Includes/KeyValueTable.twig" with {'keyCaption': 'Key', 'valueCaption': 'Value', 'keyValues': manager.dumpKeys(0)} %}

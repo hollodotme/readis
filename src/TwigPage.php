@@ -34,7 +34,7 @@ final class TwigPage
 		$twig = $this->getTwigInstance();
 
 		header( 'Content-Type: text/html; charset=utf-8', true, 200 );
-		echo $twig->render( $this->template, $this->data );
+		echo $twig->render( $this->template, $this->getMergedData() );
 	}
 
 	/**
@@ -89,6 +89,19 @@ final class TwigPage
 					return '';
 				}
 			}
+		);
+	}
+
+	/**
+	 * @return array
+	 */
+	private function getMergedData()
+	{
+		return array_merge(
+			[
+				'appVersion' => '0.1.0-beta',
+			],
+			$this->data
 		);
 	}
 }

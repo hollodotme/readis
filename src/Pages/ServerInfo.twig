@@ -6,6 +6,17 @@
 
 {% block stylesheets %}{% endblock %}
 
+{% block breadcrumb %}
+    <ul class="breadcrumb">
+        <li>
+            <a href="/">Server selction</a>
+        </li>
+        <li class="active">
+            {{ server.getName }}
+        </li>
+    </ul>
+{% endblock %}
+
 {% block content %}
 
     <h1>{{ server.getName }}</h1>
@@ -38,83 +49,33 @@
                    data-toggle="tab">Config</a>
             </li>
             <li role="presentation">
-                <a href="#settings" aria-controls="settings" role="tab"
-                   data-toggle="tab">Settings</a>
+                <a href="#keys" aria-controls="keys" role="tab"
+                   data-toggle="tab">Keys</a>
             </li>
         </ul>
 
         <!-- Tab panes -->
         <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id="slow-logs">
+
+                {% include "Includes/SlowLogs.twig" %}
+
+            </div>
             <div role="tabpanel" class="tab-pane" id="info">
-                <table class="table table-striped table-responsive table-hover">
-                    <thead>
-                    <tr>
-                        <th>Info key</th>
-                        <th>Info value</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for infoKey, infoValue in serverInfo %}
-                        <tr>
-                            <td>
-                                {{ infoKey }}
-                            </td>
-                            <td>
-                                {{ infoValue }}
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
+
+                {% include "Includes/KeyValueTable.twig"
+                with {'keyCaption': 'Info key', 'valueCaption': 'Info value', 'keyValues': serverInfo} %}
+
             </div>
             <div role="tabpanel" class="tab-pane" id="config">
 
-                <table class="table table-striped table-responsive table-hover">
-                    <thead>
-                    <tr>
-                        <th>Config key</th>
-                        <th>Config value</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for configKey, configValue in serverConfig %}
-                        <tr>
-                            <td>
-                                {{ configKey }}
-                            </td>
-                            <td>
-                                {{ configValue }}
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
+                {% include "Includes/KeyValueTable.twig"
+                with {'keyCaption': 'Config key', 'valueCaption': 'Config value', 'keyValues': serverConfig} %}
 
             </div>
-            <div role="tabpanel" class="tab-pane active" id="slow-logs">
-                <div class="container">
-                    {% for entry in slowLogs %}
-                        <h3>#{{ entry.getSlowLogId }} @ {{ entry.getOccurredOn|formatDateTime }}</h3>
-                        <div>
-                            <b>Duration:</b> {{ entry.getDuration }} microseconds
-                        </div>
-                        <div>
-                            <b>Command:</b>
+            <div role="tabpanel" class="tab-pane" id="keys">
 
-                            <p class="text-muted small">{{ entry.getCommand }}</p>
-                        </div>
-                        {% if not loop.last %}
-                            <hr>
-                        {% endif %}
-                    {% else %}
-                        <h3 class="text-center">
-                            No slow logs found.
-                        </h3>
-                    {% endfor %}
-                </div>
-
-            </div>
-            <div role="tabpanel" class="tab-pane" id="settings">
+                {% include "Includes/Keys.twig" %}
 
             </div>
         </div>
@@ -123,4 +84,6 @@
 
 {% endblock %}
 
-{% block javascripts %}{% endblock %}
+{% block javascripts %}
+    <script type="text/javascript" src="/js/Keys.js"></script>
+{% endblock %}

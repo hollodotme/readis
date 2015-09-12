@@ -44,6 +44,7 @@ try
 				'slowLogLength' => $manager->getSlowLogLength(),
 				'slowLogs'      => $manager->getSlowLogs(),
 				'serverInfo'    => $manager->getServerInfo(),
+				'manager' => $manager,
 			]
 		);
 		$page->respond();
