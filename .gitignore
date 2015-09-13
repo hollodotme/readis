@@ -17,4 +17,3 @@ build/logs/
 # local configs
 config/servers.php
 config/app.php
-config/deploy.rb
