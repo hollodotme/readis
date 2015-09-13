@@ -49,8 +49,6 @@ final class ServerManager
 		{
 			throw ( new CannotConnectToServer() )->withConnectionData( $connectionData );
 		}
-
-		$this->redis->set( 'Test', 'Test' );
 	}
 
 	/**
@@ -90,6 +88,7 @@ final class ServerManager
 	 */
 	public function getServerInfo()
 	{
+
 		return $this->redis->info();
 	}
 
@@ -104,11 +103,17 @@ final class ServerManager
 		$this->redis->select( $database );
 		$this->redis->setOption( \Redis::OPT_SERIALIZER, \Redis::SERIALIZER_NONE );
 
-		$keys       = $this->redis->keys( $keyPattern );
-		$dumpedKeys = array_combine(
-			$keys,
-			$this->redis->getMultiple( $keys )
-		);
+		$keys = $this->redis->keys( $keyPattern );
+
+		if ( !empty($keys) )
+		{
+			$values     = $this->redis->getMultiple( $keys );
+			$dumpedKeys = array_combine( $keys, $values );
+		}
+		else
+		{
+			$dumpedKeys = [ ];
+		}
 
 		$this->redis->setOption( \Redis::OPT_SERIALIZER, \Redis::SERIALIZER_PHP );
 

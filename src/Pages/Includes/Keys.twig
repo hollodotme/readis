@@ -1,25 +1,70 @@
 <div class="container">
-    <form id="key-select-form" role="form">
-        <input type="hidden" name="keydb" value="">
-    </form>
 
-    <div>
-        <div class="dropdown" id="database-select">
-            <button class="btn btn-default" type="button" data-toggle="dropdown" aria-haspopup="true"
-                    aria-expanded="false">
-                <span id="current-db">Select database</span>
-                <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu">
-                {% for i in 0..serverConfig.databases-1 %}
-                    <li>
-                        <a data-keydb="{{ i }}">DB {{ i }}</a>
-                    </li>
-                {% endfor %}
-            </ul>
+    <div class="row">
+        <div class="col-xs-3">
+            <div class="dropdown" id="database-select">
+                <button class="btn btn-default" type="button" data-toggle="dropdown" aria-haspopup="true"
+                        aria-expanded="false">
+                    <span id="current-db">
+                        Database 0
+                        {% if serverInfo["db0"] is not empty %}
+                            <span class="small text-muted">({{ serverInfo["db0"] }})</span>
+                                {% else %}
+                            <span class="small text-muted">(empty)</span>
+                        {% endif %}
+                    </span>
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    {% for i in 0..serverConfig.databases-1 %}
+                        <li>
+                            <a data-keydb="{{ i }}">
+                                Database {{ i }}
+                                {% if serverInfo["db"~i] is not empty %}
+                                    <span class="small text-muted">({{ serverInfo["db"~i] }})</span>
+                                {% else %}
+                                    <span class="small text-muted">(empty)</span>
+                                {% endif %}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+
+            </div>
+        </div>
+        <div class="col-xs-4"></div>
+        <div class="col-xs-4">
+            <form action="{{ appConfig.getBaseUrl }}/ajax.php" id="key-select-form"
+                  role="form" class="pull-right" method="get">
+                <input type="hidden" name="server" value="{{ serverIndex }}">
+                <input type="hidden" name="action" value="dumpKeys">
+                <input type="hidden" name="keydb" value="0">
+
+                <div class="form-group-sm">
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-info-sign"
+                                  data-toggle="tooltip"
+                                  data-original-title="Search is case sensitive"
+                                  data-trigger="hover"></span>
+                        </span>
+                        <label for="keyPattern" class="sr-only">Key search value</label>
+                        <input type="text" name="keyPattern" id="keyPattern" value="" class="form-control"
+                               placeholder="Search for keys">
+                        <span class="input-group-btn">
+                            <button type="submit" class="btn btn-primary btn-sm">Search</button>
+                        </span>
+                    </div>
+                </div>
+
+            </form>
         </div>
     </div>
 
 </div>
 
-{% include "Includes/KeyValueTable.twig" with {'keyCaption': 'Key', 'valueCaption': 'Value', 'keyValues': keysDb0} %}
+<div id="keyValues">
+
+    {% include "Includes/KeyValueTable.twig" with {'keyCaption': 'Key', 'valueCaption': 'Value', 'keyValues': manager.dumpKeys(0)} %}
+
+</div>

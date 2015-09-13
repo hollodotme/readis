@@ -9,7 +9,7 @@
 {% block breadcrumb %}
     <ul class="breadcrumb">
         <li>
-            <a href="/">Server selction</a>
+            <a href="{{ appConfig.getBaseUrl }}/index.php">Server selction</a>
         </li>
         <li class="active">
             {{ server.getName }}
@@ -32,14 +32,11 @@
 
     <div>
 
-        {% set keysDb0 = manager.dumpKeys(0) %}
-
         <!-- Nav tabs -->
         <ul class="nav nav-tabs" role="tablist">
             <li role="presentation" class="active">
                 <a href="#keys" aria-controls="keys" role="tab" data-toggle="tab">
                     Keys
-                    <span class="badge">{{ keysDb0|length }}</span>
                 </a>
             </li>
             <li role="presentation">

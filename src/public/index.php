@@ -8,6 +8,7 @@
 
 namespace hollodotme\RedisStatus;
 
+use hollodotme\RedisStatus\Configs\AppConfig;
 use hollodotme\RedisStatus\Configs\ServersConfig;
 
 require(__DIR__ . '/../../vendor/autoload.php');
@@ -17,14 +18,16 @@ ini_set( 'display_errors', 1 );
 
 try
 {
-	$servers = new ServersConfig();
+	$appConfig = new AppConfig();
+	$servers   = new ServersConfig();
 
 	if ( !isset($_REQUEST['server']) )
 	{
 		$page = new TwigPage(
 			'ServerSelection.twig',
 			[
-				'servers' => $servers->getServerConfigs(),
+				'appConfig' => $appConfig,
+				'servers'   => $servers->getServerConfigs(),
 			]
 		);
 		$page->respond();
@@ -39,12 +42,14 @@ try
 		$page = new TwigPage(
 			'ServerInfo.twig',
 			[
+				'appConfig'   => $appConfig,
 				'server'        => $serverConfig,
+				'serverIndex' => $serverIndex,
 				'serverConfig'  => $manager->getServerConfig(),
 				'slowLogLength' => $manager->getSlowLogLength(),
 				'slowLogs'      => $manager->getSlowLogs(),
 				'serverInfo'    => $manager->getServerInfo(),
-				'manager' => $manager,
+				'manager'     => $manager,
 			]
 		);
 		$page->respond();
