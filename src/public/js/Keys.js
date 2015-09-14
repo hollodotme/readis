@@ -34,7 +34,6 @@ $(document).ready(function () {
 $.initKeyInfoModal = function () {
     $('#keyInfoModal').on('show.bs.modal', function (e) {
         var btn = $(e.relatedTarget);
-        console.dir(btn.data());
         var modal = $(this);
         var modalBody = modal.find('.modal-body');
         var ajaxUrl = modal.data('load-url');
