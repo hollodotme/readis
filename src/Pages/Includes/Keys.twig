@@ -18,7 +18,7 @@
                 <ul class="dropdown-menu">
                     {% for i in 0..serverConfig.databases-1 %}
                         <li>
-                            <a data-keydb="{{ i }}">
+                            <a data-database="{{ i }}">
                                 Database {{ i }}
                                 {% if serverInfo["db"~i] is not empty %}
                                     <span class="small text-muted">({{ serverInfo["db"~i] }})</span>
@@ -32,13 +32,17 @@
 
             </div>
         </div>
-        <div class="col-xs-4"></div>
+        <div class="col-xs-4">
+            <div class="pull-right" style="padding: 5px; display:none;" id="ajaxSpinner">
+                <span class="throbber-loader"></span>
+            </div>
+        </div>
         <div class="col-xs-4">
             <form action="{{ appConfig.getBaseUrl }}/ajax.php" id="key-select-form"
                   role="form" class="pull-right" method="get">
                 <input type="hidden" name="server" value="{{ serverIndex }}">
-                <input type="hidden" name="action" value="dumpKeys">
-                <input type="hidden" name="keydb" value="0">
+                <input type="hidden" name="action" value="getKeys">
+                <input type="hidden" name="database" value="0">
 
                 <div class="form-group-sm">
                     <div class="input-group">
@@ -52,7 +56,9 @@
                         <input type="text" name="keyPattern" id="keyPattern" value="" class="form-control"
                                placeholder="Search for keys">
                         <span class="input-group-btn">
-                            <button type="submit" class="btn btn-primary btn-sm">Search</button>
+                            <button type="submit" class="btn btn-primary btn-sm">
+                                Search
+                            </button>
                         </span>
                     </div>
                 </div>
@@ -65,6 +71,6 @@
 
 <div id="keyValues">
 
-    {% include "Includes/KeyValueTable.twig" with {'keyCaption': 'Key', 'valueCaption': 'Value', 'keyValues': manager.dumpKeys(0)} %}
+    {% include "Includes/KeyList.twig" with {'keyInfoObjects': manager.getKeyInfoObjects('*')} %}
 
 </div>

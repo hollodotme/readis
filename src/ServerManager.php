@@ -6,10 +6,13 @@
 
 namespace hollodotme\RedisStatus;
 
+use hollodotme\RedisStatus\DTO\KeyInfo;
 use hollodotme\RedisStatus\DTO\SlowLogEntry;
 use hollodotme\RedisStatus\Exceptions\CannotConnectToServer;
 use hollodotme\RedisStatus\Interfaces\ProvidesConnectionData;
+use hollodotme\RedisStatus\Interfaces\ProvidesKeyInformation;
 use hollodotme\RedisStatus\Interfaces\ProvidesSlowLogData;
+use hollodotme\RedisStatus\Interfaces\UnserializesDataToString;
 
 /**
  * Class ServerManager
@@ -49,6 +52,14 @@ final class ServerManager
 		{
 			throw ( new CannotConnectToServer() )->withConnectionData( $connectionData );
 		}
+	}
+
+	/**
+	 * @param int $database
+	 */
+	public function selectDatabase( $database )
+	{
+		$this->redis->select( $database );
 	}
 
 	/**
@@ -93,30 +104,73 @@ final class ServerManager
 	}
 
 	/**
-	 * @param int    $database
 	 * @param string $keyPattern
 	 *
 	 * @return array
 	 */
-	public function dumpKeys( $database, $keyPattern = '*' )
+	public function getKeys( $keyPattern = '*' )
 	{
-		$this->redis->select( $database );
-		$this->redis->setOption( \Redis::OPT_SERIALIZER, \Redis::SERIALIZER_NONE );
+		return $this->redis->keys( $keyPattern );
+	}
 
+	/**
+	 * @param string $keyPattern
+	 *
+	 * @return array|ProvidesKeyInformation[]
+	 */
+	public function getKeyInfoObjects( $keyPattern )
+	{
 		$keys = $this->redis->keys( $keyPattern );
 
-		if ( !empty($keys) )
+		return array_map( [ $this, 'getKeyInfoObject' ], $keys );
+	}
+
+	/**
+	 * @param string $key
+	 *
+	 * @return ProvidesKeyInformation
+	 */
+	public function getKeyInfoObject( $key )
+	{
+		$info = $this->redis->multi()->type( $key )->pttl( $key )->exec();
+
+		return new KeyInfo( $key, $info[0], $info[1] );
+	}
+
+	/**
+	 * @param string $key
+	 *
+	 * @return bool|string
+	 */
+	public function getValue( $key )
+	{
+		return $this->redis->get( $key );
+	}
+
+	/**
+	 * @param string                   $key
+	 * @param UnserializesDataToString $unserializer
+	 *
+	 * @return bool|string
+	 */
+	public function getValueAsUnserializedString( $key, UnserializesDataToString $unserializer )
+	{
+		$serializer = $this->redis->getOption( \Redis::OPT_SERIALIZER );
+		$this->redis->setOption( \Redis::OPT_SERIALIZER, \Redis::SERIALIZER_NONE );
+
+		$value = $this->redis->get( $key );
+
+		if ( $value !== false )
 		{
-			$values     = $this->redis->getMultiple( $keys );
-			$dumpedKeys = array_combine( $keys, $values );
+			$unserializedValue = $unserializer->unserialize( $value );
 		}
 		else
 		{
-			$dumpedKeys = [ ];
+			$unserializedValue = false;
 		}
 
-		$this->redis->setOption( \Redis::OPT_SERIALIZER, \Redis::SERIALIZER_PHP );
+		$this->redis->setOption( \Redis::OPT_SERIALIZER, $serializer );
 
-		return $dumpedKeys;
+		return $unserializedValue;
 	}
 }

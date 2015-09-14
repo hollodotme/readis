@@ -1,0 +1,21 @@
+<div>
+    <pre>{{ keyData }}</pre>
+
+    <hr>
+
+    <div class="small text-muted">
+        Type: <code>{{ keyInfo.getType }}</code>
+        &middot;
+        TTL in ms:
+        <code>
+            {% if keyInfo.getTimeToLive == -1 %}
+                ∞
+            {% elseif keyInfo.getTimeToLive == -2 %}
+                not existing
+            {% else %}
+                {{ keyInfo.getTimeToLive }}
+            {% endif %}
+        </code>
+    </div>
+
+</div>

@@ -7,6 +7,7 @@
 namespace hollodotme\RedisStatus;
 
 use hollodotme\RedisStatus\Configs\ServersConfig;
+use hollodotme\RedisStatus\StringUnserializers\NullUnserializer;
 
 require(__DIR__ . '/../../vendor/autoload.php');
 
@@ -21,21 +22,48 @@ $manager      = new ServerManager( $connection );
 
 switch ( $_REQUEST['action'] )
 {
-	case 'dumpKeys':
+	case 'getKeys':
 	{
-		$database   = $_REQUEST['keydb'];
+		$database = $_REQUEST['database'];
 		$keyPattern = $_REQUEST['keyPattern'] ?: '*';
 
-		$dumpedKeys = $manager->dumpKeys( $database, $keyPattern );
+		$manager->selectDatabase( $database );
+		$keyInfoObjects = $manager->getKeyInfoObjects( $keyPattern );
 
 		$page = new TwigPage(
-			'Includes/KeyValueTable.twig',
+			'Includes/KeyList.twig',
 			[
-				'keyValues'    => $dumpedKeys,
-				'keyCaption'   => 'Key',
-				'valueCaption' => 'Value',
+				'keyInfoObjects' => $keyInfoObjects,
+				'database'       => $database,
+				'serverIndex'    => $serverIndex,
 			]
 		);
 		$page->respond();
+
+		break;
+	}
+
+	case 'getKeyData':
+	{
+		$key      = $_REQUEST['key'];
+		$database = $_REQUEST['database'];
+
+		$manager->selectDatabase( $database );
+
+		$keyData = $manager->getValueAsUnserializedString( $key, new NullUnserializer() );
+		$keyInfo = $manager->getKeyInfoObject( $key );
+
+		$page = new TwigPage(
+			'Includes/KeyData.twig',
+			[
+				'keyData'     => $keyData,
+				'keyInfo'     => $keyInfo,
+				'database'    => $database,
+				'serverIndex' => $serverIndex,
+			]
+		);
+		$page->respond();
+
+		break;
 	}
 }
