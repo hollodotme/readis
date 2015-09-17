@@ -6,6 +6,7 @@ $(document).ready(function () {
     var keysContainer = $('#keys');
     var keySelectForm = keysContainer.find('#key-select-form');
     var databaseSelect = keysContainer.find('#database-select');
+    var limitSelect = keysContainer.find('#limit-select');
     var ajaxSpinner = $('#ajaxSpinner');
 
     keySelectForm.submit(function (e) {
@@ -19,16 +20,25 @@ $(document).ready(function () {
         e.preventDefault();
     });
 
-    databaseSelect.find('a').click(function (e) {
+    databaseSelect.find('a').click(function () {
         var database = $(this).data('database');
         keySelectForm.find('input[name="database"]').val(database);
         keysContainer.find('#current-db').html($(this).html());
         keySelectForm.submit();
     });
 
+    limitSelect.find('a').click(function () {
+        var limit = $(this).data('limit');
+        keySelectForm.find('input[name="limit"]').val(limit);
+        keysContainer.find('#current-limit').html($(this).html());
+        keySelectForm.submit();
+    });
+
     $('[data-toggle="tooltip"]').tooltip();
 
     $.initKeyInfoModal();
+
+    keySelectForm.submit();
 });
 
 $.initKeyInfoModal = function () {

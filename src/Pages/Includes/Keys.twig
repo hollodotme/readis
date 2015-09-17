@@ -15,7 +15,7 @@
                     </span>
                     <span class="caret"></span>
                 </button>
-                <ul class="dropdown-menu">
+                <ul class="dropdown-menu" role="menu">
                     {% for i in 0..serverConfig.databases-1 %}
                         <li>
                             <a data-database="{{ i }}">
@@ -32,7 +32,27 @@
 
             </div>
         </div>
-        <div class="col-xs-4">
+        <div class="col-xs-2">
+            <div class="dropdown" id="limit-select">
+                <button class="btn btn-default" type="button" data-toggle="dropdown" aria-haspopup="true"
+                        aria-expanded="false">
+                    <span id="current-limit">
+                        Limit: 100
+                    </span>
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                    <li><a data-limit="50">Limit: 50</a></li>
+                    <li><a data-limit="100">Limit: 100</a></li>
+                    <li><a data-limit="250">Limit: 250</a></li>
+                    <li><a data-limit="500">Limit: 500</a></li>
+                    <li><a data-limit="1000">Limit: 1000</a></li>
+                    <li><a data-limit="2500">Limit: 2500</a></li>
+                    <li><a data-limit="all">Limit: all</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-xs-2">
             <div class="pull-right" style="padding: 5px; display:none;" id="ajaxSpinner">
                 <span class="throbber-loader"></span>
             </div>
@@ -43,13 +63,15 @@
                 <input type="hidden" name="server" value="{{ serverIndex }}">
                 <input type="hidden" name="action" value="getKeys">
                 <input type="hidden" name="database" value="0">
+                <input type="hidden" name="limit" value="100">
+
 
                 <div class="form-group-sm">
                     <div class="input-group">
                         <span class="input-group-addon">
                             <span class="glyphicon glyphicon-info-sign"
                                   data-toggle="tooltip"
-                                  data-original-title="Search is case sensitive"
+                                  data-original-title="Search is case sensitive, use * as placeholder"
                                   data-trigger="hover"></span>
                         </span>
                         <label for="keyPattern" class="sr-only">Key search value</label>
@@ -71,6 +93,5 @@
 
 <div id="keyValues">
 
-    {% include "Includes/KeyList.twig" with {'keyInfoObjects': manager.getKeyInfoObjects('*')} %}
 
 </div>

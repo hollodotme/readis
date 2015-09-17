@@ -27,10 +27,20 @@ switch ( $_REQUEST['action'] )
 	case 'getKeys':
 	{
 		$database = $_REQUEST['database'];
+		$limit    = $_REQUEST['limit'];
 		$keyPattern = $_REQUEST['keyPattern'] ?: '*';
 
+		if ( $limit == 'all' )
+		{
+			$limit = null;
+		}
+		else
+		{
+			$limit = abs( intval( $limit ) );
+		}
+
 		$manager->selectDatabase( $database );
-		$keyInfoObjects = $manager->getKeyInfoObjects( $keyPattern );
+		$keyInfoObjects = $manager->getKeyInfoObjects( $keyPattern, $limit );
 
 		$page = new TwigPage(
 			'Includes/KeyList.twig',

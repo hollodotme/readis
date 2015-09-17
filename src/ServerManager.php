@@ -114,13 +114,19 @@ final class ServerManager
 	}
 
 	/**
-	 * @param string $keyPattern
+	 * @param string   $keyPattern
+	 * @param int|null $limit
 	 *
 	 * @return array|ProvidesKeyInformation[]
 	 */
-	public function getKeyInfoObjects( $keyPattern )
+	public function getKeyInfoObjects( $keyPattern, $limit )
 	{
 		$keys = $this->redis->keys( $keyPattern );
+
+		if ( !is_null( $limit ) )
+		{
+			$keys = array_slice( $keys, 0, $limit );
+		}
 
 		return array_map( [ $this, 'getKeyInfoObject' ], $keys );
 	}
