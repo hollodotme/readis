@@ -39,8 +39,6 @@ try
 		$connection   = new ServerConnection( $serverConfig );
 		$manager      = new ServerManager( $connection );
 
-//		echo '<pre>', htmlspecialchars( print_r( $manager->getKeyInfoObjects('*'), 1 ) ), '</pre>';
-//		exit();
 		$page = new TwigPage(
 			'ServerInfo.twig',
 			[

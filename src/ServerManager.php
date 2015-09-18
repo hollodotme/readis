@@ -31,6 +31,12 @@ final class ServerManager
 	{
 		$this->redis = new \Redis();
 		$this->connectToServer( $connectionData );
+
+		$this->redis->select( 1 );
+		for ( $i = 0; $i < 100; $i++ )
+		{
+			$this->redis->hSet( 'HashTestKey', 'key' . $i, 'This is a hash test' );
+		}
 	}
 
 	/**
@@ -138,9 +144,18 @@ final class ServerManager
 	 */
 	public function getKeyInfoObject( $key )
 	{
-		$info = $this->redis->multi()->type( $key )->pttl( $key )->exec();
+		list($type, $ttl) = $this->redis->multi()->type( $key )->pttl( $key )->exec();
 
-		return new KeyInfo( $key, $info[0], $info[1] );
+		if ( $type == \Redis::REDIS_HASH )
+		{
+			$subItems = $this->redis->hKeys( $key );
+		}
+		else
+		{
+			$subItems = [ ];
+		}
+
+		return new KeyInfo( $key, $type, $ttl, $subItems );
 	}
 
 	/**
@@ -165,6 +180,34 @@ final class ServerManager
 		$this->redis->setOption( \Redis::OPT_SERIALIZER, \Redis::SERIALIZER_NONE );
 
 		$value = $this->redis->get( $key );
+
+		if ( $value !== false )
+		{
+			$unserializedValue = $unserializer->unserialize( $value );
+		}
+		else
+		{
+			$unserializedValue = false;
+		}
+
+		$this->redis->setOption( \Redis::OPT_SERIALIZER, $serializer );
+
+		return $unserializedValue;
+	}
+
+	/**
+	 * @param string                   $key
+	 * @param string                   $hashKey
+	 * @param UnserializesDataToString $unserializer
+	 *
+	 * @return bool|string
+	 */
+	public function getHashValueAsUnserializedString( $key, $hashKey, UnserializesDataToString $unserializer )
+	{
+		$serializer = $this->redis->getOption( \Redis::OPT_SERIALIZER );
+		$this->redis->setOption( \Redis::OPT_SERIALIZER, \Redis::SERIALIZER_NONE );
+
+		$value = $this->redis->hGet( $key, $hashKey );
 
 		if ( $value !== false )
 		{

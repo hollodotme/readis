@@ -6,13 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Holger Woltersdorf's redis status">
     <meta name="author" content="Holger Woltersdorf">
+    <meta name="robots" content="noindex, nofollow">
 
     {% block page_title %}
         <title>Redis Status</title>
     {% endblock %}
 
-    <link rel="stylesheet" media="screen" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"
-          type="text/css">
+    <link rel="stylesheet" media="screen" href="{{ appConfig.getBaseUrl }}/css/bootstrap.min.css" type="text/css">
     <link rel="stylesheet" media="screen" href="{{ appConfig.getBaseUrl }}/css/throbber.css" type="text/css">
     <link rel="stylesheet" media="screen" href="{{ appConfig.getBaseUrl }}/css/github-fork-ribbon.css" type="text/css">
     <link rel="stylesheet" media="screen" href="{{ appConfig.getBaseUrl }}/css/theme.css" type="text/css">
@@ -46,8 +46,8 @@
     </div>
 </footer>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<script src="{{ appConfig.getBaseUrl }}/js/jquery.min.js"></script>
+<script src="{{ appConfig.getBaseUrl }}/js/bootstrap.min.js"></script>
 
 {% block javascripts %}{% endblock %}
 </body>

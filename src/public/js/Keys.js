@@ -50,10 +50,11 @@ $.initKeyInfoModal = function () {
         var database = modal.data('database').toString();
         var server = modal.data('server');
         var key = btn.data('key');
-        var params = {action: 'getKeyData', database: database, server: server, key: key};
+        var hashKey = btn.data('hash-key');
+        var params = {action: 'getKeyData', database: database, server: server, key: key, hashKey: hashKey};
         var loadUrl = ajaxUrl + '?' + $.param(params);
 
-        modal.find('#keyInfoModalLabel').html('Key: <code>' + key + '</code>');
+        modal.find('#keyInfoModalLabel').html('Key: <code>' + key + (hashKey ? (' &raquo; ' + hashKey) : '') + '</code>');
         modalBody.load(loadUrl, function () {
         });
     });

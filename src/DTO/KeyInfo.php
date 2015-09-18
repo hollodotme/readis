@@ -25,6 +25,12 @@ final class KeyInfo implements ProvidesKeyInformation
 	private $timeToLive;
 
 	/** @var array */
+	private $subItems;
+
+	/** @var int */
+	private $countSubItems;
+
+	/** @var array */
 	private static $types = [
 		\Redis::REDIS_STRING    => 'string',
 		\Redis::REDIS_SET       => 'set',
@@ -38,12 +44,15 @@ final class KeyInfo implements ProvidesKeyInformation
 	 * @param string $name
 	 * @param int    $type
 	 * @param float  $timeToLive
+	 * @param array  $subItems
 	 */
-	public function __construct( $name, $type, $timeToLive )
+	public function __construct( $name, $type, $timeToLive, array $subItems )
 	{
-		$this->name       = $name;
-		$this->type       = isset(self::$types[ $type ]) ? self::$types[ $type ] : 'unknown';
-		$this->timeToLive = $timeToLive;
+		$this->name          = $name;
+		$this->type          = isset(self::$types[ $type ]) ? self::$types[ $type ] : 'unknown';
+		$this->timeToLive    = $timeToLive;
+		$this->subItems      = $subItems;
+		$this->countSubItems = count( $subItems );
 	}
 
 	/**
@@ -68,5 +77,21 @@ final class KeyInfo implements ProvidesKeyInformation
 	public function getTimeToLive()
 	{
 		return $this->timeToLive;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getSubItems()
+	{
+		return $this->subItems;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function countSubItems()
+	{
+		return $this->countSubItems;
 	}
 }

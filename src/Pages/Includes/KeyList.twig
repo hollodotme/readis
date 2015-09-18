@@ -14,9 +14,26 @@
                 {{ loop.index }}
             </td>
             <td>
-                <a href="#keyInfoModal" data-key="{{ keyInfo.getName }}" data-toggle="modal" role="button">
-                    {{ keyInfo.getName }}
-                </a>
+                {% if keyInfo.getType == 'hash' %}
+                    <a href="#collapse_{{ loop.index }}" data-key="{{ keyInfo.getName }}" data-toggle="collapse" role="button">
+                        {{ keyInfo.getName }}
+                        <small class="text-muted">
+                            ({{ keyInfo.countSubItems }} sub items)
+                        </small>
+                    </a>
+                    <ol class="collapse" id="collapse_{{ loop.index }}">
+                        {% for subItem in keyInfo.getSubItems %}
+                            <li>
+                                <a href="#keyInfoModal" data-key="{{ keyInfo.getName }}" data-hash-key="{{ subItem }}"
+                                   data-toggle="modal" role="button">{{ subItem }}</a>
+                            </li>
+                        {% endfor %}
+                    </ol>
+                {% else %}
+                    <a href="#keyInfoModal" data-key="{{ keyInfo.getName }}" data-toggle="modal" role="button">
+                        {{ keyInfo.getName }}
+                    </a>
+                {% endif %}
             </td>
             <td>
                 {{ keyInfo.getType }}
@@ -33,7 +50,7 @@
         </tr>
     {% else %}
         <tr>
-            <td colspan="3">
+            <td colspan="4">
                 <h3 class="text-center">
                     No data found.
                 </h3>

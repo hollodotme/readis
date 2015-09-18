@@ -27,4 +27,14 @@ interface ProvidesKeyInformation
 	 * @return float
 	 */
 	public function getTimeToLive();
+
+	/**
+	 * @return array
+	 */
+	public function getSubItems();
+
+	/**
+	 * @return int
+	 */
+	public function countSubItems();
 }
