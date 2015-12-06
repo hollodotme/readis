@@ -28,6 +28,11 @@ final class IceHawkDelegate implements ControlsHandlingBehaviour
 
 	public function setUpEnvironment()
 	{
+		$appConfig = new AppConfig();
+		$basePath  = parse_url( $appConfig->getBaseUrl(), PHP_URL_PATH );
+
+		$quotedBasePath         = preg_quote( $basePath, '#' );
+		$_SERVER['REQUEST_URI'] = preg_replace( "#^{$quotedBasePath}#", '', $_SERVER['REQUEST_URI'] );
 	}
 
 	/**

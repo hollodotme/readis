@@ -15,13 +15,14 @@ Assuming you'll install readis under `/var/www/readis` on your server.
 1. SSH into your webserver.
 2. `$ git clone https://github.com/hollodotme/readis.git /var/www/readis`
 3. `$ cd /var/www/readis`
-4. `$ sh build/tools/update_tools.sh`
-5. `$ php build/tools/composer.phar update -o -v`
-6. `$ cp config/app.sample.php config/app.php`
-7. Set up the baseUrl in `config/app.php` (Should be the full http-URL with path, **without trailing slash**) 
-8. `$ cp config/servers.sample.php config/servers.php`
-9. Set up all server instances in `config/servers.php`
-10. Set up your webserver having a VHost pointing to `/var/www/readis/public`  
+4. `$ git checkout v1.0.0`
+5. `$ sh build/tools/update_tools.sh`
+6. `$ php build/tools/composer.phar update -o -v`
+7. `$ cp config/app.sample.php config/app.php`
+8. Set up the baseUrl in `config/app.php` (Should be the full http-URL with path, **without trailing slash**) 
+9. `$ cp config/servers.sample.php config/servers.php`
+10. Set up all server instances in `config/servers.php`
+11. Set up your webserver having a VHost pointing to `/var/www/readis/public`  
 See the following nginx example config:
 
 ```
