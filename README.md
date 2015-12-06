@@ -1,7 +1,23 @@
+[![Latest Stable Version](https://poser.pugx.org/hollodotme/readis/v/stable)](https://packagist.org/packages/hollodotme/readis) 
+[![Total Downloads](https://poser.pugx.org/hollodotme/readis/downloads)](https://packagist.org/packages/hollodotme/readis) 
+[![Latest Unstable Version](https://poser.pugx.org/hollodotme/readis/v/unstable)](https://packagist.org/packages/hollodotme/readis) 
+[![License](https://poser.pugx.org/hollodotme/readis/license)](https://packagist.org/packages/hollodotme/readis)
+
 # readis
 
 A web interface to read data from redis server(s)
 
+## Features
+
+ * Setup / Selection for multiple redis servers
+ * Selection of a database inside a redis server
+ * Searching for keys (with placeholders) inside a database
+ * Listing of found keys with variable limit
+ * Basic information about keys
+ * Viewing the content of keys and hash keys
+ * Listing of slow logs
+ * Table with all the current server instance information / stats
+ * Table with all the current server configs
 
 ## Requirements
 
