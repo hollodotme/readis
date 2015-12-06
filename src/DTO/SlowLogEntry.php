@@ -3,14 +3,14 @@
  * @author h.woltersdorf
  */
 
-namespace hollodotme\RedisStatus\DTO;
+namespace hollodotme\Readis\DTO;
 
-use hollodotme\RedisStatus\Interfaces\ProvidesSlowLogData;
+use hollodotme\Readis\Interfaces\ProvidesSlowLogData;
 
 /**
  * Class SlowLogEntry
  *
- * @package hollodotme\RedisStatus\DTO
+ * @package hollodotme\Readis\DTO
  */
 final class SlowLogEntry implements ProvidesSlowLogData
 {

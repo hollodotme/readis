@@ -4,15 +4,15 @@
  * @author hollodotme
  */
 
-namespace hollodotme\RedisStatus\Configs;
+namespace hollodotme\Readis\Configs;
 
-use hollodotme\RedisStatus\Interfaces\ProvidesServerConfig;
-use hollodotme\RedisStatus\Interfaces\ProvidesServerConfigList;
+use hollodotme\Readis\Interfaces\ProvidesServerConfig;
+use hollodotme\Readis\Interfaces\ProvidesServerConfigList;
 
 /**
  * Class ServersConfig
  *
- * @package hollodotme\RedisStatus\Configs
+ * @package hollodotme\Readis\Configs
  */
 final class ServersConfig implements ProvidesServerConfigList
 {

@@ -4,13 +4,13 @@
  * @author hollodotme
  */
 
-namespace hollodotme\RedisStatus;
+namespace hollodotme\Readis;
 
-use hollodotme\RedisStatus\Configs\AppConfig;
-use hollodotme\RedisStatus\Configs\ServersConfig;
-use hollodotme\RedisStatus\StringUnserializers\NullUnserializer;
+use hollodotme\Readis\Configs\AppConfig;
+use hollodotme\Readis\Configs\ServersConfig;
+use hollodotme\Readis\StringUnserializers\NullUnserializer;
 
-require(__DIR__ . '/../../vendor/autoload.php');
+require(__DIR__ . '/../vendor/autoload.php');
 
 error_reporting( E_ALL );
 ini_set( 'display_errors', 1 );

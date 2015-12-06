@@ -4,12 +4,12 @@
  * @author hollodotme
  */
 
-namespace hollodotme\RedisStatus;
+namespace hollodotme\Readis;
 
 /**
  * Class TwigPage
  *
- * @package hollodotme\RedisStatus
+ * @package hollodotme\Readis
  */
 final class TwigPage
 {

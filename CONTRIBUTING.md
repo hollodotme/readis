@@ -2,7 +2,7 @@
 
 Contributions are **welcome** and will be fully **credited**.
 
-We accept contributions via pull requests on [GitHub](https://github.com/hollodotme/redis-status).
+We accept contributions via pull requests on [GitHub](https://github.com/hollodotme/readis).
 
 
 ## Pull Requests

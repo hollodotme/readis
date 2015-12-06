@@ -4,14 +4,14 @@
  * @author hollodotme
  */
 
-namespace hollodotme\RedisStatus\DTO;
+namespace hollodotme\Readis\DTO;
 
-use hollodotme\RedisStatus\Interfaces\ProvidesKeyInformation;
+use hollodotme\Readis\Interfaces\ProvidesKeyInformation;
 
 /**
  * Class KeyInfo
  *
- * @package hollodotme\RedisStatus\DTO
+ * @package hollodotme\Readis\DTO
  */
 final class KeyInfo implements ProvidesKeyInformation
 {

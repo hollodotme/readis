@@ -4,12 +4,12 @@
  * @author hollodotme
  */
 
-namespace hollodotme\RedisStatus\Exceptions;
+namespace hollodotme\Readis\Exceptions;
 
 /**
  * Class RedisStatusException
  *
- * @package hollodotme\RedisStatus\Exceptions
+ * @package hollodotme\Readis\Exceptions
  */
 class RedisStatusException extends \Exception
 {

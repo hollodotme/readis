@@ -21,7 +21,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.ssh.insert_key = true
 
   # hostname
-  config.vm.hostname = "RedisStatus"
+  config.vm.hostname = "Readis"
 
   # provisioners
   # ------------

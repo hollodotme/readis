@@ -1,6 +1,6 @@
 {
-  "name": "hollodotme/redis-status",
-  "description": "A web interface to view status of redis server(s)",
+  "name": "hollodotme/readis",
+  "description": "A web interface to read data from redis server(s)",
   "minimum-stability": "dev",
   "prefer-stable": true,
   "license": "MIT",
@@ -12,21 +12,22 @@
   ],
   "support": {
     "email": "hw@hollo.me",
-    "source": "https://github.com/hollodotme/redis-status"
+    "source": "https://github.com/hollodotme/readis"
   },
   "require": {
     "php": ">=5.5",
     "ext-redis": "*",
+    "fortuneglobe/icehawk": "1.4.0",
     "twig/twig": "@stable"
   },
   "autoload": {
     "psr-4": {
-      "hollodotme\\RedisStatus\\": "src/"
+      "hollodotme\\Readis\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "hollodotme\\RedisStatus\\Tests\\Unit\\": "tests/Unit/"
+      "hollodotme\\Readis\\Tests\\Unit\\": "tests/Unit/"
     }
   }
 }

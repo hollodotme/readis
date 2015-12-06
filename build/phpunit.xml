@@ -9,7 +9,7 @@
         convertNoticesToExceptions="true"
         convertWarningsToExceptions="true">
     <testsuites>
-        <testsuite name="RedisStatus">
+        <testsuite name="Readis">
             <directory suffix="Test.php">../tests/Unit</directory>
         </testsuite>
     </testsuites>

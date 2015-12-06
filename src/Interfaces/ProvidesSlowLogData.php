@@ -3,12 +3,12 @@
  * @author h.woltersdorf
  */
 
-namespace hollodotme\RedisStatus\Interfaces;
+namespace hollodotme\Readis\Interfaces;
 
 /**
  * Interface ProvidesSlowLogData
  *
- * @package hollodotme\RedisStatus\Interfaces
+ * @package hollodotme\Readis\Interfaces
  */
 interface ProvidesSlowLogData
 {

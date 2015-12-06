@@ -1,11 +1,16 @@
 #!/usr/bin/env bash
 
+cd "$(dirname "$0")"
+
+for pharFile in `ls -1 *.phar`; do rm -rf "$pharFile"; done
+
 # Composer
 curl -sS 'https://getcomposer.org/installer' | php --
 chmod +x composer.phar
 
 # PHPUNIT
-wget -c https://phar.phpunit.de/phpunit.phar
+wget -c https://phar.phpunit.de/phpunit-old.phar
+mv phpunit-old.phar phpunit.phar
 chmod +x phpunit.phar
 
 # PHPLOC
@@ -30,6 +35,6 @@ chmod +x phpcpd.phar
 
 # PHP Dox
 export PHPDOX_VERSION='0.8.0'
-wget https://github.com/theseer/phpdox/releases/download/0.8.0/phpdox-$PHPDOX_VERSION.phar
-mv phpdox-$PHPDOX_VERSION.phar phpdox.phar
+wget "https://github.com/theseer/phpdox/releases/download/0.8.0/phpdox-$PHPDOX_VERSION.phar"
+mv "phpdox-$PHPDOX_VERSION.phar" phpdox.phar
 chmod +x phpdox.phar

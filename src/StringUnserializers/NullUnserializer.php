@@ -4,14 +4,14 @@
  * @author hollodotme
  */
 
-namespace hollodotme\RedisStatus\StringUnserializers;
+namespace hollodotme\Readis\StringUnserializers;
 
-use hollodotme\RedisStatus\Interfaces\UnserializesDataToString;
+use hollodotme\Readis\Interfaces\UnserializesDataToString;
 
 /**
  * Class NullUnserializer
  *
- * @package hollodotme\RedisStatus\StringUnserializers
+ * @package hollodotme\Readis\StringUnserializers
  */
 final class NullUnserializer implements UnserializesDataToString
 {

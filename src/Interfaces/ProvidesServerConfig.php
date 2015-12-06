@@ -4,12 +4,12 @@
  * @author hollodotme
  */
 
-namespace hollodotme\RedisStatus\Interfaces;
+namespace hollodotme\Readis\Interfaces;
 
 /**
  * Interface ProvidesServerConfig
  *
- * @package hollodotme\RedisStatus\Interfaces
+ * @package hollodotme\Readis\Interfaces
  */
 interface ProvidesServerConfig
 {

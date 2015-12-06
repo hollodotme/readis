@@ -4,20 +4,20 @@
  * @author hollodotme
  */
 
-namespace hollodotme\RedisStatus;
+namespace hollodotme\Readis;
 
-use hollodotme\RedisStatus\DTO\KeyInfo;
-use hollodotme\RedisStatus\DTO\SlowLogEntry;
-use hollodotme\RedisStatus\Exceptions\CannotConnectToServer;
-use hollodotme\RedisStatus\Interfaces\ProvidesConnectionData;
-use hollodotme\RedisStatus\Interfaces\ProvidesKeyInformation;
-use hollodotme\RedisStatus\Interfaces\ProvidesSlowLogData;
-use hollodotme\RedisStatus\Interfaces\UnserializesDataToString;
+use hollodotme\Readis\DTO\KeyInfo;
+use hollodotme\Readis\DTO\SlowLogEntry;
+use hollodotme\Readis\Exceptions\CannotConnectToServer;
+use hollodotme\Readis\Interfaces\ProvidesConnectionData;
+use hollodotme\Readis\Interfaces\ProvidesKeyInformation;
+use hollodotme\Readis\Interfaces\ProvidesSlowLogData;
+use hollodotme\Readis\Interfaces\UnserializesDataToString;
 
 /**
  * Class ServerManager
  *
- * @package hollodotme\RedisStatus
+ * @package hollodotme\Readis
  */
 final class ServerManager
 {

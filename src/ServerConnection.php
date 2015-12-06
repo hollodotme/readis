@@ -4,15 +4,15 @@
  * @author hollodotme
  */
 
-namespace hollodotme\RedisStatus;
+namespace hollodotme\Readis;
 
-use hollodotme\RedisStatus\Interfaces\ProvidesConnectionData;
-use hollodotme\RedisStatus\Interfaces\ProvidesServerConfig;
+use hollodotme\Readis\Interfaces\ProvidesConnectionData;
+use hollodotme\Readis\Interfaces\ProvidesServerConfig;
 
 /**
  * Class ServerConnection
  *
- * @package hollodotme\RedisStatus
+ * @package hollodotme\Readis
  */
 final class ServerConnection implements ProvidesConnectionData
 {

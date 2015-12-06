@@ -4,12 +4,12 @@
  * @author hollodotme
  */
 
-namespace hollodotme\RedisStatus\Configs;
+namespace hollodotme\Readis\Configs;
 
 /**
  * Class AppConfig
  *
- * @package hollodotme\RedisStatus\Configs
+ * @package hollodotme\Readis\Configs
  */
 final class AppConfig
 {

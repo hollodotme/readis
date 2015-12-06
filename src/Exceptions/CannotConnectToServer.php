@@ -4,14 +4,14 @@
  * @author hollodotme
  */
 
-namespace hollodotme\RedisStatus\Exceptions;
+namespace hollodotme\Readis\Exceptions;
 
-use hollodotme\RedisStatus\Interfaces\ProvidesConnectionData;
+use hollodotme\Readis\Interfaces\ProvidesConnectionData;
 
 /**
  * Class CannotConnectToServer
  *
- * @package hollodotme\RedisStatus\Exceptions
+ * @package hollodotme\Readis\Exceptions
  */
 final class CannotConnectToServer extends RedisStatusException
 {

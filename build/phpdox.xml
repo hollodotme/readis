@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <phpdox xmlns="http://xml.phpdox.net/config">
-    <project name="RedisStatus" source="../src" workdir="phpdox">
+    <project name="Readis" source="../src" workdir="phpdox">
         <collector publiconly="false">
             <include mask="*.php"/>
             <exclude mask="*autoload.php"/>

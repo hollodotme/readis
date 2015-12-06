@@ -1,4 +1,4 @@
-# RedisStatus
+# Readis
 
 Template for new repositories
 

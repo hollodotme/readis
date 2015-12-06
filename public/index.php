@@ -6,12 +6,12 @@
  * @author  hollodotme
  */
 
-namespace hollodotme\RedisStatus;
+namespace hollodotme\Readis;
 
-use hollodotme\RedisStatus\Configs\AppConfig;
-use hollodotme\RedisStatus\Configs\ServersConfig;
+use hollodotme\Readis\Configs\AppConfig;
+use hollodotme\Readis\Configs\ServersConfig;
 
-require(__DIR__ . '/../../vendor/autoload.php');
+require(__DIR__ . '/../vendor/autoload.php');
 
 error_reporting( E_ALL );
 ini_set( 'display_errors', 1 );
