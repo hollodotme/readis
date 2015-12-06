@@ -1,6 +1,16 @@
 body {
     margin-top: 60px;
     margin-bottom: 50px;
+    font-family: 'Open Sans', Helvetica, Arial, Courier, sans-serif;
+}
+
+.navbar-brand {
+    font-size: 20px;
+    padding-left: 25px;
+}
+
+.nav.navbar-nav > li {
+    font-size: 16px;
 }
 
 .tab-pane {
@@ -13,19 +23,6 @@ body {
 
 .tab-pane .container {
     padding: 10px;
-}
-
-.footer {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    /* Set the fixed height of the footer here */
-    height: 40px;
-    background-color: rgba(245, 245, 245, 0.6);
-}
-
-.footer .container p {
-    padding: 10px 0;
 }
 
 .github-fork-ribbon-wrapper.left-bottom .github-fork-ribbon {

@@ -1,26 +1,25 @@
 {% extends "Theme.twig" %}
 
-{% block page_title %}
+{% block pageTitle %}
     <title>{{ server.getName }} - Server info</title>
 {% endblock %}
 
 {% block stylesheets %}{% endblock %}
 
 {% block breadcrumb %}
-    <ul class="breadcrumb">
+    <ul class="nav navbar-nav">
         <li>
-            <a href="{{ appConfig.getBaseUrl }}/index.php">Server selction</a>
+            <a href="{{ appConfig.getBaseUrl }}/">Server selection</a>
         </li>
         <li class="active">
-            {{ server.getName }}
+            <a href="{{ appConfig.getBaseUrl }}/server/{{ serverKey }}/">{{ server.getName }}</a>
         </li>
     </ul>
 {% endblock %}
 
 {% block content %}
 
-    <h1>{{ server.getName }}</h1>
-    <div class="small text-muted">
+    <div class="text-muted">
         Host: {{ server.getHost }}
         | Port: {{ server.getPort }}
         | Timeout: {{ server.getTimeout }}s
@@ -36,22 +35,27 @@
         <ul class="nav nav-tabs" role="tablist">
             <li role="presentation" class="active">
                 <a href="#keys" aria-controls="keys" role="tab" data-toggle="tab">
-                    Keys
+                    <span class="glyphicon glyphicon-menu-hamburger text-success"></span> Keys
                 </a>
             </li>
             <li role="presentation">
                 <a href="#slow-logs" aria-controls="slow-logs" role="tab" data-toggle="tab">
+                    <span class="glyphicon glyphicon-exclamation-sign text-danger"></span>
                     Slow logs
                     <span class="badge">{{ slowLogLength }}</span>
                 </a>
             </li>
             <li role="presentation">
-                <a href="#info" aria-controls="info" role="tab"
-                   data-toggle="tab">Info</a>
+                <a href="#info" aria-controls="info" role="tab" data-toggle="tab">
+                    <span class="glyphicon glyphicon-info-sign text-info"></span>
+                    Info
+                </a>
             </li>
             <li role="presentation">
-                <a href="#config" aria-controls="config" role="tab"
-                   data-toggle="tab">Config</a>
+                <a href="#config" aria-controls="config" role="tab" data-toggle="tab">
+                    <span class="glyphicon glyphicon-wrench text-warning"></span>
+                    Config
+                </a>
             </li>
         </ul>
 

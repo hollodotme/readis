@@ -1,15 +1,15 @@
 {% extends "Theme.twig" %}
 
-{% block page_title %}
+{% block pageTitle %}
     <title>Server selection</title>
 {% endblock %}
 
 {% block stylesheets %}{% endblock %}
 
 {% block breadcrumb %}
-    <ul class="breadcrumb">
+    <ul class="nav navbar-nav">
         <li class="active">
-            Server selction
+            <a href="{{ appConfig.getBaseUrl }}/">Server selection</a>
         </li>
     </ul>
 {% endblock %}
@@ -17,22 +17,22 @@
 {% block content %}
 
     <div class="row">
-        {% for index, server in servers %}
+        {% for serverKey, serverInfo in servers %}
             <div class="col-xs-6 col-md-3">
 
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <a href="{{ appConfig.getBaseUrl }}/index.php?server={{ index }}">
-                            <h3 class="panel-title">{{ server.getName }}</h3>
+                        <a href="{{ appConfig.getBaseUrl }}/server/{{ serverKey }}/">
+                            <h3 class="panel-title">{{ serverInfo.getName }}</h3>
                         </a>
                     </div>
                     <div class="panel-body">
                         <ul>
-                            <li>Host: {{ server.getHost }}</li>
-                            <li>Port: {{ server.getPort }}</li>
-                            <li>Timeout: {{ server.getTimeout }}s</li>
-                            <li>Retry interval: {{ server.getRetryInterval }}ms</li>
-                            <li>Using auth: {% if server.getAuth is null %}no{% else %}yes{% endif %}</li>
+                            <li>Host: {{ serverInfo.getHost }}</li>
+                            <li>Port: {{ serverInfo.getPort }}</li>
+                            <li>Timeout: {{ serverInfo.getTimeout }}s</li>
+                            <li>Retry interval: {{ serverInfo.getRetryInterval }}ms</li>
+                            <li>Using auth: {% if serverInfo.getAuth is null %}no{% else %}yes{% endif %}</li>
                         </ul>
                     </div>
                 </div>

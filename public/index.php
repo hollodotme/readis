@@ -1,63 +1,20 @@
 <?php
 /**
- * Redis Status
+ * Readis
  *
  * @license MIT
  * @author  hollodotme
+ * @link    https://github.com/hollodotme/readis
  */
 
 namespace hollodotme\Readis;
 
-use hollodotme\Readis\Configs\AppConfig;
-use hollodotme\Readis\Configs\ServersConfig;
+use Fortuneglobe\IceHawk\IceHawk;
+use hollodotme\Readis\Configs\IceHawkConfig;
+use hollodotme\Readis\Configs\IceHawkDelegate;
 
 require(__DIR__ . '/../vendor/autoload.php');
 
-error_reporting( E_ALL );
-ini_set( 'display_errors', 1 );
-
-try
-{
-	$appConfig = new AppConfig();
-	$servers   = new ServersConfig();
-
-	if ( !isset($_REQUEST['server']) )
-	{
-		$page = new TwigPage(
-			'ServerSelection.twig',
-			[
-				'appConfig' => $appConfig,
-				'servers'   => $servers->getServerConfigs(),
-			]
-		);
-		$page->respond();
-	}
-	else
-	{
-		$serverIndex  = intval( $_REQUEST['server'] );
-		$serverConfig = $servers->getServerConfigs()[ $serverIndex ];
-		$connection   = new ServerConnection( $serverConfig );
-		$manager      = new ServerManager( $connection );
-
-		$page = new TwigPage(
-			'ServerInfo.twig',
-			[
-				'appConfig'   => $appConfig,
-				'server'        => $serverConfig,
-				'database' => '0',
-				'serverIndex' => $serverIndex,
-				'serverConfig'  => $manager->getServerConfig(),
-				'slowLogLength' => $manager->getSlowLogLength(),
-				'slowLogs'      => $manager->getSlowLogs(),
-				'serverInfo'    => $manager->getServerInfo(),
-				'manager'     => $manager,
-			]
-		);
-		$page->respond();
-	}
-}
-catch ( \Exception $e )
-{
-	$page = new TwigPage( 'Error.twig', [ 'errorName' => get_class( $e ), 'error' => $e ] );
-	$page->respond();
-}
+$iceHawk = new IceHawk( new IceHawkConfig(), new IceHawkDelegate() );
+$iceHawk->init();
+$iceHawk->handleRequest();

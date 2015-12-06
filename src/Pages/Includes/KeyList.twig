@@ -22,15 +22,18 @@
                         </small>
                     </a>
                     <ol class="collapse" id="collapse_{{ loop.index }}">
-                        {% for subItem in keyInfo.getSubItems %}
+                        {% for hashKey in keyInfo.getSubItems %}
                             <li>
-                                <a href="#keyInfoModal" data-key="{{ keyInfo.getName }}" data-hash-key="{{ subItem }}"
-                                   data-toggle="modal" role="button">{{ subItem }}</a>
+                                <a href="{{ appConfig.getBaseUrl }}/database/ajax-show-key?serverKey={{ serverKey }}&database={{ database }}&key={{ keyInfo.getName }}&hashKey={{ hashKey }}"
+                                   data-toggle="modal" data-target="#keyInfoModal" role="button">
+                                    {{ hashKey }}
+                                </a>
                             </li>
                         {% endfor %}
                     </ol>
                 {% else %}
-                    <a href="#keyInfoModal" data-key="{{ keyInfo.getName }}" data-toggle="modal" role="button">
+                    <a href="{{ appConfig.getBaseUrl }}/database/ajax-show-key?serverKey={{ serverKey }}&database={{ database }}&key={{ keyInfo.getName }}"
+                       data-toggle="modal" data-target="#keyInfoModal" role="button">
                         {{ keyInfo.getName }}
                     </a>
                 {% endif %}
@@ -40,7 +43,7 @@
             </td>
             <td class="text-right">
                 {% if keyInfo.getTimeToLive == -1 %}
-                    ∞
+                    &infin;
                 {% elseif keyInfo.getTimeToLive == -2 %}
                     not existing
                 {% else %}
@@ -62,24 +65,10 @@
 
 {# Modal: Key Info #}
 
-<div class="modal fade" id="keyInfoModal" tabindex="-1" role="dialog" aria-labelledby="keyInfoModalLabel"
-     data-load-url="{{ appConfig.getBaseUrl }}/ajax.php"
-     data-database="{{ database }}"
-     data-server="{{ serverIndex }}">
+<div class="modal fade" id="keyInfoModal" tabindex="-1" role="dialog" aria-labelledby="keyInfoModalLabel">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                <h4 class="modal-title" id="keyInfoModalLabel"></h4>
-            </div>
-            <div class="modal-body">
 
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            </div>
         </div>
     </div>
 </div>

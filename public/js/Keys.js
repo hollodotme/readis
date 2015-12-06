@@ -15,7 +15,7 @@ $(document).ready(function () {
         ajaxSpinner.show();
         $('#keyValues').load(formUrl + '?' + formData, function () {
             ajaxSpinner.hide();
-            $.initKeyInfoModal();
+            $('#searchPattern').focus();
         });
         e.preventDefault();
     });
@@ -36,26 +36,9 @@ $(document).ready(function () {
 
     $('[data-toggle="tooltip"]').tooltip();
 
-    $.initKeyInfoModal();
+    $('body').on('hidden.bs.modal', '.modal', function () {
+        $(this).removeData('bs.modal');
+    });
 
     keySelectForm.submit();
 });
-
-$.initKeyInfoModal = function () {
-    $('#keyInfoModal').on('show.bs.modal', function (e) {
-        var btn = $(e.relatedTarget);
-        var modal = $(this);
-        var modalBody = modal.find('.modal-body');
-        var ajaxUrl = modal.data('load-url');
-        var database = modal.data('database').toString();
-        var server = modal.data('server');
-        var key = btn.data('key');
-        var hashKey = btn.data('hash-key');
-        var params = {action: 'getKeyData', database: database, server: server, key: key, hashKey: hashKey};
-        var loadUrl = ajaxUrl + '?' + $.param(params);
-
-        modal.find('#keyInfoModalLabel').html('Key: <code>' + key + (hashKey ? (' &raquo; ' + hashKey) : '') + '</code>');
-        modalBody.load(loadUrl, function () {
-        });
-    });
-};

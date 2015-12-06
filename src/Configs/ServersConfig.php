@@ -6,6 +6,7 @@
 
 namespace hollodotme\Readis\Configs;
 
+use hollodotme\Readis\Exceptions\ServerConfigNotFound;
 use hollodotme\Readis\Interfaces\ProvidesServerConfig;
 use hollodotme\Readis\Interfaces\ProvidesServerConfigList;
 
@@ -50,5 +51,23 @@ final class ServersConfig implements ProvidesServerConfigList
 	public function getServerConfigs()
 	{
 		return $this->servers;
+	}
+
+	/**
+	 * @param string $serverKey
+	 *
+	 * @throws ServerConfigNotFound
+	 * @return ProvidesServerConfig
+	 */
+	public function getServerConfig( $serverKey )
+	{
+		if ( isset($this->servers[ $serverKey ]) )
+		{
+			return $this->servers[ $serverKey ];
+		}
+		else
+		{
+			throw ( new ServerConfigNotFound() )->withServerKey( $serverKey );
+		}
 	}
 }

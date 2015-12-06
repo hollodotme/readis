@@ -13,7 +13,7 @@ use hollodotme\Readis\Interfaces\ProvidesConnectionData;
  *
  * @package hollodotme\Readis\Exceptions
  */
-final class CannotConnectToServer extends RedisStatusException
+final class CannotConnectToServer extends ReadisException
 {
 	/**
 	 * @param ProvidesConnectionData $connectionData

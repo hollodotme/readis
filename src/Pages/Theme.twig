@@ -4,11 +4,11 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Holger Woltersdorf's redis status">
+    <meta name="description" content="A web interface to read data from redis server(s)">
     <meta name="author" content="Holger Woltersdorf">
     <meta name="robots" content="noindex, nofollow">
 
-    {% block page_title %}
+    {% block pageTitle %}
         <title>Redis Status</title>
     {% endblock %}
 
@@ -22,9 +22,28 @@
 </head>
 <body>
 
-<nav class="navbar navbar-fixed-top">
+<nav class="navbar navbar-fixed-top navbar-default">
     <div class="container">
-        {% block breadcrumb %}{% endblock %}
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="{{ appConfig.getBaseUrl }}/">
+                <span class="glyphicon glyphicon-search text-danger"></span>
+                re<sup class="text-danger">a</sup>dis
+            </a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            {% block breadcrumb %}{% endblock %}
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#aboutModal" data-toggle="modal" role="button" id="aboutModalLabel" class="small">About</a>
+                </li>
+            </ul>
+        </div>
     </div>
 </nav>
 
@@ -33,18 +52,76 @@
 </div>
 
 <footer class="footer">
-    <div class="container">
-        <p class="text-right">
-            Readis {{ appVersion }} by
-            <a href="https://github.com/hollodotme" target="_blank">Holger Woltersdorf</a>
-        </p>
-    </div>
     <div class="github-fork-ribbon-wrapper left-bottom">
         <div class="github-fork-ribbon">
             <a href="https://github.com/hollodotme/readis" target="_blank">Fork me on GitHub</a>
         </div>
     </div>
 </footer>
+
+<div class="modal fade" id="aboutModal" tabindex="-1" role="dialog" aria-labelledby="aboutModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">
+                    About <span class="glyphicon glyphicon-search text-danger"></span>
+                    re<sup class="text-danger">a</sup>dis
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-4 text-right">
+                        Version
+                    </div>
+                    <div class="col-xs-offset-1 col-xs-6">
+                        1.0.0
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-4 text-right">
+                        Author
+                    </div>
+                    <div class="col-xs-offset-1 col-xs-6">
+                        <a href="https://github.com/hollodotme" target="_blank">Holger Woltersdorf (hollodotme)</a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-4 text-right">
+                        License
+                    </div>
+                    <div class="col-xs-offset-1 col-xs-6">
+                        MIT
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-4 text-right">
+                        Source
+                    </div>
+                    <div class="col-xs-offset-1 col-xs-6">
+                        <a href="https://github.com/hollodotme/readis" target="_blank">See re<sup>a</sup>dis on
+                            GitHub</a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-4 text-right">
+                        Thanks
+                    </div>
+                    <div class="col-xs-offset-1 col-xs-6">
+                        To the
+                        <a href="https://github.com/fortuneglobe/icehawk" target="_blank">IceHawk framework</a>
+                        for simply handling my requests.
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script src="{{ appConfig.getBaseUrl }}/js/jquery.min.js"></script>
 <script src="{{ appConfig.getBaseUrl }}/js/bootstrap.min.js"></script>

@@ -1,9 +1,10 @@
 <div class="container">
 
     <div class="row">
-        <div class="col-xs-3">
-            <div class="dropdown" id="database-select">
-                <button class="btn btn-default" type="button" data-toggle="dropdown" aria-haspopup="true"
+        <div class="col-md-11 col-md-5">
+            <div class="btn-group" role="group" id="database-select">
+                <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown"
+                        aria-haspopup="true"
                         aria-expanded="false">
                     <span id="current-db">
                         Database 0
@@ -29,59 +30,52 @@
                         </li>
                     {% endfor %}
                 </ul>
-
             </div>
         </div>
-        <div class="col-xs-2">
-            <div class="dropdown" id="limit-select">
-                <button class="btn btn-default" type="button" data-toggle="dropdown" aria-haspopup="true"
-                        aria-expanded="false">
-                    <span id="current-limit">
-                        Limit: 100
-                    </span>
-                    <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu" role="menu">
-                    <li><a data-limit="50">Limit: 50</a></li>
-                    <li><a data-limit="100">Limit: 100</a></li>
-                    <li><a data-limit="250">Limit: 250</a></li>
-                    <li><a data-limit="500">Limit: 500</a></li>
-                    <li><a data-limit="1000">Limit: 1000</a></li>
-                    <li><a data-limit="2500">Limit: 2500</a></li>
-                    <li><a data-limit="all">Limit: all</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="col-xs-2">
+        <div class="hidden-sm col-md-2">
             <div class="pull-right" style="padding: 5px; display:none;" id="ajaxSpinner">
                 <span class="throbber-loader"></span>
             </div>
         </div>
-        <div class="col-xs-4">
-            <form action="{{ appConfig.getBaseUrl }}/ajax.php" id="key-select-form"
-                  role="form" class="pull-right" method="get">
-                <input type="hidden" name="server" value="{{ serverIndex }}">
-                <input type="hidden" name="action" value="getKeys">
+        <div class="col-sm-11 col-md-4">
+            <form action="{{ appConfig.getBaseUrl }}/database/ajax-search-keys" id="key-select-form"
+                  role="form" method="get">
+                <input type="hidden" name="serverKey" value="{{ serverKey }}">
                 <input type="hidden" name="database" value="0">
                 <input type="hidden" name="limit" value="100">
 
+                <div class="input-group">
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-info-sign"
+                              data-toggle="tooltip"
+                              data-original-title="Search is case sensitive, use * as placeholder"
+                              data-trigger="hover"></span>
+                    </span>
+                    <label for="searchPattern" class="sr-only">Key search pattern</label>
+                    <input type="text" name="searchPattern" id="searchPattern" value="" class="form-control"
+                           placeholder="Search for keys">
 
-                <div class="form-group-sm">
-                    <div class="input-group">
-                        <span class="input-group-addon">
-                            <span class="glyphicon glyphicon-info-sign"
-                                  data-toggle="tooltip"
-                                  data-original-title="Search is case sensitive, use * as placeholder"
-                                  data-trigger="hover"></span>
-                        </span>
-                        <label for="keyPattern" class="sr-only">Key search value</label>
-                        <input type="text" name="keyPattern" id="keyPattern" value="" class="form-control"
-                               placeholder="Search for keys">
-                        <span class="input-group-btn">
-                            <button type="submit" class="btn btn-primary btn-sm">
-                                Search
-                            </button>
-                        </span>
+                    <div class="input-group-btn" id="limit-select">
+                        <button type="submit" class="btn btn-primary">
+                            Search
+                        </button>
+                        <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown"
+                                aria-haspopup="true"
+                                aria-expanded="false">
+                            <span id="current-limit">
+                                Limit: 100
+                            </span>
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a data-limit="50">Limit: 50</a></li>
+                            <li><a data-limit="100">Limit: 100</a></li>
+                            <li><a data-limit="250">Limit: 250</a></li>
+                            <li><a data-limit="500">Limit: 500</a></li>
+                            <li><a data-limit="1000">Limit: 1000</a></li>
+                            <li><a data-limit="2500">Limit: 2500</a></li>
+                            <li><a data-limit="all">Limit: all</a></li>
+                        </ul>
                     </div>
                 </div>
 

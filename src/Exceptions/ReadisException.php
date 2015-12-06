@@ -7,11 +7,11 @@
 namespace hollodotme\Readis\Exceptions;
 
 /**
- * Class RedisStatusException
+ * Class ReadisException
  *
  * @package hollodotme\Readis\Exceptions
  */
-class RedisStatusException extends \Exception
+class ReadisException extends \Exception
 {
 
 }
