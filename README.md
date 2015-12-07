@@ -65,3 +65,37 @@ server {
 ```
 
 **That's it.**
+
+## Screenshots
+
+## Server selection
+
+[![Server selection](./screenshots/Server-Selection.png)](screenshots/Server-Selection.png)
+
+## Database selection
+
+[![Database selection](./screenshots/Database-Selection.png)](screenshots/Database-Selection.png)
+
+## Key overview
+
+[![Key overview](./screenshots/Key-Overview.png)](screenshots/Key-Overview.png)
+
+## Key search result
+
+[![Key search result](./screenshots/Key-Search-Result.png)](screenshots/Key-Search-Result.png)
+
+## HashKey collapse
+
+[![HashKey collapse](./screenshots/Hash-Key-Collapse.png)](screenshots/Hash-Key-Collapse.png)
+
+## Slow Logs
+
+[![Slow Logs](./screenshots/Slow-Logs.png)](screenshots/Slow-Logs.png)
+
+## Server information
+
+[![Server information](./screenshots/Server-Info.png)](screenshots/Server-Info.png)
+
+## Server config
+
+[![Server config](./screenshots/Server-Config.png)](screenshots/Server-Config.png)
