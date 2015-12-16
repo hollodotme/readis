@@ -3,7 +3,7 @@
 [![Latest Unstable Version](https://poser.pugx.org/hollodotme/readis/v/unstable)](https://packagist.org/packages/hollodotme/readis) 
 [![License](https://poser.pugx.org/hollodotme/readis/license)](https://packagist.org/packages/hollodotme/readis)
 
-# readis
+# re<sup style="color: #ff0000;">a</sup>dis
 
 A web interface to read data from redis server(s)
 
