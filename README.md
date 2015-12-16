@@ -22,7 +22,7 @@ A web interface to read data from redis server(s)
 ## Requirements
 
  * Webserver (nginx, apache2, etc.)
- * PHP >= 5.5 with phpredis extension
+ * PHP >= 5.5 with phpredis extension (**compatible with php7**)
 
 ## Installation
 
@@ -65,6 +65,10 @@ server {
 ```
 
 **That's it.**
+
+## Public demo
+
+**[Browse the demo](http://readis.hollo.me)**
 
 ## Screenshots
 

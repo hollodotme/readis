@@ -5,5 +5,5 @@
  */
 
 return [
-	'baseUrl' => '/',
+	'baseUrl' => '',
 ];
