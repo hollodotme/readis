@@ -99,7 +99,7 @@ final class TwigPage
 	{
 		return array_merge(
 			[
-				'appVersion' => '0.1.0-beta',
+				'appVersion' => '1.1.0',
 			],
 			$this->data
 		);

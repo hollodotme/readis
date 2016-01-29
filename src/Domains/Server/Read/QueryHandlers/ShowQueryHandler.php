@@ -53,6 +53,7 @@ final class ShowQueryHandler
 				'server'        => $serverConfig,
 				'database'      => '0',
 				'serverKey'     => $query->getServerKey(),
+				'databaseMap'   => $serverConfig->getDatabaseMap(),
 				'serverConfig'  => $manager->getServerConfig(),
 				'slowLogLength' => $manager->getSlowLogLength(),
 				'slowLogs'      => $manager->getSlowLogs(),

@@ -33,6 +33,9 @@ final class ServerConfig implements ProvidesServerConfig
 	/** @var string|null */
 	private $auth;
 
+	/** @var array */
+	private $databaseMap;
+
 	/**
 	 * ServerConfig constructor.
 	 *
@@ -43,7 +46,7 @@ final class ServerConfig implements ProvidesServerConfig
 	 * @param int         $retryInterval
 	 * @param null|string $auth
 	 */
-	public function __construct( $name, $host, $port, $timeout, $retryInterval, $auth )
+	public function __construct( $name, $host, $port, $timeout, $retryInterval, $auth, $databaseMap )
 	{
 		$this->name          = $name;
 		$this->host          = $host;
@@ -51,6 +54,7 @@ final class ServerConfig implements ProvidesServerConfig
 		$this->timeout       = $timeout;
 		$this->retryInterval = $retryInterval;
 		$this->auth          = $auth;
+		$this->databaseMap   = $databaseMap;
 	}
 
 	/**
@@ -99,5 +103,13 @@ final class ServerConfig implements ProvidesServerConfig
 	public function getAuth()
 	{
 		return $this->auth;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getDatabaseMap()
+	{
+		return $this->databaseMap;
 	}
 }

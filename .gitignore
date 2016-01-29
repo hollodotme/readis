@@ -7,7 +7,6 @@ vagrant
 
 # composer
 vendor/
-composer.lock
 
 # tools
 build/tools/*.phar

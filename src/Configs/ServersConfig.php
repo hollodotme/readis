@@ -40,7 +40,8 @@ final class ServersConfig implements ProvidesServerConfigList
 				intval( $serverConfig['port'] ),
 				floatval( $serverConfig['timeout'] ),
 				intval( $serverConfig['retryInterval'] ),
-				$serverConfig['auth']
+				isset($serverConfig['auth']) ? $serverConfig['auth'] : null,
+				isset($serverConfig['databaseMap']) ? $serverConfig['databaseMap'] : [ ]
 			);
 		}
 	}

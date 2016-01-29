@@ -7,7 +7,7 @@
                         aria-haspopup="true"
                         aria-expanded="false">
                     <span id="current-db">
-                        Database 0
+                        {{ databaseMap[0]|default('Database 0') }}
                         {% if serverInfo["db0"] is not empty %}
                             <span class="small text-muted">({{ serverInfo["db0"] }})</span>
                                 {% else %}
@@ -20,7 +20,7 @@
                     {% for i in 0..serverConfig.databases-1 %}
                         <li>
                             <a data-database="{{ i }}">
-                                Database {{ i }}
+                                {{ databaseMap[i]|default('Database' ~ i) }}
                                 {% if serverInfo["db"~i] is not empty %}
                                     <span class="small text-muted">({{ serverInfo["db"~i] }})</span>
                                 {% else %}
