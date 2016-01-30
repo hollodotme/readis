@@ -67,6 +67,9 @@ return [
 
 ### Sample server configuration
 
+* File: `config/servers.php`
+
+```php
 <?php
 
 return [
