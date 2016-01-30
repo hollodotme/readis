@@ -10,6 +10,7 @@ A web interface to read data from redis server(s)
 ## Features
 
  * Setup / Selection for multiple redis servers
+ * Mapping database keys to expressive database names
  * Selection of a database inside a redis server
  * Searching for keys (with placeholders) inside a database
  * Listing of found keys with variable limit
@@ -26,7 +27,7 @@ A web interface to read data from redis server(s)
 
 ## Installation
 
-Assuming you'll install readis under `/var/www/readis` on your server.
+Assuming you'll install re<sup style="color: #ff0000;">a</sup>dis under `/var/www/readis` on your server.
 
 1. SSH into your webserver.
 2. `$ git clone https://github.com/hollodotme/readis.git /var/www/readis`
@@ -39,9 +40,76 @@ Assuming you'll install readis under `/var/www/readis` on your server.
 9. `$ cp config/servers.sample.php config/servers.php`
 10. Set up all server instances in `config/servers.php`
 11. Set up your webserver having a VHost pointing to `/var/www/readis/public`  
-See the following nginx example config:
 
+### Sample app configuration 
+
+* File: `config/app.php`
+
+Using re<sup style="color: #ff0000;">a</sup>dis under a separate (sub-)domain:
+
+```php
+<?php
+
+return [
+	'baseUrl' => 'http://readis.example.com',
+];
 ```
+
+Using re<sup style="color: #ff0000;">a</sup>dis under a path of a domain:
+
+```php
+<?php
+
+return [
+	'baseUrl' => 'http://www.example.com/readis',
+];
+```
+
+### Sample server configuration
+
+<?php
+
+return [
+	[
+		'name'          => 'Local redis server 1',
+		'host'          => '127.0.0.1',
+		'port'          => 6379,
+		'timeout'       => 2.5,
+		'retryInterval' => 100,
+		'auth'          => null,
+		'databaseMap'   => [
+			'0' => 'Sessions',
+			'1' => 'Sample Data',
+			/*
+			...
+			*/
+		],
+	],
+	/*
+	[
+		'name'          => 'Local redis server 2',
+		'host'          => '127.0.0.2',
+		'port'          => 6379,
+		'timeout'       => 2.5,
+		'retryInterval' => 100,
+		'auth'          => null,
+		'databaseMap'   => [
+			'0' => 'Sessions',
+			'1' => 'Sample Data',
+			/*
+			...
+			*/
+		],
+	],
+	*/
+];
+
+You can map the numeric database keys to plain text names. 
+Keys that were not mapped will still be displayed as `Database [KEY]`.
+
+### Sample nginx configuration
+
+```nginx
 server {
 	listen 80;
 	
@@ -68,38 +136,4 @@ server {
 
 ## Public demo
 
-**[Browse the demo](http://readis.hollo.me)**
-
-## Screenshots
-
-## Server selection
-
-[![Server selection](./screenshots/Server-Selection.png)](screenshots/Server-Selection.png)
-
-## Database selection
-
-[![Database selection](./screenshots/Database-Selection.png)](screenshots/Database-Selection.png)
-
-## Key overview
-
-[![Key overview](./screenshots/Key-Overview.png)](screenshots/Key-Overview.png)
-
-## Key search result
-
-[![Key search result](./screenshots/Key-Search-Result.png)](screenshots/Key-Search-Result.png)
-
-## HashKey collapse
-
-[![HashKey collapse](./screenshots/Hash-Key-Collapse.png)](screenshots/Hash-Key-Collapse.png)
-
-## Slow Logs
-
-[![Slow Logs](./screenshots/Slow-Logs.png)](screenshots/Slow-Logs.png)
-
-## Server information
-
-[![Server information](./screenshots/Server-Info.png)](screenshots/Server-Info.png)
-
-## Server config
-
-[![Server config](./screenshots/Server-Config.png)](screenshots/Server-Config.png)
+**[See the public demo on readis.hollo.me](http://readis.hollo.me)**
