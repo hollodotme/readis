@@ -1,0 +1,5 @@
+# CHANGELOG
+
+## Changes in Version 1.1.0
+
+* Added database mapping for more expressive database names. See [README](./README.md) for more details.

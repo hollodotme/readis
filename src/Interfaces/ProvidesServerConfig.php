@@ -42,4 +42,9 @@ interface ProvidesServerConfig
 	 * @return string|null
 	 */
 	public function getAuth();
+
+	/**
+	 * @return array
+	 */
+	public function getDatabaseMap();
 }
