@@ -83,9 +83,7 @@ return [
 		'databaseMap'   => [
 			'0' => 'Sessions',
 			'1' => 'Sample Data',
-			/*
-			...
-			*/
+			// ...
 		],
 	],
 	/*
@@ -99,13 +97,12 @@ return [
 		'databaseMap'   => [
 			'0' => 'Sessions',
 			'1' => 'Sample Data',
-			/*
-			...
-			*/
+			// ...
 		],
 	],
 	*/
 ];
+```
 
 You can map the numeric database keys to plain text names. 
 Keys that were not mapped will still be displayed as `Database [KEY]`.
