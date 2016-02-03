@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## Changes in Version 1.1.1
+
+* Number of database is displayed, even when an expressive name is mapped
+* Fixed missing whitespace in default database name
+
 ## Changes in Version 1.1.0
 
 * Added database mapping for more expressive database names. See [README](./README.md) for more details.
