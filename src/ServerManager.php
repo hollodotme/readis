@@ -31,12 +31,6 @@ final class ServerManager
 	{
 		$this->redis = new \Redis();
 		$this->connectToServer( $connectionData );
-
-		$this->redis->select( 1 );
-		for ( $i = 0; $i < 100; $i++ )
-		{
-			$this->redis->hSet( 'HashTestKey', 'key' . $i, 'This is a hash test' );
-		}
 	}
 
 	/**
