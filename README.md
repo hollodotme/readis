@@ -32,7 +32,7 @@ Assuming you'll install re<sup style="color: #ff0000;">a</sup>dis under `/var/ww
 1. SSH into your webserver.
 2. `$ git clone https://github.com/hollodotme/readis.git /var/www/readis`
 3. `$ cd /var/www/readis`
-4. `$ git checkout v1.0.0`
+4. `$ git checkout v1.1.3`
 5. `$ sh build/tools/update_tools.sh`
 6. `$ php build/tools/composer.phar update -o -v`
 7. `$ cp config/app.sample.php config/app.php`
