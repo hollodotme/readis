@@ -1,33 +1,33 @@
 {
-  "name": "hollodotme/readis",
-  "description": "A web interface to read data from redis server(s)",
-  "minimum-stability": "dev",
-  "prefer-stable": true,
-  "license": "MIT",
-  "authors": [
-    {
-      "name": "Holger Woltersdorf",
-      "email": "hw@hollo.me"
-    }
-  ],
-  "support": {
-    "email": "hw@hollo.me",
-    "source": "https://github.com/hollodotme/readis"
-  },
-  "require": {
-    "php": ">=5.5",
-    "ext-redis": "*",
-    "fortuneglobe/icehawk": "1.4.0",
-    "twig/twig": "@stable"
-  },
-  "autoload": {
-    "psr-4": {
-      "hollodotme\\Readis\\": "src/"
-    }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "hollodotme\\Readis\\Tests\\Unit\\": "tests/Unit/"
-    }
-  }
+	"name": "hollodotme/readis",
+	"description": "A web interface to read data from redis server(s)",
+	"minimum-stability": "dev",
+	"prefer-stable": true,
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Holger Woltersdorf",
+			"email": "hw@hollo.me"
+		}
+	],
+	"support": {
+		"email": "hw@hollo.me",
+		"source": "https://github.com/hollodotme/readis"
+	},
+	"require": {
+		"php": ">=5.5",
+		"ext-redis": "*",
+		"icehawk/icehawk": "1.4.2",
+		"twig/twig": "^1.30"
+	},
+	"autoload": {
+		"psr-4": {
+			"hollodotme\\Readis\\": "src/"
+		}
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"hollodotme\\Readis\\Tests\\": "tests/"
+		}
+	}
 }
