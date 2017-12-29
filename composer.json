@@ -17,7 +17,7 @@
 	"require": {
 		"php": ">=5.5",
 		"ext-redis": "*",
-		"icehawk/icehawk": "1.4.2",
+		"icehawk/icehawk": "2.2.0",
 		"twig/twig": "^1.30"
 	},
 	"autoload": {
