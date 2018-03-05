@@ -18,7 +18,7 @@
 		"php": ">=5.5",
 		"ext-redis": "*",
 		"icehawk/icehawk": "1.4.2",
-		"twig/twig": "^1.30"
+		"twig/twig": "^2.4"
 	},
 	"autoload": {
 		"psr-4": {
