@@ -2,7 +2,7 @@
 
 namespace hollodotme\Readis\Exceptions;
 
-class ReadisException extends \Exception
+class RuntimeException extends \RuntimeException
 {
 
 }

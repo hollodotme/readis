@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace hollodotme\Readis;
+namespace hollodotme\Readis\Infrastructure\Redis;
 
 use hollodotme\Readis\Interfaces\ProvidesConnectionData;
 use hollodotme\Readis\Interfaces\ProvidesServerConfig;

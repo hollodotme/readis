@@ -1,14 +1,16 @@
 <?php declare(strict_types=1);
 
-namespace hollodotme\Readis;
+namespace hollodotme\Readis\Infrastructure\Redis;
 
 use hollodotme\Readis\DTO\KeyInfo;
 use hollodotme\Readis\DTO\SlowLogEntry;
-use hollodotme\Readis\Exceptions\CannotConnectToServer;
+use hollodotme\Readis\Infrastructure\Redis\Exceptions\ConnectionFailedException;
 use hollodotme\Readis\Interfaces\ProvidesConnectionData;
 use hollodotme\Readis\Interfaces\ProvidesKeyInformation;
 use hollodotme\Readis\Interfaces\ProvidesSlowLogData;
 use hollodotme\Readis\Interfaces\UnserializesDataToString;
+use function array_map;
+use function array_slice;
 
 final class ServerManager
 {
@@ -17,6 +19,8 @@ final class ServerManager
 
 	/**
 	 * @param ProvidesConnectionData $connectionData
+	 *
+	 * @throws ConnectionFailedException
 	 */
 	public function __construct( ProvidesConnectionData $connectionData )
 	{
@@ -27,9 +31,9 @@ final class ServerManager
 	/**
 	 * @param ProvidesConnectionData $connectionData
 	 *
-	 * @throws CannotConnectToServer
+	 * @throws ConnectionFailedException
 	 */
-	private function connectToServer( ProvidesConnectionData $connectionData )
+	private function connectToServer( ProvidesConnectionData $connectionData ) : void
 	{
 		$connected = $this->redis->connect(
 			$connectionData->getHost(),
@@ -41,32 +45,24 @@ final class ServerManager
 
 		if ( !$connected )
 		{
-			throw ( new CannotConnectToServer() )->withConnectionData( $connectionData );
+			throw (new ConnectionFailedException())->withConnectionData( $connectionData );
 		}
 	}
 
-	/**
-	 * @param int $database
-	 */
-	public function selectDatabase( $database )
+	public function selectDatabase( int $database ) : void
 	{
 		$this->redis->select( $database );
 	}
 
-	/**
-	 * @return array
-	 */
-	public function getServerConfig()
+	public function getServerConfig() : array
 	{
-		return $this->redis->config( 'GET', '*' );
+		/** @noinspection PhpParamsInspection */
+		return (array)$this->redis->config( 'GET', '*' );
 	}
 
-	/**
-	 * @return int
-	 */
-	public function getSlowLogLength()
+	public function getSlowLogLength() : int
 	{
-		return $this->redis->slowlog( 'len' );
+		return (int)$this->redis->slowlog( 'len' );
 	}
 
 	/**
@@ -74,34 +70,26 @@ final class ServerManager
 	 *
 	 * @return array|ProvidesSlowLogData[]
 	 */
-	public function getSlowLogs( $limit = 100 )
+	public function getSlowLogs( int $limit = 100 ) : array
 	{
+		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		return array_map(
 			function ( array $slowLogData )
 			{
 				return new SlowLogEntry( $slowLogData );
 			},
-			$this->redis->slowlog( 'get', $limit )
+			(array)$this->redis->slowlog( 'get', $limit )
 		);
 	}
 
-	/**
-	 * @return string
-	 */
-	public function getServerInfo()
+	public function getServerInfo() : string
 	{
-
 		return $this->redis->info();
 	}
 
-	/**
-	 * @param string $keyPattern
-	 *
-	 * @return array
-	 */
-	public function getKeys( $keyPattern = '*' )
+	public function getKeys( string $keyPattern = '*' ) : array
 	{
-		return $this->redis->keys( $keyPattern );
+		return (array)$this->redis->keys( $keyPattern );
 	}
 
 	/**
@@ -110,34 +98,30 @@ final class ServerManager
 	 *
 	 * @return array|ProvidesKeyInformation[]
 	 */
-	public function getKeyInfoObjects( $keyPattern, $limit )
+	public function getKeyInfoObjects( string $keyPattern, ?int $limit ) : array
 	{
 		$keys = $this->redis->keys( $keyPattern );
 
-		if ( !is_null( $limit ) )
+		if ( null !== $limit )
 		{
 			$keys = array_slice( $keys, 0, $limit );
 		}
 
-		return array_map( [ $this, 'getKeyInfoObject' ], $keys );
+		return array_map( [$this, 'getKeyInfoObject'], $keys );
 	}
 
-	/**
-	 * @param string $key
-	 *
-	 * @return ProvidesKeyInformation
-	 */
-	public function getKeyInfoObject( $key )
+	public function getKeyInfoObject( string $key ) : ProvidesKeyInformation
 	{
-		list($type, $ttl) = $this->redis->multi()->type( $key )->pttl( $key )->exec();
+		/** @noinspection PhpUndefinedMethodInspection */
+		[$type, $ttl] = $this->redis->multi()->type( $key )->pttl( $key )->exec();
 
-		if ( $type == \Redis::REDIS_HASH )
+		if ( $type === \Redis::REDIS_HASH )
 		{
 			$subItems = $this->redis->hKeys( $key );
 		}
 		else
 		{
-			$subItems = [ ];
+			$subItems = [];
 		}
 
 		return new KeyInfo( $key, $type, $ttl, $subItems );
@@ -148,7 +132,7 @@ final class ServerManager
 	 *
 	 * @return bool|string
 	 */
-	public function getValue( $key )
+	public function getValue( string $key )
 	{
 		return $this->redis->get( $key );
 	}
@@ -159,7 +143,7 @@ final class ServerManager
 	 *
 	 * @return bool|string
 	 */
-	public function getValueAsUnserializedString( $key, UnserializesDataToString $unserializer )
+	public function getValueAsUnserializedString( string $key, UnserializesDataToString $unserializer )
 	{
 		$serializer = $this->redis->getOption( \Redis::OPT_SERIALIZER );
 		$this->redis->setOption( \Redis::OPT_SERIALIZER, \Redis::SERIALIZER_NONE );
@@ -187,7 +171,7 @@ final class ServerManager
 	 *
 	 * @return bool|string
 	 */
-	public function getHashValueAsUnserializedString( $key, $hashKey, UnserializesDataToString $unserializer )
+	public function getHashValueAsUnserializedString( string $key, string $hashKey, UnserializesDataToString $unserializer )
 	{
 		$serializer = $this->redis->getOption( \Redis::OPT_SERIALIZER );
 		$this->redis->setOption( \Redis::OPT_SERIALIZER, \Redis::SERIALIZER_NONE );

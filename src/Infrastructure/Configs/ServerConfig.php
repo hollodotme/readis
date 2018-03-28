@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace hollodotme\Readis\Configs;
+namespace hollodotme\Readis\Infrastructure\Configs;
 
 use hollodotme\Readis\Interfaces\ProvidesServerConfig;
 
@@ -27,17 +27,7 @@ final class ServerConfig implements ProvidesServerConfig
 	/** @var array */
 	private $databaseMap;
 
-	/**
-	 * ServerConfig constructor.
-	 *
-	 * @param string      $name
-	 * @param string      $host
-	 * @param int         $port
-	 * @param float       $timeout
-	 * @param int         $retryInterval
-	 * @param null|string $auth
-	 */
-	public function __construct( $name, $host, $port, $timeout, $retryInterval, $auth, $databaseMap )
+	public function __construct( string $name, string $host, int $port, float $timeout, int $retryInterval, ?string $auth, array $databaseMap )
 	{
 		$this->name          = $name;
 		$this->host          = $host;
@@ -48,58 +38,37 @@ final class ServerConfig implements ProvidesServerConfig
 		$this->databaseMap   = $databaseMap;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function getName()
+	public function getName() : string
 	{
 		return $this->name;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function getHost()
+	public function getHost() : string
 	{
 		return $this->host;
 	}
 
-	/**
-	 * @return int
-	 */
-	public function getPort()
+	public function getPort() : int
 	{
 		return $this->port;
 	}
 
-	/**
-	 * @return float
-	 */
-	public function getTimeout()
+	public function getTimeout() : float
 	{
 		return $this->timeout;
 	}
 
-	/**
-	 * @return int
-	 */
-	public function getRetryInterval()
+	public function getRetryInterval() : int
 	{
 		return $this->retryInterval;
 	}
 
-	/**
-	 * @return null|string
-	 */
-	public function getAuth()
+	public function getAuth() : ?string
 	{
 		return $this->auth;
 	}
 
-	/**
-	 * @return array
-	 */
-	public function getDatabaseMap()
+	public function getDatabaseMap() : array
 	{
 		return $this->databaseMap;
 	}

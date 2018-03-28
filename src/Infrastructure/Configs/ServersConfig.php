@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace hollodotme\Readis\Configs;
+namespace hollodotme\Readis\Infrastructure\Configs;
 
 use hollodotme\Readis\Exceptions\ServerConfigNotFound;
 use hollodotme\Readis\Interfaces\ProvidesServerConfig;
@@ -13,26 +13,23 @@ final class ServersConfig implements ProvidesServerConfigList
 
 	public function __construct()
 	{
-		$serverConfigList = include(__DIR__ . '/../../config/servers.php');
+		$serverConfigList = include __DIR__ . '/../../../config/servers.php';
 
 		$this->loadServerConfigs( $serverConfigList );
 	}
 
-	/**
-	 * @param array $serverConfigList
-	 */
-	private function loadServerConfigs( array $serverConfigList )
+	private function loadServerConfigs( array $serverConfigList ) : void
 	{
 		foreach ( $serverConfigList as $serverConfig )
 		{
 			$this->servers[] = new ServerConfig(
 				$serverConfig['name'],
 				$serverConfig['host'],
-				intval( $serverConfig['port'] ),
-				floatval( $serverConfig['timeout'] ),
-				intval( $serverConfig['retryInterval'] ),
-				isset($serverConfig['auth']) ? $serverConfig['auth'] : null,
-				isset($serverConfig['databaseMap']) ? $serverConfig['databaseMap'] : [ ]
+				(int)$serverConfig['port'],
+				(float)$serverConfig['timeout'],
+				(int)$serverConfig['retryInterval'],
+				$serverConfig['auth'] ?? null,
+				$serverConfig['databaseMap'] ?? []
 			);
 		}
 	}
@@ -40,7 +37,7 @@ final class ServersConfig implements ProvidesServerConfigList
 	/**
 	 * @return array|ProvidesServerConfig[]
 	 */
-	public function getServerConfigs()
+	public function getServerConfigs() : array
 	{
 		return $this->servers;
 	}
@@ -51,15 +48,13 @@ final class ServersConfig implements ProvidesServerConfigList
 	 * @throws ServerConfigNotFound
 	 * @return ProvidesServerConfig
 	 */
-	public function getServerConfig( $serverKey )
+	public function getServerConfig( string $serverKey ) : ProvidesServerConfig
 	{
-		if ( isset($this->servers[ $serverKey ]) )
+		if ( isset( $this->servers[ $serverKey ] ) )
 		{
 			return $this->servers[ $serverKey ];
 		}
-		else
-		{
-			throw ( new ServerConfigNotFound() )->withServerKey( $serverKey );
-		}
+
+		throw (new ServerConfigNotFound())->withServerKey( $serverKey );
 	}
 }

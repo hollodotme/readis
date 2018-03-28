@@ -1,17 +1,13 @@
 <?php declare(strict_types=1);
 
-namespace hollodotme\Readis\Exceptions;
+namespace hollodotme\Readis\Infrastructure\Redis\Exceptions;
 
+use hollodotme\Readis\Exceptions\RuntimeException;
 use hollodotme\Readis\Interfaces\ProvidesConnectionData;
 
-final class CannotConnectToServer extends ReadisException
+final class ConnectionFailedException extends RuntimeException
 {
-	/**
-	 * @param ProvidesConnectionData $connectionData
-	 *
-	 * @return $this
-	 */
-	public function withConnectionData( ProvidesConnectionData $connectionData )
+	public function withConnectionData( ProvidesConnectionData $connectionData ) : self
 	{
 		$this->message = sprintf(
 			'host: %s, port: %s, timeout: %s, retryInterval: %s, using auth: %s',
@@ -19,7 +15,7 @@ final class CannotConnectToServer extends ReadisException
 			$connectionData->getPort(),
 			$connectionData->getTimeout(),
 			$connectionData->getRetryInterval(),
-			!is_null( $connectionData->getAuth() ) ? 'yes' : 'no'
+			null !== $connectionData->getAuth() ? 'yes' : 'no'
 		);
 
 		return $this;
