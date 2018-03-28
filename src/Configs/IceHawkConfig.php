@@ -1,8 +1,4 @@
 <?php declare(strict_types=1);
-/**
- *
- * @author hollodotme
- */
 
 namespace hollodotme\Readis\Configs;
 
@@ -15,11 +11,6 @@ use Fortuneglobe\IceHawk\RequestInfo;
 use hollodotme\Readis\Uri\UriResolver;
 use hollodotme\Readis\Uri\UriRewriter;
 
-/**
- * Class IceHawkConfig
- *
- * @package hollodotme\Readis\Configs
- */
 final class IceHawkConfig implements ServesIceHawkConfig
 {
 	/**

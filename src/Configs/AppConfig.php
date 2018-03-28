@@ -1,16 +1,7 @@
 <?php declare(strict_types=1);
-/**
- *
- * @author hollodotme
- */
 
 namespace hollodotme\Readis\Configs;
 
-/**
- * Class AppConfig
- *
- * @package hollodotme\Readis\Configs
- */
 final class AppConfig
 {
 	/** @var array */

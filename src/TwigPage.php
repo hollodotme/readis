@@ -1,16 +1,7 @@
 <?php declare(strict_types=1);
-/**
- *
- * @author hollodotme
- */
 
 namespace hollodotme\Readis;
 
-/**
- * Class TwigPage
- *
- * @package hollodotme\Readis
- */
 final class TwigPage
 {
 	/** @var string */

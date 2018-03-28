@@ -1,19 +1,10 @@
 <?php declare(strict_types=1);
-/**
- *
- * @author hollodotme
- */
 
 namespace hollodotme\Readis\Configs;
 
 use Fortuneglobe\IceHawk\Interfaces\ControlsHandlingBehaviour;
 use hollodotme\Readis\TwigPage;
 
-/**
- * Class IceHawkDelegate
- *
- * @package hollodotme\Readis\Configs
- */
 final class IceHawkDelegate implements ControlsHandlingBehaviour
 {
 	public function setUpErrorHandling()

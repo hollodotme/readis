@@ -1,8 +1,4 @@
 <?php declare(strict_types=1);
-/**
- *
- * @author hollodotme
- */
 
 namespace hollodotme\Readis\Configs;
 
@@ -10,11 +6,6 @@ use hollodotme\Readis\Exceptions\ServerConfigNotFound;
 use hollodotme\Readis\Interfaces\ProvidesServerConfig;
 use hollodotme\Readis\Interfaces\ProvidesServerConfigList;
 
-/**
- * Class ServersConfig
- *
- * @package hollodotme\Readis\Configs
- */
 final class ServersConfig implements ProvidesServerConfigList
 {
 	/** @var array|ProvidesServerConfig[] */

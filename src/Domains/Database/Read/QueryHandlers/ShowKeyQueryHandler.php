@@ -1,8 +1,4 @@
 <?php declare(strict_types=1);
-/**
- *
- * @author hollodotme
- */
 
 namespace hollodotme\Readis\Domains\Database\Read\QueryHandlers;
 
@@ -14,11 +10,6 @@ use hollodotme\Readis\ServerManager;
 use hollodotme\Readis\StringUnserializers\NullUnserializer;
 use hollodotme\Readis\TwigPage;
 
-/**
- * Class ShowKeyQueryHandler
- *
- * @package hollodotme\Readis\Domains\Database\Read\QueryHandlers
- */
 final class ShowKeyQueryHandler
 {
 	/** @var ServersConfig */

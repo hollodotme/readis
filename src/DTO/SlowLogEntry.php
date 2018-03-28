@@ -1,17 +1,9 @@
 <?php declare(strict_types=1);
-/**
- * @author h.woltersdorf
- */
 
 namespace hollodotme\Readis\DTO;
 
 use hollodotme\Readis\Interfaces\ProvidesSlowLogData;
 
-/**
- * Class SlowLogEntry
- *
- * @package hollodotme\Readis\DTO
- */
 final class SlowLogEntry implements ProvidesSlowLogData
 {
 	/** @var int */

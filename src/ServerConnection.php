@@ -1,19 +1,10 @@
 <?php declare(strict_types=1);
-/**
- *
- * @author hollodotme
- */
 
 namespace hollodotme\Readis;
 
 use hollodotme\Readis\Interfaces\ProvidesConnectionData;
 use hollodotme\Readis\Interfaces\ProvidesServerConfig;
 
-/**
- * Class ServerConnection
- *
- * @package hollodotme\Readis
- */
 final class ServerConnection implements ProvidesConnectionData
 {
 	/** @var string */

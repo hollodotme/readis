@@ -1,8 +1,4 @@
 <?php declare(strict_types=1);
-/**
- *
- * @author hollodotme
- */
 
 namespace hollodotme\Readis\Domains\Database\Read;
 
@@ -13,11 +9,6 @@ use hollodotme\Readis\Configs\ServersConfig;
 use hollodotme\Readis\Domains\Database\Read\Queries\ShowKeyQuery;
 use hollodotme\Readis\Domains\Database\Read\QueryHandlers\ShowKeyQueryHandler;
 
-/**
- * Class AjaxShowKeyRequestHandler
- *
- * @package hollodotme\Readis\Domains\Database\Read
- */
 final class AjaxShowKeyRequestHandler extends GetRequestHandler
 {
 	/**

@@ -1,18 +1,9 @@
 <?php declare(strict_types=1);
-/**
- *
- * @author hollodotme
- */
 
 namespace hollodotme\Readis\DTO;
 
 use hollodotme\Readis\Interfaces\ProvidesKeyInformation;
 
-/**
- * Class KeyInfo
- *
- * @package hollodotme\Readis\DTO
- */
 final class KeyInfo implements ProvidesKeyInformation
 {
 	/** @var string */

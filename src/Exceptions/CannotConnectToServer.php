@@ -1,18 +1,9 @@
 <?php declare(strict_types=1);
-/**
- *
- * @author hollodotme
- */
 
 namespace hollodotme\Readis\Exceptions;
 
 use hollodotme\Readis\Interfaces\ProvidesConnectionData;
 
-/**
- * Class CannotConnectToServer
- *
- * @package hollodotme\Readis\Exceptions
- */
 final class CannotConnectToServer extends ReadisException
 {
 	/**

@@ -1,18 +1,9 @@
 <?php declare(strict_types=1);
-/**
- *
- * @author hollodotme
- */
 
 namespace hollodotme\Readis\Configs;
 
 use hollodotme\Readis\Interfaces\ProvidesServerConfig;
 
-/**
- * Class ServerConfig
- *
- * @package hollodotme\Readis\Configs
- */
 final class ServerConfig implements ProvidesServerConfig
 {
 	/** @var string */

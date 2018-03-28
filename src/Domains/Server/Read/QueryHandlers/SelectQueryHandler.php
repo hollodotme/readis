@@ -1,8 +1,4 @@
 <?php declare(strict_types=1);
-/**
- *
- * @author hollodotme
- */
 
 namespace hollodotme\Readis\Domains\Server\Read\QueryHandlers;
 
@@ -11,11 +7,6 @@ use hollodotme\Readis\Configs\ServersConfig;
 use hollodotme\Readis\Domains\Server\Read\Queries\SelectQuery;
 use hollodotme\Readis\TwigPage;
 
-/**
- * Class SelectQueryHandler
- *
- * @package hollodotme\Readis\Domains\Server\Read\QueryHandlers
- */
 final class SelectQueryHandler
 {
 	/** @var ServersConfig */

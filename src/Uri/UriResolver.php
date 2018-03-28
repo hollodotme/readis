@@ -1,19 +1,10 @@
 <?php declare(strict_types=1);
-/**
- *
- * @author hollodotme
- */
 
 namespace hollodotme\Readis\Uri;
 
 use Fortuneglobe\IceHawk\Interfaces\ServesRequestInfo;
 use Fortuneglobe\IceHawk\UriComponents;
 
-/**
- * Class UriResolver
- *
- * @package hollodotme\Readis\Uri
- */
 final class UriResolver extends \Fortuneglobe\IceHawk\UriResolver
 {
 	/**

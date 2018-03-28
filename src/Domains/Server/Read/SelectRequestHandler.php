@@ -1,8 +1,4 @@
 <?php declare(strict_types=1);
-/**
- *
- * @author hollodotme
- */
 
 namespace hollodotme\Readis\Domains\Server\Read;
 
@@ -13,11 +9,6 @@ use hollodotme\Readis\Configs\ServersConfig;
 use hollodotme\Readis\Domains\Server\Read\Queries\SelectQuery;
 use hollodotme\Readis\Domains\Server\Read\QueryHandlers\SelectQueryHandler;
 
-/**
- * Class SelectRequestHandler
- *
- * @package hollodotme\Readis\Domains\Server\Read
- */
 final class SelectRequestHandler extends GetRequestHandler
 {
 	/**

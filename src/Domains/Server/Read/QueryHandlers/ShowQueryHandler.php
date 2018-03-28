@@ -1,8 +1,4 @@
 <?php declare(strict_types=1);
-/**
- *
- * @author hollodotme
- */
 
 namespace hollodotme\Readis\Domains\Server\Read\QueryHandlers;
 
@@ -13,11 +9,6 @@ use hollodotme\Readis\ServerConnection;
 use hollodotme\Readis\ServerManager;
 use hollodotme\Readis\TwigPage;
 
-/**
- * Class ShowQueryHandler
- *
- * @package hollodotme\Readis\Domains\Server\Read\QueryHandlers
- */
 final class ShowQueryHandler
 {
 	/** @var ServersConfig */

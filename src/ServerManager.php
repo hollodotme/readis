@@ -1,8 +1,4 @@
 <?php declare(strict_types=1);
-/**
- *
- * @author hollodotme
- */
 
 namespace hollodotme\Readis;
 
@@ -14,11 +10,6 @@ use hollodotme\Readis\Interfaces\ProvidesKeyInformation;
 use hollodotme\Readis\Interfaces\ProvidesSlowLogData;
 use hollodotme\Readis\Interfaces\UnserializesDataToString;
 
-/**
- * Class ServerManager
- *
- * @package hollodotme\Readis
- */
 final class ServerManager
 {
 	/** @var \Redis */
