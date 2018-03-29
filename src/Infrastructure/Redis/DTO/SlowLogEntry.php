@@ -1,15 +1,20 @@
 <?php declare(strict_types=1);
 
-namespace hollodotme\Readis\DTO;
+namespace hollodotme\Readis\Infrastructure\Redis\DTO;
 
+use DateTimeImmutable;
 use hollodotme\Readis\Interfaces\ProvidesSlowLogData;
+use function array_shift;
+use function implode;
+use function sprintf;
+use function strtoupper;
 
 final class SlowLogEntry implements ProvidesSlowLogData
 {
 	/** @var int */
 	private $slowLogId;
 
-	/** @var \DateTimeImmutable */
+	/** @var DateTimeImmutable */
 	private $occurredOn;
 
 	/** @var float */
@@ -21,51 +26,34 @@ final class SlowLogEntry implements ProvidesSlowLogData
 	public function __construct( array $slowLogItem )
 	{
 		$this->slowLogId  = $slowLogItem[0];
-		$this->occurredOn = new \DateTimeImmutable( '@' . $slowLogItem[1] );
+		$this->occurredOn = new DateTimeImmutable( '@' . $slowLogItem[1] );
 		$this->duration   = $slowLogItem[2];
 		$this->command    = $this->buildCommandString( $slowLogItem[3] );
 	}
 
-	/**
-	 * @param array $arguments
-	 *
-	 * @return string
-	 */
-	private function buildCommandString( array $arguments )
+	private function buildCommandString( array $arguments ) : string
 	{
 		$cmd = array_shift( $arguments );
 
-		return sprintf( '%s(%s)', strtoupper( $cmd ), join( ', ', $arguments ) );
+		return sprintf( '%s(%s)', strtoupper( $cmd ), implode( ', ', $arguments ) );
 	}
 
-	/**
-	 * @return int
-	 */
-	public function getSlowLogId()
+	public function getSlowLogId() : int
 	{
 		return $this->slowLogId;
 	}
 
-	/**
-	 * @return \DateTimeImmutable
-	 */
-	public function getOccurredOn()
+	public function getOccurredOn() : DateTimeImmutable
 	{
 		return $this->occurredOn;
 	}
 
-	/**
-	 * @return float
-	 */
-	public function getDuration()
+	public function getDuration() : float
 	{
 		return $this->duration;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function getCommand()
+	public function getCommand() : string
 	{
 		return $this->command;
 	}

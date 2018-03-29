@@ -2,8 +2,8 @@
 
 namespace hollodotme\Readis\Infrastructure\Redis;
 
-use hollodotme\Readis\Interfaces\ProvidesConnectionData;
-use hollodotme\Readis\Interfaces\ProvidesServerConfig;
+use hollodotme\Readis\Infrastructure\Interfaces\ProvidesConnectionData;
+use hollodotme\Readis\Infrastructure\Interfaces\ProvidesServerConfig;
 
 final class ServerConnection implements ProvidesConnectionData
 {
@@ -34,42 +34,27 @@ final class ServerConnection implements ProvidesConnectionData
 		$this->auth          = $serverConfig->getAuth();
 	}
 
-	/**
-	 * @return string
-	 */
-	public function getHost()
+	public function getHost() : string
 	{
 		return $this->host;
 	}
 
-	/**
-	 * @return int
-	 */
-	public function getPort()
+	public function getPort() : int
 	{
 		return $this->port;
 	}
 
-	/**
-	 * @return float
-	 */
-	public function getTimeout()
+	public function getTimeout() : float
 	{
 		return $this->timeout;
 	}
 
-	/**
-	 * @return int
-	 */
-	public function getRetryInterval()
+	public function getRetryInterval() : int
 	{
 		return $this->retryInterval;
 	}
 
-	/**
-	 * @return null|string
-	 */
-	public function getAuth()
+	public function getAuth() : ?string
 	{
 		return $this->auth;
 	}

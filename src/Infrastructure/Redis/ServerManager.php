@@ -2,19 +2,20 @@
 
 namespace hollodotme\Readis\Infrastructure\Redis;
 
-use hollodotme\Readis\DTO\KeyInfo;
-use hollodotme\Readis\DTO\SlowLogEntry;
+use hollodotme\Readis\Infrastructure\Interfaces\ProvidesConnectionData;
+use hollodotme\Readis\Infrastructure\Redis\DTO\KeyInfo;
+use hollodotme\Readis\Infrastructure\Redis\DTO\SlowLogEntry;
 use hollodotme\Readis\Infrastructure\Redis\Exceptions\ConnectionFailedException;
-use hollodotme\Readis\Interfaces\ProvidesConnectionData;
 use hollodotme\Readis\Interfaces\ProvidesKeyInformation;
 use hollodotme\Readis\Interfaces\ProvidesSlowLogData;
 use hollodotme\Readis\Interfaces\UnserializesDataToString;
+use Redis;
 use function array_map;
 use function array_slice;
 
 final class ServerManager
 {
-	/** @var \Redis */
+	/** @var Redis */
 	private $redis;
 
 	/**
@@ -24,7 +25,7 @@ final class ServerManager
 	 */
 	public function __construct( ProvidesConnectionData $connectionData )
 	{
-		$this->redis = new \Redis();
+		$this->redis = new Redis();
 		$this->connectToServer( $connectionData );
 	}
 
@@ -35,11 +36,11 @@ final class ServerManager
 	 */
 	private function connectToServer( ProvidesConnectionData $connectionData ) : void
 	{
-		$connected = $this->redis->connect(
+		$connected = @$this->redis->connect(
 			$connectionData->getHost(),
 			$connectionData->getPort(),
 			$connectionData->getTimeout(),
-			null,
+			'',
 			$connectionData->getRetryInterval()
 		);
 
@@ -82,9 +83,9 @@ final class ServerManager
 		);
 	}
 
-	public function getServerInfo() : string
+	public function getServerInfo() : array
 	{
-		return $this->redis->info();
+		return (array)$this->redis->info();
 	}
 
 	public function getKeys( string $keyPattern = '*' ) : array
@@ -115,7 +116,7 @@ final class ServerManager
 		/** @noinspection PhpUndefinedMethodInspection */
 		[$type, $ttl] = $this->redis->multi()->type( $key )->pttl( $key )->exec();
 
-		if ( $type === \Redis::REDIS_HASH )
+		if ( $type === Redis::REDIS_HASH )
 		{
 			$subItems = $this->redis->hKeys( $key );
 		}
@@ -145,8 +146,8 @@ final class ServerManager
 	 */
 	public function getValueAsUnserializedString( string $key, UnserializesDataToString $unserializer )
 	{
-		$serializer = $this->redis->getOption( \Redis::OPT_SERIALIZER );
-		$this->redis->setOption( \Redis::OPT_SERIALIZER, \Redis::SERIALIZER_NONE );
+		$serializer = $this->redis->getOption( Redis::OPT_SERIALIZER );
+		$this->redis->setOption( Redis::OPT_SERIALIZER, (string)Redis::SERIALIZER_NONE );
 
 		$value = $this->redis->get( $key );
 
@@ -159,7 +160,7 @@ final class ServerManager
 			$unserializedValue = false;
 		}
 
-		$this->redis->setOption( \Redis::OPT_SERIALIZER, $serializer );
+		$this->redis->setOption( Redis::OPT_SERIALIZER, (string)$serializer );
 
 		return $unserializedValue;
 	}
@@ -173,8 +174,8 @@ final class ServerManager
 	 */
 	public function getHashValueAsUnserializedString( string $key, string $hashKey, UnserializesDataToString $unserializer )
 	{
-		$serializer = $this->redis->getOption( \Redis::OPT_SERIALIZER );
-		$this->redis->setOption( \Redis::OPT_SERIALIZER, \Redis::SERIALIZER_NONE );
+		$serializer = $this->redis->getOption( Redis::OPT_SERIALIZER );
+		$this->redis->setOption( Redis::OPT_SERIALIZER, (string)Redis::SERIALIZER_NONE );
 
 		$value = $this->redis->hGet( $key, $hashKey );
 
@@ -187,7 +188,7 @@ final class ServerManager
 			$unserializedValue = false;
 		}
 
-		$this->redis->setOption( \Redis::OPT_SERIALIZER, $serializer );
+		$this->redis->setOption( Redis::OPT_SERIALIZER, (string)$serializer );
 
 		return $unserializedValue;
 	}

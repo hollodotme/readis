@@ -3,7 +3,8 @@
 namespace hollodotme\Readis\Infrastructure\Redis\Exceptions;
 
 use hollodotme\Readis\Exceptions\RuntimeException;
-use hollodotme\Readis\Interfaces\ProvidesConnectionData;
+use hollodotme\Readis\Infrastructure\Interfaces\ProvidesConnectionData;
+use function sprintf;
 
 final class ConnectionFailedException extends RuntimeException
 {
