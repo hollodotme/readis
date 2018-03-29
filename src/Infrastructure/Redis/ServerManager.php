@@ -18,11 +18,6 @@ final class ServerManager
 	/** @var Redis */
 	private $redis;
 
-	/**
-	 * @param ProvidesConnectionData $connectionData
-	 *
-	 * @throws ConnectionFailedException
-	 */
 	public function __construct( ProvidesConnectionData $connectionData )
 	{
 		$this->redis = $this->getRedisWrapper( $connectionData );
