@@ -15,7 +15,8 @@
             </td>
             <td>
                 {% if keyInfo.getType == 'hash' %}
-                    <a href="#collapse_{{ loop.index }}" data-key="{{ keyInfo.getName }}" data-toggle="collapse" role="button">
+                    <a href="#collapse_{{ loop.index }}" data-key="{{ keyInfo.getName }}" data-toggle="collapse"
+                       role="button">
                         {{ keyInfo.getName }}
                         <small class="text-muted">
                             ({{ keyInfo.countSubItems }} sub items)
@@ -24,7 +25,7 @@
                     <ol class="collapse" id="collapse_{{ loop.index }}">
                         {% for hashKey in keyInfo.getSubItems %}
                             <li>
-                                <a href="{{ appConfig.getBaseUrl }}/database/ajax-show-key?serverKey={{ serverKey }}&database={{ database }}&key={{ keyInfo.getName }}&hashKey={{ hashKey }}"
+                                <a href="{{ appConfig.getBaseUrl }}/server/{{ serverKey }}/database/{{ database }}/keys/{{ keyInfo.getName|url_encode }}/hash/{{ hashKey|url_encode }}"
                                    data-toggle="modal" data-target="#keyInfoModal" role="button">
                                     {{ hashKey }}
                                 </a>
@@ -32,7 +33,7 @@
                         {% endfor %}
                     </ol>
                 {% else %}
-                    <a href="{{ appConfig.getBaseUrl }}/database/ajax-show-key?serverKey={{ serverKey }}&database={{ database }}&key={{ keyInfo.getName }}"
+                    <a href="{{ appConfig.getBaseUrl }}/server/{{ serverKey }}/database/{{ database }}/keys/{{ keyInfo.getName|url_encode }}"
                        data-toggle="modal" data-target="#keyInfoModal" role="button">
                         {{ keyInfo.getName }}
                     </a>

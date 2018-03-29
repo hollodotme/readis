@@ -1,4 +1,4 @@
-{% extends "Theme.twig" %}
+{% extends "Theme/Theme.twig" %}
 
 {% block pageTitle %}
     <title>{{ server.getName }} - Server info</title>
@@ -63,23 +63,23 @@
         <div class="tab-content">
             <div role="tabpanel" class="tab-pane active" id="keys">
 
-                {% include "Includes/Keys.twig" %}
+                {% include "Server/Read/Pages/Includes/Keys.twig" %}
 
             </div>
             <div role="tabpanel" class="tab-pane" id="slow-logs">
 
-            {% include "Includes/SlowLogs.twig" %}
+                {% include "Server/Read/Pages/Includes/SlowLogs.twig" %}
 
             </div>
             <div role="tabpanel" class="tab-pane" id="info">
 
-                {% include "Includes/KeyValueTable.twig"
+                {% include "Server/Read/Pages/Includes/KeyValueTable.twig"
                 with {'keyCaption': 'Info key', 'valueCaption': 'Info value', 'keyValues': serverInfo} %}
 
             </div>
             <div role="tabpanel" class="tab-pane" id="config">
 
-                {% include "Includes/KeyValueTable.twig"
+                {% include "Server/Read/Pages/Includes/KeyValueTable.twig"
                 with {'keyCaption': 'Config key', 'valueCaption': 'Config value', 'keyValues': serverConfig} %}
 
             </div>
