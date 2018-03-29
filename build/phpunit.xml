@@ -1,7 +1,6 @@
 <phpunit
-        bootstrap="../tests/Unit/bootstrap.php"
+        bootstrap="../tests/bootstrap.php"
         verbose="true"
-        checkForUnintentionallyCoveredCode="false"
         beStrictAboutOutputDuringTests="true"
         beStrictAboutTestSize="true"
         colors="true"
@@ -9,25 +8,16 @@
         convertNoticesToExceptions="true"
         convertWarningsToExceptions="true">
     <testsuites>
-        <testsuite name="Readis">
+        <testsuite name="Readis-Unit">
             <directory suffix="Test.php">../tests/Unit</directory>
+        </testsuite>
+        <testsuite name="Readis-Integration">
+            <directory suffix="Test.php">../tests/Integration</directory>
         </testsuite>
     </testsuites>
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
             <directory suffix=".php">../src</directory>
         </whitelist>
-        <blacklist>
-            <directory suffix=".php">../tests/Unit</directory>
-            <directory>../tests/Unit/Fixures</directory>
-            <directory>../vendor</directory>
-        </blacklist>
     </filter>
-    <logging>
-        <log type="coverage-html" target="logs/coverage"/>
-        <log type="coverage-clover" target="logs/clover.xml"/>
-        <log type="testdox-html" target="logs/TestDox.html"/>
-        <log type="coverage-xml" target="logs/coverage"/>
-        <log type="junit" target="logs/junit.xml"/>
-    </logging>
 </phpunit>
