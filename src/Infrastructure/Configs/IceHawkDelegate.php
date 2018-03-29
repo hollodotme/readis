@@ -14,7 +14,7 @@ final class IceHawkDelegate implements SetsUpEnvironment
 	public function setUpErrorHandling( ProvidesRequestInfo $requestInfo ) : void
 	{
 		error_reporting( E_ALL );
-		ini_set( 'display_errors', 1 );
+		ini_set( 'display_errors', 'On' );
 	}
 
 	public function setUpSessionHandling( ProvidesRequestInfo $requestInfo ) : void

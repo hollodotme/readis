@@ -2,7 +2,7 @@
 
 namespace hollodotme\Readis\Infrastructure\Configs;
 
-use hollodotme\Readis\Interfaces\ProvidesServerConfig;
+use hollodotme\Readis\Infrastructure\Interfaces\ProvidesServerConfig;
 
 final class ServerConfig implements ProvidesServerConfig
 {

@@ -3,10 +3,10 @@
 namespace hollodotme\Readis\Infrastructure\Configs;
 
 use hollodotme\Readis\Exceptions\ServerConfigNotFound;
-use hollodotme\Readis\Interfaces\ProvidesServerConfig;
-use hollodotme\Readis\Interfaces\ProvidesServerConfigList;
+use hollodotme\Readis\Infrastructure\Interfaces\ProvidesServerConfig;
+use hollodotme\Readis\Infrastructure\Interfaces\ProvidesServerConfigList;
 
-final class ServersConfig implements ProvidesServerConfigList
+final class ServerConfigList implements ProvidesServerConfigList
 {
 	/** @var array|ProvidesServerConfig[] */
 	private $servers;
