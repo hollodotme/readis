@@ -3,9 +3,11 @@
 namespace hollodotme\Readis;
 
 use hollodotme\Readis\Application\Configs\AppConfig;
+use hollodotme\Readis\Infrastructure\Configs\ServerConfigList;
+use hollodotme\Readis\Infrastructure\Interfaces\ProvidesServerConfig;
+use hollodotme\Readis\Infrastructure\Interfaces\ProvidesServerConfigList;
 use hollodotme\Readis\Infrastructure\Redis\ServerConnection;
 use hollodotme\Readis\Infrastructure\Redis\ServerManager;
-use hollodotme\Readis\Interfaces\ProvidesServerConfig;
 
 final class Env extends AbstractObjectPool
 {
@@ -16,6 +18,17 @@ final class Env extends AbstractObjectPool
 			function ()
 			{
 				return new AppConfig();
+			}
+		);
+	}
+
+	public function getServerConfigList() : ProvidesServerConfigList
+	{
+		return $this->getSharedInstance(
+			'serverConfigList',
+			function ()
+			{
+				return new ServerConfigList();
 			}
 		);
 	}
