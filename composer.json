@@ -21,7 +21,8 @@
     "twig/twig": "~2.0"
   },
   "require-dev": {
-    "roave/security-advisories": "dev-master"
+    "roave/security-advisories": "dev-master",
+    "tm/tooly-composer-script": "~1.2.6"
   },
   "autoload": {
     "psr-4": {
@@ -31,6 +32,22 @@
   "autoload-dev": {
     "psr-4": {
       "hollodotme\\Readis\\Tests\\": "tests/"
+    }
+  },
+  "scripts": {
+    "post-install-cmd": "Tooly\\ScriptHandler::installPharTools",
+    "post-update-cmd": "Tooly\\ScriptHandler::installPharTools"
+  },
+  "extra": {
+    "tools": {
+      "phpunit": {
+        "url": "https://phar.phpunit.de/phpunit-7.phar",
+        "only-dev": true
+      },
+      "phpmetrics": {
+        "url": "https://github.com/phpmetrics/PhpMetrics/releases/download/v2.3.2/phpmetrics.phar",
+        "only-dev": true
+      }
     }
   }
 }
