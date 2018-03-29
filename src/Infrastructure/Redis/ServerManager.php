@@ -25,29 +25,56 @@ final class ServerManager
 	 */
 	public function __construct( ProvidesConnectionData $connectionData )
 	{
-		$this->redis = new Redis();
-		$this->connectToServer( $connectionData );
+		$this->redis = $this->getRedisWrapper( $connectionData );
 	}
 
-	/**
-	 * @param ProvidesConnectionData $connectionData
-	 *
-	 * @throws ConnectionFailedException
-	 */
-	private function connectToServer( ProvidesConnectionData $connectionData ) : void
+	private function getRedisWrapper( ProvidesConnectionData $connectionData )
 	{
-		$connected = @$this->redis->connect(
-			$connectionData->getHost(),
-			$connectionData->getPort(),
-			$connectionData->getTimeout(),
-			'',
-			$connectionData->getRetryInterval()
-		);
-
-		if ( !$connected )
+		return new class($connectionData)
 		{
-			throw (new ConnectionFailedException())->withConnectionData( $connectionData );
-		}
+			/** @var ProvidesConnectionData */
+			private $connectionData;
+
+			/** @var Redis */
+			private $redis;
+
+			/** @var bool */
+			private $connected;
+
+			public function __construct( ProvidesConnectionData $connectionData )
+			{
+				$this->connectionData = $connectionData;
+				$this->redis          = new Redis();
+			}
+
+			public function __call( $name, $arguments )
+			{
+				$this->connectToServer();
+
+				return $this->redis->{$name}( ...$arguments );
+			}
+
+			private function connectToServer() : void
+			{
+				if ( $this->connected )
+				{
+					return;
+				}
+
+				$this->connected = @$this->redis->connect(
+					$this->connectionData->getHost(),
+					$this->connectionData->getPort(),
+					$this->connectionData->getTimeout(),
+					'',
+					$this->connectionData->getRetryInterval()
+				);
+
+				if ( !$this->connected )
+				{
+					throw (new ConnectionFailedException())->withConnectionData( $this->connectionData );
+				}
+			}
+		};
 	}
 
 	public function selectDatabase( int $database ) : void
