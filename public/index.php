@@ -1,20 +1,13 @@
-<?php
-/**
- * Readis
- *
- * @license MIT
- * @author  hollodotme
- * @link    https://github.com/hollodotme/readis
- */
+<?php declare(strict_types=1);
 
 namespace hollodotme\Readis;
 
-use Fortuneglobe\IceHawk\IceHawk;
-use hollodotme\Readis\Configs\IceHawkConfig;
-use hollodotme\Readis\Configs\IceHawkDelegate;
+use hollodotme\Readis\Application\Configs\IceHawkConfig;
+use hollodotme\Readis\Infrastructure\Configs\IceHawkDelegate;
+use IceHawk\IceHawk\IceHawk;
 
-require(__DIR__ . '/../vendor/autoload.php');
-
-$iceHawk = new IceHawk( new IceHawkConfig(), new IceHawkDelegate() );
+require __DIR__ . '/../vendor/autoload.php';
+$env     = new Env();
+$iceHawk = new IceHawk( new IceHawkConfig( $env ), new IceHawkDelegate() );
 $iceHawk->init();
 $iceHawk->handleRequest();
