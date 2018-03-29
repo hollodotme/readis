@@ -2,27 +2,19 @@
 
 namespace hollodotme\Readis\Exceptions;
 
-final class ServerConfigNotFound extends ReadisException
+final class ServerConfigNotFound extends RuntimeException
 {
 	/** @var string */
 	private $serverKey;
 
-	/**
-	 * @param string $serverKey
-	 *
-	 * @return $this
-	 */
-	public function withServerKey( $serverKey )
+	public function withServerKey( string $serverKey ) : self
 	{
 		$this->serverKey = $serverKey;
 
 		return $this;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function getServerKey()
+	public function getServerKey() : string
 	{
 		return $this->serverKey;
 	}
