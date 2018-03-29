@@ -1,7 +1,3 @@
-/**
- * Created by hollodotme on 13/09/15.
- */
-
 $(document).ready(function () {
     var keysContainer = $('#keys');
     var keySelectForm = keysContainer.find('#key-select-form');
@@ -22,7 +18,9 @@ $(document).ready(function () {
 
     databaseSelect.find('a').click(function () {
         var database = $(this).data('database');
-        keySelectForm.find('input[name="database"]').val(database);
+        var searchRegExp = new RegExp(/\/database\/\d+\//);
+        var newAction = keySelectForm.attr('action').replace(searchRegExp, '/database/' + database + '/');
+        keySelectForm.attr('action', newAction);
         keysContainer.find('#current-db').html($(this).html());
         keySelectForm.submit();
     });
