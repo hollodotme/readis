@@ -42,7 +42,7 @@
                 <a href="#slow-logs" aria-controls="slow-logs" role="tab" data-toggle="tab">
                     <span class="glyphicon glyphicon-exclamation-sign text-danger"></span>
                     Slow logs
-                    <span class="badge">{{ slowLogLength }}</span>
+                    <span class="badge">{{ slowLogCount }}</span>
                 </a>
             </li>
             <li role="presentation">
@@ -68,7 +68,7 @@
             </div>
             <div role="tabpanel" class="tab-pane" id="slow-logs">
 
-                {% include "Server/Read/Pages/Includes/SlowLogs.twig" %}
+                {% include "Server/Read/Pages/Includes/SlowLogEntries.twig" %}
 
             </div>
             <div role="tabpanel" class="tab-pane" id="info">

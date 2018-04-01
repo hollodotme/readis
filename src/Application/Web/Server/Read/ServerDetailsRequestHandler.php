@@ -2,6 +2,8 @@
 
 namespace hollodotme\Readis\Application\Web\Server\Read;
 
+use hollodotme\Readis\Application\ReadModel\Queries\FetchServerInformationQuery;
+use hollodotme\Readis\Application\ReadModel\QueryHandlers\FetchServerInformationQueryHandler;
 use hollodotme\Readis\Application\Web\AbstractRequestHandler;
 use hollodotme\Readis\Exceptions\RuntimeException;
 use hollodotme\Readis\TwigPage;
@@ -17,25 +19,33 @@ final class ServerDetailsRequestHandler extends AbstractRequestHandler implement
 	 */
 	public function handle( ProvidesReadRequestData $request )
 	{
-		$input            = $request->getInput();
-		$appConfig        = $this->getEnv()->getAppConfig();
-		$serverConfigList = $this->getEnv()->getServerConfigList();
-		$serverKey        = (string)$input->get( 'serverKey', '0' );
-		$serverConfig     = $serverConfigList->getServerConfig( $serverKey );
-		$serverManager    = $this->getEnv()->getServerManager( $serverConfig );
-		$database         = (string)$input->get( 'database', '0' );
+		$input     = $request->getInput();
+		$appConfig = $this->getEnv()->getAppConfig();
+		$database  = (string)$input->get( 'database', '0' );
+		$serverKey = (string)$input->get( 'serverKey', '0' );
+
+		$query  = new FetchServerInformationQuery( $serverKey );
+		$result = (new FetchServerInformationQueryHandler( $this->getEnv() ))->handle( $query );
+
+		if ( $result->failed() )
+		{
+			$data = ['errorMessage' => $result->getMessage()];
+			(new TwigPage())->respond( 'Theme/Error.twig', $data, 500 );
+
+			return;
+		}
+
+		$serverInformation = $result->getServerInformation();
 
 		$data = [
-			'appConfig'     => $appConfig,
-			'server'        => $serverConfig,
-			'database'      => $database,
-			'serverKey'     => $serverKey,
-			'databaseMap'   => $serverConfig->getDatabaseMap(),
-			'serverConfig'  => $serverManager->getServerConfig(),
-			'slowLogLength' => $serverManager->getSlowLogLength(),
-			'slowLogs'      => $serverManager->getSlowLogs(),
-			'serverInfo'    => $serverManager->getServerInfo(),
-			'manager'       => $serverManager,
+			'appConfig'      => $appConfig,
+			'database'       => $database,
+			'serverKey'      => $serverKey,
+			'server'         => $serverInformation->getServer(),
+			'serverConfig'   => $serverInformation->getServerConfig(),
+			'slowLogCount'   => $serverInformation->getSlowLogCount(),
+			'slowLogEntries' => $serverInformation->getSlowLogEntries(),
+			'serverInfo'     => $serverInformation->getServerInfo(),
 		];
 
 		(new TwigPage())->respond( 'Server/Read/Pages/ServerDetails.twig', $data );

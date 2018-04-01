@@ -7,8 +7,8 @@
                         aria-haspopup="true"
                         aria-expanded="false">
 					<span id="current-db">
-						{% if databaseMap[database] is not empty %}
-                            <span class="text-muted">{{ database }}:</span> {{ databaseMap[database] }}
+						{% if server.getDatabaseMap[database] is not empty %}
+                            <span class="text-muted">{{ database }}:</span> {{ server.getDatabaseMap[database] }}
                         {% else %}
                             Database {{ database }}
                         {% endif %}
@@ -24,8 +24,8 @@
                     {% for i in 0..serverConfig.databases-1 %}
                         <li>
                             <a data-database="{{ i }}">
-                                {% if databaseMap[i] is not empty %}
-                                    <span class="text-muted">{{ i }}:</span> {{ databaseMap[i] }}
+                                {% if server.getDatabaseMap[i] is not empty %}
+                                    <span class="text-muted">{{ i }}:</span> {{ server.getDatabaseMap[i] }}
                                 {% else %}
                                     Database {{ i }}
                                 {% endif %}

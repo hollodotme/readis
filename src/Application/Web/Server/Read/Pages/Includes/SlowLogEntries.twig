@@ -1,5 +1,5 @@
 <div class="container">
-    {% for entry in slowLogs %}
+    {% for entry in slowLogEntries %}
         <h3>#{{ entry.getSlowLogId }} @ {{ entry.getOccurredOn|formatDateTime }}</h3>
         <div>
             <b>Duration:</b> {{ entry.getDuration }} microseconds
