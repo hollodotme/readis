@@ -1,0 +1,55 @@
+<?php declare(strict_types=1);
+
+namespace hollodotme\Readis\Application\ReadModel\QueryHandlers;
+
+use hollodotme\Readis\Application\ReadModel\Constants\ResultType;
+use hollodotme\Readis\Application\ReadModel\DTO\ServerInformation;
+use hollodotme\Readis\Application\ReadModel\Queries\FetchServerInformationQuery;
+use hollodotme\Readis\Application\ReadModel\Results\FetchServerInformationResult;
+use hollodotme\Readis\Exceptions\ServerConfigNotFound;
+use hollodotme\Readis\Infrastructure\Redis\Exceptions\ConnectionFailedException;
+
+final class FetchServerInformationQueryHandler extends AbstractQueryHandler
+{
+	public function handle( FetchServerInformationQuery $query ) : FetchServerInformationResult
+	{
+		try
+		{
+			$serverConfigList = $this->getEnv()->getServerConfigList();
+			$server           = $serverConfigList->getServerConfig( $query->getServerKey() );
+			$serverManager    = $this->getEnv()->getServerManager( $server );
+
+			$serverConfig    = $serverManager->getServerConfig();
+			$slowLogCount    = $serverManager->getSlowLogLength();
+			$slowLogsEntries = $serverManager->getSlowLogs();
+			$serverInfo      = $serverManager->getServerInfo();
+
+			$serverInformation = new ServerInformation(
+				$server,
+				$serverConfig,
+				$slowLogCount,
+				$slowLogsEntries,
+				$serverInfo
+			);
+
+			$result = new FetchServerInformationResult();
+			$result->setServerInformation( $serverInformation );
+
+			return $result;
+		}
+		catch ( ConnectionFailedException $e )
+		{
+			return new FetchServerInformationResult(
+				ResultType::FAILURE,
+				sprintf( 'Could not connect to redis server: %s', $e->getMessage() )
+			);
+		}
+		catch ( ServerConfigNotFound $e )
+		{
+			return new FetchServerInformationResult(
+				ResultType::FAILURE,
+				sprintf( 'Could not find configuration for server key: %s', $e->getServerKey() )
+			);
+		}
+	}
+}
