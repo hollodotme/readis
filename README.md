@@ -16,6 +16,7 @@ A web interface to read data from redis server(s)
  * Listing of found keys with variable limit
  * Basic information about keys
  * Viewing the content of keys and hash keys
+ * Prettyfied JSON view, if value is a JSON string 
  * Listing of slow logs
  * Table with all the current server instance information / stats
  * Table with all the current server configs
@@ -23,7 +24,7 @@ A web interface to read data from redis server(s)
 ## Requirements
 
  * Webserver (nginx, apache2, etc.)
- * PHP >= 5.5 with phpredis extension (**compatible with php7**)
+ * PHP >= 7.1 with phpredis extension
 
 ## Installation
 
