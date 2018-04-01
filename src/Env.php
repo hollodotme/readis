@@ -8,8 +8,9 @@ use hollodotme\Readis\Infrastructure\Interfaces\ProvidesServerConfig;
 use hollodotme\Readis\Infrastructure\Interfaces\ProvidesServerConfigList;
 use hollodotme\Readis\Infrastructure\Redis\ServerConnection;
 use hollodotme\Readis\Infrastructure\Redis\ServerManager;
+use hollodotme\Readis\Interfaces\ProvidesInfrastructure;
 
-final class Env extends AbstractObjectPool
+final class Env extends AbstractObjectPool implements ProvidesInfrastructure
 {
 	public function getAppConfig() : AppConfig
 	{

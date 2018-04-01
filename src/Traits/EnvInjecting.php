@@ -2,19 +2,19 @@
 
 namespace hollodotme\Readis\Traits;
 
-use hollodotme\Readis\Env;
+use hollodotme\Readis\Interfaces\ProvidesInfrastructure;
 
 trait EnvInjecting
 {
-	/** @var Env */
+	/** @var ProvidesInfrastructure */
 	private $env;
 
-	public function __construct( Env $env )
+	public function __construct( ProvidesInfrastructure $env )
 	{
 		$this->env = $env;
 	}
 
-	final protected function getEnv() : Env
+	final protected function getEnv() : ProvidesInfrastructure
 	{
 		return $this->env;
 	}
