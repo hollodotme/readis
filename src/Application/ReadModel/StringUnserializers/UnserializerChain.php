@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace hollodotme\Readis\Application\StringUnserializers;
+namespace hollodotme\Readis\Application\ReadModel\StringUnserializers;
 
-use hollodotme\Readis\Interfaces\UnserializesDataToString;
+use hollodotme\Readis\Infrastructure\Interfaces\UnserializesDataToString;
 
 final class UnserializerChain implements UnserializesDataToString
 {

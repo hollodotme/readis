@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace hollodotme\Readis\Interfaces;
+namespace hollodotme\Readis\Application\Interfaces;
 
 interface ProvidesKeyInformation
 {

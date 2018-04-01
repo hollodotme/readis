@@ -3,7 +3,7 @@
 namespace hollodotme\Readis\Infrastructure\Redis\DTO;
 
 use DateTimeImmutable;
-use hollodotme\Readis\Interfaces\ProvidesSlowLogData;
+use hollodotme\Readis\Application\Interfaces\ProvidesSlowLogData;
 use function array_shift;
 use function implode;
 use function sprintf;
@@ -23,6 +23,11 @@ final class SlowLogEntry implements ProvidesSlowLogData
 	/** @var string */
 	private $command;
 
+	/**
+	 * @param array $slowLogItem
+	 *
+	 * @throws \Exception
+	 */
 	public function __construct( array $slowLogItem )
 	{
 		$this->slowLogId  = $slowLogItem[0];

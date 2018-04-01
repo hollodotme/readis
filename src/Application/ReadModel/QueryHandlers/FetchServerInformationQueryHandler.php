@@ -11,6 +11,12 @@ use hollodotme\Readis\Infrastructure\Redis\Exceptions\ConnectionFailedException;
 
 final class FetchServerInformationQueryHandler extends AbstractQueryHandler
 {
+	/**
+	 * @param FetchServerInformationQuery $query
+	 *
+	 * @return FetchServerInformationResult
+	 * @throws \Exception
+	 */
 	public function handle( FetchServerInformationQuery $query ) : FetchServerInformationResult
 	{
 		try

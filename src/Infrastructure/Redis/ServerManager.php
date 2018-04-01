@@ -2,13 +2,13 @@
 
 namespace hollodotme\Readis\Infrastructure\Redis;
 
+use hollodotme\Readis\Application\Interfaces\ProvidesKeyInformation;
+use hollodotme\Readis\Application\Interfaces\ProvidesSlowLogData;
 use hollodotme\Readis\Infrastructure\Interfaces\ProvidesConnectionData;
+use hollodotme\Readis\Infrastructure\Interfaces\UnserializesDataToString;
 use hollodotme\Readis\Infrastructure\Redis\DTO\KeyInfo;
 use hollodotme\Readis\Infrastructure\Redis\DTO\SlowLogEntry;
 use hollodotme\Readis\Infrastructure\Redis\Exceptions\ConnectionFailedException;
-use hollodotme\Readis\Interfaces\ProvidesKeyInformation;
-use hollodotme\Readis\Interfaces\ProvidesSlowLogData;
-use hollodotme\Readis\Interfaces\UnserializesDataToString;
 use Redis;
 use function array_map;
 use function array_slice;
@@ -58,6 +58,7 @@ final class ServerManager
 	 * @param int $limit
 	 *
 	 * @return array|ProvidesSlowLogData[]
+	 * @throws \Exception
 	 * @throws ConnectionFailedException
 	 */
 	public function getSlowLogs( int $limit = 100 ) : array

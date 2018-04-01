@@ -2,7 +2,7 @@
 
 namespace hollodotme\Readis\Application\ReadModel\Results;
 
-use hollodotme\Readis\Interfaces\ProvidesKeyInformation;
+use hollodotme\Readis\Application\Interfaces\ProvidesKeyInformation;
 
 final class FetchKeyInformationResult extends AbstractResult
 {

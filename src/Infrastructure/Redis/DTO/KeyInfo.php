@@ -2,7 +2,7 @@
 
 namespace hollodotme\Readis\Infrastructure\Redis\DTO;
 
-use hollodotme\Readis\Interfaces\ProvidesKeyInformation;
+use hollodotme\Readis\Application\Interfaces\ProvidesKeyInformation;
 use Redis;
 use function count;
 

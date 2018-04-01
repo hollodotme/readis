@@ -5,8 +5,8 @@ namespace hollodotme\Readis\Application\ReadModel\QueryHandlers;
 use hollodotme\Readis\Application\ReadModel\Constants\ResultType;
 use hollodotme\Readis\Application\ReadModel\Queries\FetchKeyInformationQuery;
 use hollodotme\Readis\Application\ReadModel\Results\FetchKeyInformationResult;
-use hollodotme\Readis\Application\StringUnserializers\JsonPrettyfier;
-use hollodotme\Readis\Application\StringUnserializers\UnserializerChain;
+use hollodotme\Readis\Application\ReadModel\StringUnserializers\JsonPrettyfier;
+use hollodotme\Readis\Application\ReadModel\StringUnserializers\UnserializerChain;
 use hollodotme\Readis\Exceptions\ServerConfigNotFound;
 use hollodotme\Readis\Infrastructure\Redis\Exceptions\ConnectionFailedException;
 

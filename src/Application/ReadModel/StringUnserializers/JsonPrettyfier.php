@@ -1,15 +1,15 @@
 <?php declare(strict_types=1);
 
-namespace hollodotme\Readis\Application\StringUnserializers;
+namespace hollodotme\Readis\Application\ReadModel\StringUnserializers;
 
-use hollodotme\Readis\Interfaces\UnserializesDataToString;
-use const JSON_ERROR_NONE;
-use const JSON_PRETTY_PRINT;
-use const JSON_UNESCAPED_SLASHES;
+use hollodotme\Readis\Infrastructure\Interfaces\UnserializesDataToString;
 use function json_decode;
 use function json_encode;
 use function json_last_error;
 use function preg_match;
+use const JSON_ERROR_NONE;
+use const JSON_PRETTY_PRINT;
+use const JSON_UNESCAPED_SLASHES;
 
 final class JsonPrettyfier implements UnserializesDataToString
 {

@@ -16,6 +16,7 @@ final class ServerDetailsRequestHandler extends AbstractRequestHandler implement
 	 * @param ProvidesReadRequestData $request
 	 *
 	 * @throws RuntimeException
+	 * @throws \Exception
 	 */
 	public function handle( ProvidesReadRequestData $request )
 	{
