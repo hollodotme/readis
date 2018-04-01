@@ -2,6 +2,8 @@
 
 namespace hollodotme\Readis\Infrastructure\Interfaces;
 
+use hollodotme\Readis\Exceptions\ServerConfigNotFound;
+
 interface ProvidesServerConfigList
 {
 	/**
@@ -9,5 +11,11 @@ interface ProvidesServerConfigList
 	 */
 	public function getServerConfigs() : array;
 
+	/**
+	 * @param string $serverKey
+	 *
+	 * @return ProvidesServerConfig
+	 * @throws ServerConfigNotFound
+	 */
 	public function getServerConfig( string $serverKey ) : ProvidesServerConfig;
 }
