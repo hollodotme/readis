@@ -30,14 +30,15 @@ final class TwigPage
 	/**
 	 * @param string $template
 	 * @param array  $data
+	 * @param int    $httpCode
 	 *
 	 * @throws RuntimeException
 	 */
-	public function respond( string $template, array $data ) : void
+	public function respond( string $template, array $data, int $httpCode = 200 ) : void
 	{
 		try
 		{
-			header( 'Content-Type: text/html; charset=utf-8', true, 200 );
+			header( 'Content-Type: text/html; charset=utf-8', true, $httpCode );
 			echo $this->renderer->render( $template, $this->getMergedData( $data ) );
 			flush();
 		}
