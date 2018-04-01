@@ -57,6 +57,12 @@
                     Config
                 </a>
             </li>
+            <li role="presentation">
+                <a href="#stats" aria-controls="stats" role="tab" data-toggle="tab">
+                    <span class="glyphicon glyphicon-stats text-warning"></span>
+                    Stats
+                </a>
+            </li>
         </ul>
 
         <!-- Tab panes -->
@@ -74,16 +80,24 @@
             <div role="tabpanel" class="tab-pane" id="info">
 
                 {% include "Server/Read/Pages/Includes/KeyValueTable.twig"
-                with {'keyCaption': 'Info key', 'valueCaption': 'Info value', 'keyValues': serverInfo} %}
+                    with {'keyCaption': 'Info key', 'valueCaption': 'Info value', 'keyValues': serverInfo} %}
 
             </div>
             <div role="tabpanel" class="tab-pane" id="config">
 
                 {% include "Server/Read/Pages/Includes/KeyValueTable.twig"
-                with {'keyCaption': 'Config key', 'valueCaption': 'Config value', 'keyValues': serverConfig} %}
+                    with {'keyCaption': 'Config key', 'valueCaption': 'Config value', 'keyValues': serverConfig} %}
+
+            </div>
+            <div role="tabpanel" class="tab-pane" id="stats">
+
 
             </div>
         </div>
+
+        <hr>
+
+        {% include "Server/Read/Pages/Includes/ServerStats.twig" %}
 
     </div>
 
