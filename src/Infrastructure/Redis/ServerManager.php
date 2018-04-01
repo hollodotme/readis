@@ -15,76 +15,42 @@ use function array_slice;
 
 final class ServerManager
 {
-	/** @var Redis */
+	/** @var RedisWrapper */
 	private $redis;
 
 	public function __construct( ProvidesConnectionData $connectionData )
 	{
-		$this->redis = $this->getRedisWrapper( $connectionData );
+		$this->redis = new RedisWrapper( $connectionData );
 	}
 
-	private function getRedisWrapper( ProvidesConnectionData $connectionData )
-	{
-		return new class($connectionData)
-		{
-			/** @var ProvidesConnectionData */
-			private $connectionData;
-
-			/** @var Redis */
-			private $redis;
-
-			/** @var bool */
-			private $connected;
-
-			public function __construct( ProvidesConnectionData $connectionData )
-			{
-				$this->connectionData = $connectionData;
-				$this->redis          = new Redis();
-			}
-
-			public function __call( $name, $arguments )
-			{
-				$this->connectToServer();
-
-				return $this->redis->{$name}( ...$arguments );
-			}
-
-			private function connectToServer() : void
-			{
-				if ( $this->connected )
-				{
-					return;
-				}
-
-				$this->connected = @$this->redis->connect(
-					$this->connectionData->getHost(),
-					$this->connectionData->getPort(),
-					$this->connectionData->getTimeout(),
-					'',
-					$this->connectionData->getRetryInterval()
-				);
-
-				if ( !$this->connected )
-				{
-					throw (new ConnectionFailedException())->withConnectionData( $this->connectionData );
-				}
-			}
-		};
-	}
-
+	/**
+	 * @param int $database
+	 *
+	 * @throws ConnectionFailedException
+	 */
 	public function selectDatabase( int $database ) : void
 	{
+		/** @noinspection PhpUndefinedMethodInspection */
 		$this->redis->select( $database );
 	}
 
+	/**
+	 * @return array
+	 * @throws ConnectionFailedException
+	 */
 	public function getServerConfig() : array
 	{
-		/** @noinspection PhpParamsInspection */
+		/** @noinspection PhpUndefinedMethodInspection */
 		return (array)$this->redis->config( 'GET', '*' );
 	}
 
+	/**
+	 * @return int
+	 * @throws ConnectionFailedException
+	 */
 	public function getSlowLogLength() : int
 	{
+		/** @noinspection PhpUndefinedMethodInspection */
 		return (int)$this->redis->slowlog( 'len' );
 	}
 
@@ -92,10 +58,12 @@ final class ServerManager
 	 * @param int $limit
 	 *
 	 * @return array|ProvidesSlowLogData[]
+	 * @throws ConnectionFailedException
 	 */
 	public function getSlowLogs( int $limit = 100 ) : array
 	{
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
+		/** @noinspection PhpUndefinedMethodInspection */
 		return array_map(
 			function ( array $slowLogData )
 			{
@@ -105,13 +73,25 @@ final class ServerManager
 		);
 	}
 
+	/**
+	 * @return array
+	 * @throws ConnectionFailedException
+	 */
 	public function getServerInfo() : array
 	{
+		/** @noinspection PhpUndefinedMethodInspection */
 		return (array)$this->redis->info();
 	}
 
+	/**
+	 * @param string $keyPattern
+	 *
+	 * @return array
+	 * @throws ConnectionFailedException
+	 */
 	public function getKeys( string $keyPattern = '*' ) : array
 	{
+		/** @noinspection PhpUndefinedMethodInspection */
 		return (array)$this->redis->keys( $keyPattern );
 	}
 
@@ -120,9 +100,11 @@ final class ServerManager
 	 * @param int|null $limit
 	 *
 	 * @return array|ProvidesKeyInformation[]
+	 * @throws ConnectionFailedException
 	 */
 	public function getKeyInfoObjects( string $keyPattern, ?int $limit ) : array
 	{
+		/** @noinspection PhpUndefinedMethodInspection */
 		$keys = $this->redis->keys( $keyPattern );
 
 		if ( null !== $limit )
@@ -133,6 +115,12 @@ final class ServerManager
 		return array_map( [$this, 'getKeyInfoObject'], $keys );
 	}
 
+	/**
+	 * @param string $key
+	 *
+	 * @return ProvidesKeyInformation
+	 * @throws ConnectionFailedException
+	 */
 	public function getKeyInfoObject( string $key ) : ProvidesKeyInformation
 	{
 		/** @noinspection PhpUndefinedMethodInspection */
@@ -140,6 +128,7 @@ final class ServerManager
 
 		if ( $type === Redis::REDIS_HASH )
 		{
+			/** @noinspection PhpUndefinedMethodInspection */
 			$subItems = $this->redis->hKeys( $key );
 		}
 		else
@@ -154,9 +143,11 @@ final class ServerManager
 	 * @param string $key
 	 *
 	 * @return bool|string
+	 * @throws ConnectionFailedException
 	 */
 	public function getValue( string $key )
 	{
+		/** @noinspection PhpUndefinedMethodInspection */
 		return $this->redis->get( $key );
 	}
 
@@ -165,12 +156,17 @@ final class ServerManager
 	 * @param UnserializesDataToString $unserializer
 	 *
 	 * @return bool|string
+	 * @throws ConnectionFailedException
 	 */
 	public function getValueAsUnserializedString( string $key, UnserializesDataToString $unserializer )
 	{
+		/** @noinspection PhpUndefinedMethodInspection */
 		$serializer = $this->redis->getOption( Redis::OPT_SERIALIZER );
+
+		/** @noinspection PhpUndefinedMethodInspection */
 		$this->redis->setOption( Redis::OPT_SERIALIZER, (string)Redis::SERIALIZER_NONE );
 
+		/** @noinspection PhpUndefinedMethodInspection */
 		$value = $this->redis->get( $key );
 
 		if ( $value !== false )
@@ -182,6 +178,7 @@ final class ServerManager
 			$unserializedValue = false;
 		}
 
+		/** @noinspection PhpUndefinedMethodInspection */
 		$this->redis->setOption( Redis::OPT_SERIALIZER, (string)$serializer );
 
 		return $unserializedValue;
@@ -193,12 +190,17 @@ final class ServerManager
 	 * @param UnserializesDataToString $unserializer
 	 *
 	 * @return bool|string
+	 * @throws ConnectionFailedException
 	 */
 	public function getHashValueAsUnserializedString( string $key, string $hashKey, UnserializesDataToString $unserializer )
 	{
+		/** @noinspection PhpUndefinedMethodInspection */
 		$serializer = $this->redis->getOption( Redis::OPT_SERIALIZER );
+
+		/** @noinspection PhpUndefinedMethodInspection */
 		$this->redis->setOption( Redis::OPT_SERIALIZER, (string)Redis::SERIALIZER_NONE );
 
+		/** @noinspection PhpUndefinedMethodInspection */
 		$value = $this->redis->hGet( $key, $hashKey );
 
 		if ( $value !== false )
@@ -210,6 +212,7 @@ final class ServerManager
 			$unserializedValue = false;
 		}
 
+		/** @noinspection PhpUndefinedMethodInspection */
 		$this->redis->setOption( Redis::OPT_SERIALIZER, (string)$serializer );
 
 		return $unserializedValue;
