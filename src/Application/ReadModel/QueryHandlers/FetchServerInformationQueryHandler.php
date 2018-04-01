@@ -37,18 +37,18 @@ final class FetchServerInformationQueryHandler extends AbstractQueryHandler
 
 			return $result;
 		}
-		catch ( ConnectionFailedException $e )
-		{
-			return new FetchServerInformationResult(
-				ResultType::FAILURE,
-				sprintf( 'Could not connect to redis server: %s', $e->getMessage() )
-			);
-		}
 		catch ( ServerConfigNotFound $e )
 		{
 			return new FetchServerInformationResult(
 				ResultType::FAILURE,
 				sprintf( 'Could not find configuration for server key: %s', $e->getServerKey() )
+			);
+		}
+		catch ( ConnectionFailedException $e )
+		{
+			return new FetchServerInformationResult(
+				ResultType::FAILURE,
+				sprintf( 'Could not connect to redis server: %s', $e->getMessage() )
 			);
 		}
 	}
