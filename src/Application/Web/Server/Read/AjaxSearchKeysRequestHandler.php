@@ -2,6 +2,8 @@
 
 namespace hollodotme\Readis\Application\Web\Server\Read;
 
+use hollodotme\Readis\Application\ReadModel\Queries\FindKeysInDatabaseQuery;
+use hollodotme\Readis\Application\ReadModel\QueryHandlers\FindKeysInDatabaseQueryHandler;
 use hollodotme\Readis\Application\Web\AbstractRequestHandler;
 use hollodotme\Readis\Exceptions\RuntimeException;
 use hollodotme\Readis\TwigPage;
@@ -23,18 +25,22 @@ final class AjaxSearchKeysRequestHandler extends AbstractRequestHandler implemen
 		$database      = (int)$input->get( 'database', 0 );
 		$limit         = $this->getValidLimit( (string)$input->get( 'limit', '50' ) );
 		$searchPattern = ((string)$input->get( 'searchPattern', '*' )) ?: '*';
+		$appConfig     = $this->getEnv()->getAppConfig();
 
-		$appConfig        = $this->getEnv()->getAppConfig();
-		$serverConfigList = $this->getEnv()->getServerConfigList();
-		$serverConfig     = $serverConfigList->getServerConfig( $serverKey );
-		$manager          = $this->getEnv()->getServerManager( $serverConfig );
+		$query  = new FindKeysInDatabaseQuery( $serverKey, $database, $searchPattern, $limit );
+		$result = (new FindKeysInDatabaseQueryHandler( $this->getEnv() ))->handle( $query );
 
-		$manager->selectDatabase( $database );
-		$keyInfoObjects = $manager->getKeyInfoObjects( $searchPattern, $limit );
+		if ( $result->failed() )
+		{
+			$data = ['errorMessage' => $result->getMessage()];
+			(new TwigPage())->respond( 'Theme/Error.twig', $data, 500 );
+
+			return;
+		}
 
 		$data = [
 			'appConfig'      => $appConfig,
-			'keyInfoObjects' => $keyInfoObjects,
+			'keyInfoObjects' => $result->getKeyInfoObjects(),
 			'database'       => $database,
 			'serverKey'      => $serverKey,
 		];
