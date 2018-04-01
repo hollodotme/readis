@@ -2,8 +2,8 @@
 
 namespace hollodotme\Readis\Application\Web\Server\Read;
 
-use hollodotme\Readis\Application\StringUnserializers\JsonPrettyfier;
-use hollodotme\Readis\Application\StringUnserializers\UnserializerChain;
+use hollodotme\Readis\Application\ReadModel\Queries\FetchKeyInformationQuery;
+use hollodotme\Readis\Application\ReadModel\QueryHandlers\FetchKeyInformationQueryHandler;
 use hollodotme\Readis\Application\Web\AbstractRequestHandler;
 use hollodotme\Readis\Exceptions\RuntimeException;
 use hollodotme\Readis\TwigPage;
@@ -22,37 +22,24 @@ final class AjaxKeyDetailsRequestHandler extends AbstractRequestHandler implemen
 		$input     = $request->getInput();
 		$serverKey = (string)$input->get( 'serverKey', '0' );
 		$key       = (string)$input->get( 'keyName' );
-		$hashKey   = (string)$input->get( 'hashKey', '' );
+		$hashKey   = $input->get( 'hashKey', '' ) ?: null;
 		$database  = (int)$input->get( 'database', 0 );
 
-		$appConfig        = $this->getEnv()->getAppConfig();
-		$serverConfigList = $this->getEnv()->getServerConfigList();
-		$serverConfig     = $serverConfigList->getServerConfig( $serverKey );
-		$manager          = $this->getEnv()->getServerManager( $serverConfig );
+		$query  = new FetchKeyInformationQuery( $serverKey, $database, $key, $hashKey );
+		$result = (new FetchKeyInformationQueryHandler( $this->getEnv() ))->handle( $query );
 
-		$manager->selectDatabase( $database );
-
-		$unserializer = new UnserializerChain();
-		$unserializer->addUnserializers( new JsonPrettyfier() );
-
-		if ( empty( $hashKey ) )
+		if ( $result->failed() )
 		{
-			$keyData = $manager->getValueAsUnserializedString( $key, $unserializer );
-		}
-		else
-		{
-			$keyData = $manager->getHashValueAsUnserializedString( $key, $hashKey, $unserializer );
-		}
+			$data = ['errorMessage' => $result->getMessage()];
+			(new TwigPage())->respond( 'Theme/Error.twig', $data, 500 );
 
-		$keyInfo = $manager->getKeyInfoObject( $key );
+			return;
+		}
 
 		$data = [
-			'appConfig' => $appConfig,
-			'keyData'   => $keyData,
-			'keyInfo'   => $keyInfo,
-			'database'  => $database,
-			'serverKey' => $serverKey,
-			'hashKey'   => $hashKey,
+			'keyData' => $result->getKeyData(),
+			'keyInfo' => $result->getKeyInfo(),
+			'hashKey' => $hashKey,
 		];
 
 		(new TwigPage())->respond( 'Server/Read/Pages/Includes/KeyData.twig', $data );
