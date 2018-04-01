@@ -26,8 +26,8 @@ final class FetchServerInformationQueryHandler extends AbstractQueryHandler
 			$serverManager    = $this->getEnv()->getServerManager( $server );
 
 			$serverConfig    = $serverManager->getServerConfig();
-			$slowLogCount    = $serverManager->getSlowLogLength();
-			$slowLogsEntries = $serverManager->getSlowLogs();
+			$slowLogCount    = $serverManager->getSlowLogCount();
+			$slowLogsEntries = $serverManager->getSlowLogEntries();
 			$serverInfo      = $serverManager->getServerInfo();
 
 			$serverInformation = new ServerInformation(

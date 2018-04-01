@@ -48,7 +48,7 @@ final class ServerManager
 	 * @return int
 	 * @throws ConnectionFailedException
 	 */
-	public function getSlowLogLength() : int
+	public function getSlowLogCount() : int
 	{
 		/** @noinspection PhpUndefinedMethodInspection */
 		return (int)$this->redis->slowlog( 'len' );
@@ -61,7 +61,7 @@ final class ServerManager
 	 * @throws \Exception
 	 * @throws ConnectionFailedException
 	 */
-	public function getSlowLogs( int $limit = 100 ) : array
+	public function getSlowLogEntries( int $limit = 100 ) : array
 	{
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		/** @noinspection PhpUndefinedMethodInspection */
