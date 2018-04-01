@@ -2,11 +2,15 @@
 
 namespace hollodotme\Readis\Tests\Unit\Infrastructure\Redis;
 
+use hollodotme\Readis\Application\Interfaces\ProvidesKeyInformation;
 use hollodotme\Readis\Infrastructure\Interfaces\ProvidesConnectionData;
+use hollodotme\Readis\Infrastructure\Interfaces\UnserializesDataToString;
 use hollodotme\Readis\Infrastructure\Redis\Exceptions\ConnectionFailedException;
 use hollodotme\Readis\Infrastructure\Redis\ServerManager;
+use PHPUnit\Framework\ExpectationFailedException;
 use PHPUnit\Framework\TestCase;
 use Redis;
+use SebastianBergmann\RecursionContext\InvalidArgumentException;
 
 final class ServerManagerTest extends TestCase
 {
@@ -30,8 +34,8 @@ final class ServerManagerTest extends TestCase
 	}
 
 	/**
-	 * @throws \PHPUnit\Framework\ExpectationFailedException
-	 * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+	 * @throws ExpectationFailedException
+	 * @throws InvalidArgumentException
 	 */
 	public function testCanConstructFromServerConnection() : void
 	{
@@ -83,6 +87,9 @@ final class ServerManagerTest extends TestCase
 		};
 	}
 
+	/**
+	 * @throws ConnectionFailedException
+	 */
 	public function testThrowsExceptionIfConnectionFails() : void
 	{
 		$serverManager = new ServerManager( $this->getServerConnectionMock( 'localhost', 9999 ) );
@@ -91,5 +98,139 @@ final class ServerManagerTest extends TestCase
 		$this->expectExceptionMessage( 'host: localhost, port: 9999, timeout: 2.5, retryInterval: 100, using auth: no' );
 
 		$serverManager->getKeys( '*' );
+	}
+
+	/**
+	 * @throws ExpectationFailedException
+	 * @throws InvalidArgumentException
+	 * @throws ConnectionFailedException
+	 */
+	public function testCanGetValueForKey() : void
+	{
+		$serverManager = new ServerManager( $this->getServerConnectionMock( 'localhost', 6379 ) );
+
+		$serverManager->selectDatabase( 0 );
+
+		$this->assertSame( 'test', $serverManager->getValue( 'unit' ) );
+		$this->assertSame( 'test', $serverManager->getValue( 'unit' ) );
+	}
+
+	/**
+	 * @throws ConnectionFailedException
+	 * @throws ExpectationFailedException
+	 * @throws InvalidArgumentException
+	 */
+	public function testCanGetServerConfig() : void
+	{
+		$serverManager = new ServerManager( $this->getServerConnectionMock( 'localhost', 6379 ) );
+
+		$this->assertInternalType( 'array', $serverManager->getServerConfig() );
+	}
+
+	/**
+	 * @throws ConnectionFailedException
+	 * @throws ExpectationFailedException
+	 * @throws InvalidArgumentException
+	 */
+	public function testCanGetSlowLogEntries() : void
+	{
+		$serverManager = new ServerManager( $this->getServerConnectionMock( 'localhost', 6379 ) );
+		$serverManager->selectDatabase( 0 );
+		$serverManager->getKeys( '*' );
+
+		$this->assertSame( 0, $serverManager->getSlowLogCount() );
+		$this->assertCount( 0, $serverManager->getSlowLogEntries() );
+	}
+
+	/**
+	 * @throws ConnectionFailedException
+	 * @throws ExpectationFailedException
+	 * @throws InvalidArgumentException
+	 */
+	public function testCanGetServerInfo() : void
+	{
+		$serverManager = new ServerManager( $this->getServerConnectionMock( 'localhost', 6379 ) );
+
+		$this->assertInternalType( 'array', $serverManager->getServerInfo() );
+	}
+
+	/**
+	 * @throws ConnectionFailedException
+	 * @throws ExpectationFailedException
+	 * @throws InvalidArgumentException
+	 */
+	public function testCanGetKeyInfoObject() : void
+	{
+		$serverManager = new ServerManager( $this->getServerConnectionMock( 'localhost', 6379 ) );
+
+		$serverManager->selectDatabase( 0 );
+		$keyInfo = $serverManager->getKeyInfoObject( 'unit' );
+
+		$this->assertSame( 'string', $keyInfo->getType() );
+	}
+
+	/**
+	 * @throws ConnectionFailedException
+	 * @throws ExpectationFailedException
+	 * @throws InvalidArgumentException
+	 */
+	public function testCanGetKeyInfoObjects() : void
+	{
+		$serverManager = new ServerManager( $this->getServerConnectionMock( 'localhost', 6379 ) );
+
+		$serverManager->selectDatabase( 0 );
+		$keyInfos = $serverManager->getKeyInfoObjects( '*', 100 );
+
+		$this->assertContainsOnlyInstancesOf( ProvidesKeyInformation::class, $keyInfos );
+	}
+
+	/**
+	 * @throws ConnectionFailedException
+	 * @throws ExpectationFailedException
+	 * @throws InvalidArgumentException
+	 */
+	public function testCanGetValueAsUnserializedString() : void
+	{
+		$serverManager = new ServerManager( $this->getServerConnectionMock( 'localhost', 6379 ) );
+
+		$serverManager->selectDatabase( 0 );
+		$unserialized = $serverManager->getValueAsUnserializedString( 'unit', $this->getUnserializerMock() );
+		$notFound     = $serverManager->getValueAsUnserializedString( 'unknown', $this->getUnserializerMock() );
+
+		$this->assertSame( 'unserialized: test', $unserialized );
+		$this->assertFalse( $notFound );
+	}
+
+	private function getUnserializerMock() : UnserializesDataToString
+	{
+		return new class implements UnserializesDataToString
+		{
+			public function canUnserialize( string $data ) : bool
+			{
+				return true;
+			}
+
+			public function unserialize( string $data ) : string
+			{
+				return 'unserialized: ' . $data;
+			}
+		};
+	}
+
+	/**
+	 * @throws ConnectionFailedException
+	 * @throws ExpectationFailedException
+	 * @throws InvalidArgumentException
+	 */
+	public function testCanGetHashValueAsUnserializedString() : void
+	{
+		$serverManager = new ServerManager( $this->getServerConnectionMock( 'localhost', 6379 ) );
+
+		$serverManager->selectDatabase( 0 );
+		$unserialized = $serverManager->getHashValueAsUnserializedString( 'test', 'unit', $this->getUnserializerMock() );
+		$notFound     = $serverManager->getHashValueAsUnserializedString( 'test', 'unknown', $this->getUnserializerMock() );
+
+		$this->assertSame( 'unserialized: {"json": {"key": "value"}}', $unserialized );
+		$this->assertFalse( $notFound );
 	}
 }
