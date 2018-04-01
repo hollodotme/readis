@@ -6,6 +6,7 @@ use hollodotme\Readis\Application\Web\Server\Read\AjaxKeyDetailsRequestHandler;
 use hollodotme\Readis\Application\Web\Server\Read\AjaxSearchKeysRequestHandler;
 use hollodotme\Readis\Application\Web\Server\Read\ServerDetailsRequestHandler;
 use hollodotme\Readis\Application\Web\Server\Read\ServerSelectionRequestHandler;
+use hollodotme\Readis\Application\Web\Server\Read\ServerStatsRequestHandler;
 use hollodotme\Readis\Traits\EnvInjecting;
 use IceHawk\IceHawk\Defaults\Traits\DefaultCookieProviding;
 use IceHawk\IceHawk\Defaults\Traits\DefaultEventSubscribing;
@@ -58,7 +59,8 @@ final class IceHawkConfig implements ConfiguresIceHawk
 
 		$this->readRoutes = [
 			'^' . $quotedBaseUrl . '/?$'                                                                                            => ServerSelectionRequestHandler::class,
-			'^' . $quotedBaseUrl . '/server/(?:(?<serverKey>\d+))(?:/database/(?<database>\d+))?/?$'                                => ServerDetailsRequestHandler::class,
+			'^' . $quotedBaseUrl . '/server/(?<serverKey>\d+)/stats/?$'                                                             => ServerStatsRequestHandler::class,
+			'^' . $quotedBaseUrl . '/server/(?<serverKey>\d+)(?:/database/(?<database>\d+))?/?$'                                    => ServerDetailsRequestHandler::class,
 			'^' . $quotedBaseUrl . '/server/(?<serverKey>\d+)/database/(?<database>\d+)/keys/?$'                                    => AjaxSearchKeysRequestHandler::class,
 			'^' . $quotedBaseUrl . '/server/(?<serverKey>\d+)/database/(?<database>\d+)/keys/(?<keyName>.+)/hash/(?<hashKey>.+)/?$' => AjaxKeyDetailsRequestHandler::class,
 			'^' . $quotedBaseUrl . '/server/(?<serverKey>\d+)/database/(?<database>\d+)/keys/(?<keyName>.+)/?$'                     => AjaxKeyDetailsRequestHandler::class,
