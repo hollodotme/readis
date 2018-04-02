@@ -12,7 +12,7 @@ use Twig_Error_Runtime;
 use Twig_Error_Syntax;
 use Twig_Extension_Debug;
 use Twig_Loader_Filesystem;
-use Twig_SimpleFilter;
+use function base64_encode;
 use function dirname;
 use function flush;
 use function is_string;
@@ -69,11 +69,12 @@ final class TwigPage
 
 		$twigEnvironment->addFilter( $this->getIntlDateFilter( 'formatDate', $dateFormatter ) );
 		$twigEnvironment->addFilter( $this->getIntlDateFilter( 'formatDateTime', $dateTimeFormatter ) );
+		$twigEnvironment->addFilter( $this->getBase64Encoder( 'base64encode' ) );
 
 		return $twigEnvironment;
 	}
 
-	private function getIntlDateFilter( $name, IntlDateFormatter $formatter ) : Twig_SimpleFilter
+	private function getIntlDateFilter( string $name, IntlDateFormatter $formatter ) : TwigFilter
 	{
 		return new TwigFilter(
 			$name,
@@ -90,6 +91,17 @@ final class TwigPage
 				}
 
 				return '';
+			}
+		);
+	}
+
+	private function getBase64Encoder( string $name ) : TwigFilter
+	{
+		return new TwigFilter(
+			$name,
+			function ( $value )
+			{
+				return base64_encode( $value );
 			}
 		);
 	}
