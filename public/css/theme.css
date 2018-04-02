@@ -1,7 +1,6 @@
 body {
     margin-top: 60px;
     margin-bottom: 50px;
-    font-family: 'Open Sans', Helvetica, Arial, Courier, sans-serif;
 }
 
 .navbar-brand {
@@ -34,4 +33,29 @@ body {
     -ms-transform: rotate(45deg);
     -o-transform: rotate(45deg);
     transform: rotate(45deg);
+}
+
+.badge {
+    background-color: #efefef;
+    color: #808080;
+}
+
+a {
+    color: #ed0036;
+}
+
+a:hover,
+a:active,
+a:focus {
+    color: #af002c;
+}
+
+.navbar a.nav-link {
+    color: #fafafa;
+}
+
+.navbar a.nav-link:hover,
+.navbar a.nav-link:active,
+.navbar a.nav-link:focus {
+    color: #dedede;
 }

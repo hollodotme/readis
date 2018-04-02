@@ -4,7 +4,7 @@ $(document).ready(function () {
     var databaseSelect = keysContainer.find('#database-select');
     var limitSelect = keysContainer.find('#limit-select');
     var ajaxSpinner = $('#ajaxSpinner');
-
+    var body = $('body');
     keySelectForm.submit(function (e) {
         var formData = $(this).serialize();
         var formUrl = $(this).attr('action');
@@ -34,8 +34,12 @@ $(document).ready(function () {
 
     $('[data-toggle="tooltip"]').tooltip();
 
-    $('body').on('hidden.bs.modal', '.modal', function () {
+    body.on('hidden.bs.modal', '.modal', function () {
         $(this).removeData('bs.modal');
+    });
+
+    body.on('click', '[data-toggle="modal"]', function () {
+        $($(this).data("target") + ' .modal-content').load($(this).attr("href"));
     });
 
     keySelectForm.submit();
