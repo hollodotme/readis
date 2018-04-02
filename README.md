@@ -20,6 +20,7 @@ A web interface to read data from redis server(s)
  * Listing of slow logs
  * Table with all the current server instance information / stats
  * Table with all the current server configs
+ * Real-time server monitor for connected clients and I/O in KB/sec.
 
 ## Requirements
 

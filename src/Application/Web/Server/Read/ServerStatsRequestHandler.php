@@ -39,8 +39,14 @@ final class ServerStatsRequestHandler extends AbstractRequestHandler implements 
 			$serverInfo = $serverManager->getServerInfo();
 
 			$stream->streamEvent( (string)$serverInfo['connected_clients'], 'clientsConnected' );
-			$stream->streamEvent( (string)$serverInfo['instantaneous_input_kbps'], 'inputKbPerSecond' );
-			$stream->streamEvent( (string)$serverInfo['instantaneous_output_kbps'], 'outputKbPerSecond' );
+			$stream->streamEvent(
+				sprintf(
+					'%s:%s',
+					(string)$serverInfo['instantaneous_input_kbps'],
+					(string)$serverInfo['instantaneous_output_kbps']
+				),
+				'ioKbPerSecond'
+			);
 
 			usleep( 500000 );
 		}
