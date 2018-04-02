@@ -2,7 +2,7 @@
 
 namespace hollodotme\Readis\Application\ReadModel\StringUnserializers;
 
-use hollodotme\Readis\Application\ReadModel\Interfaces\UnserializesDataToString;
+use hollodotme\Readis\Application\ReadModel\Interfaces\PrettifiesString;
 use function json_decode;
 use function json_encode;
 use function json_last_error;
@@ -11,14 +11,14 @@ use const JSON_ERROR_NONE;
 use const JSON_PRETTY_PRINT;
 use const JSON_UNESCAPED_SLASHES;
 
-final class JsonPrettyfier implements UnserializesDataToString
+final class JsonPrettifier implements PrettifiesString
 {
-	public function canUnserialize( string $data ) : bool
+	public function canPrettify( string $data ) : bool
 	{
 		return (bool)preg_match( '#^({|\[).+(}|\])$#', $data );
 	}
 
-	public function unserialize( string $data ) : string
+	public function prettify( string $data ) : string
 	{
 		$jsonData  = json_decode( $data );
 		$jsonError = json_last_error();

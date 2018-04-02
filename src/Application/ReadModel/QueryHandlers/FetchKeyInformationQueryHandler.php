@@ -5,8 +5,8 @@ namespace hollodotme\Readis\Application\ReadModel\QueryHandlers;
 use hollodotme\Readis\Application\ReadModel\Constants\ResultType;
 use hollodotme\Readis\Application\ReadModel\Queries\FetchKeyInformationQuery;
 use hollodotme\Readis\Application\ReadModel\Results\FetchKeyInformationResult;
-use hollodotme\Readis\Application\ReadModel\StringUnserializers\JsonPrettyfier;
-use hollodotme\Readis\Application\ReadModel\StringUnserializers\UnserializerChain;
+use hollodotme\Readis\Application\ReadModel\StringUnserializers\JsonPrettifier;
+use hollodotme\Readis\Application\ReadModel\StringUnserializers\PrettifierChain;
 use hollodotme\Readis\Exceptions\ServerConfigNotFound;
 use hollodotme\Readis\Infrastructure\Redis\Exceptions\ConnectionFailedException;
 
@@ -22,18 +22,18 @@ final class FetchKeyInformationQueryHandler extends AbstractQueryHandler
 
 			$manager->selectDatabase( $query->getDatabase() );
 
-			$unserializer = new UnserializerChain();
-			$unserializer->addUnserializers( new JsonPrettyfier() );
+			$prettifier = new PrettifierChain();
+			$prettifier->addUnserializers( new JsonPrettifier() );
 
 			if ( null === $query->getHashKey() )
 			{
 				$rawKeyData = $manager->getValue( $query->getKeyName() ) ?: '';
-				$keyData    = $unserializer->unserialize( $rawKeyData );
+				$keyData    = $prettifier->prettify( $rawKeyData );
 			}
 			else
 			{
 				$rawKeyData = $manager->getHashValue( $query->getKeyName(), $query->getHashKey() ) ?: '';
-				$keyData    = $unserializer->unserialize( $rawKeyData );
+				$keyData    = $prettifier->prettify( $rawKeyData );
 			}
 
 			$keyInfo = $manager->getKeyInfoObject( $query->getKeyName() );

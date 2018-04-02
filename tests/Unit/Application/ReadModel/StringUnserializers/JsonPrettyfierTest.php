@@ -2,7 +2,7 @@
 
 namespace hollodotme\Readis\Tests\Unit\Application\ReadModel\StringUnserializers;
 
-use hollodotme\Readis\Application\ReadModel\StringUnserializers\JsonPrettyfier;
+use hollodotme\Readis\Application\ReadModel\StringUnserializers\JsonPrettifier;
 use PHPUnit\Framework\ExpectationFailedException;
 use PHPUnit\Framework\TestCase;
 use SebastianBergmann\RecursionContext\InvalidArgumentException;
@@ -21,10 +21,10 @@ final class JsonPrettyfierTest extends TestCase
 	 */
 	public function testCanPrettifyJsonString( string $input, bool $expectedCanUnserialize, string $expectedOutput ) : void
 	{
-		$jsonPrettyfier = new JsonPrettyfier();
+		$jsonPrettyfier = new JsonPrettifier();
 
-		$this->assertSame( $expectedCanUnserialize, $jsonPrettyfier->canUnserialize( $input ) );
-		$this->assertSame( $expectedOutput, $jsonPrettyfier->unserialize( $input ) );
+		$this->assertSame( $expectedCanUnserialize, $jsonPrettyfier->canPrettify( $input ) );
+		$this->assertSame( $expectedOutput, $jsonPrettyfier->prettify( $input ) );
 	}
 
 	public function jsonInputProvider() : array
