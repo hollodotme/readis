@@ -7,9 +7,9 @@
 {% block stylesheets %}{% endblock %}
 
 {% block breadcrumb %}
-    <ul class="nav navbar-nav">
-        <li class="active">
-            <a href="{{ appConfig.getBaseUrl }}/">Server selection</a>
+    <ul class="nav navbar-nav mr-auto">
+        <li class="nav-item active">
+            <a class="nav-link" href="{{ appConfig.getBaseUrl }}/">Server selection</a>
         </li>
     </ul>
 {% endblock %}
@@ -20,14 +20,14 @@
         {% for serverKey, serverInfo in servers %}
             <div class="col-xs-6 col-md-3">
 
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <a href="{{ appConfig.getBaseUrl }}/server/{{ serverKey }}/">
-                            <h3 class="panel-title">{{ serverInfo.getName }}</h3>
-                        </a>
+                <div class="card">
+                    <div class="card-header">
+                        <h5 style="margin-bottom: 0;">
+                            <a href="{{ appConfig.getBaseUrl }}/server/{{ serverKey }}/">{{ serverInfo.getName }}</a>
+                        </h5>
                     </div>
-                    <div class="panel-body">
-                        <ul>
+                    <div class="card-body">
+                        <ul class="small">
                             <li>Host: {{ serverInfo.getHost }}</li>
                             <li>Port: {{ serverInfo.getPort }}</li>
                             <li>Timeout: {{ serverInfo.getTimeout }}s</li>

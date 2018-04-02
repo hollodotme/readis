@@ -7,12 +7,12 @@
 {% block stylesheets %}{% endblock %}
 
 {% block breadcrumb %}
-    <ul class="nav navbar-nav">
-        <li>
-            <a href="{{ appConfig.getBaseUrl }}/">Server selection</a>
+    <ul class="nav mr-auto">
+        <li class="nav-item">
+            <a class="nav-link" href="{{ appConfig.getBaseUrl }}/">Server selection</a>
         </li>
-        <li class="active">
-            <a href="{{ appConfig.getBaseUrl }}/server/{{ serverKey }}/">{{ server.getName }}</a>
+        <li class="nav-item active">
+            <a class="nav-link" href="{{ appConfig.getBaseUrl }}/server/{{ serverKey }}/">{{ server.getName }}</a>
         </li>
     </ul>
 {% endblock %}
@@ -31,41 +31,38 @@
 
     <div>
 
-        <!-- Nav tabs -->
-        <ul class="nav nav-tabs" role="tablist">
-            <li role="presentation" class="active">
-                <a href="#keys" aria-controls="keys" role="tab" data-toggle="tab">
-                    <span class="glyphicon glyphicon-menu-hamburger text-success"></span> Keys
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link active" href="#keys" aria-controls="keys" role="tab" data-toggle="tab">
+                    <span class="fa fa-key"></span> Keys
                 </a>
             </li>
-            <li role="presentation">
-                <a href="#slow-logs" aria-controls="slow-logs" role="tab" data-toggle="tab">
-                    <span class="glyphicon glyphicon-exclamation-sign text-danger"></span>
+            <li class="nav-item">
+                <a class="nav-link" href="#slow-logs" aria-controls="slow-logs" role="tab" data-toggle="tab">
+                    <span class="fa fa-clock"></span>
                     Slow logs
                     <span class="badge">{{ slowLogCount }}</span>
                 </a>
             </li>
-            <li role="presentation">
-                <a href="#info" aria-controls="info" role="tab" data-toggle="tab">
-                    <span class="glyphicon glyphicon-info-sign text-info"></span>
+            <li class="nav-item">
+                <a class="nav-link" href="#info" aria-controls="info" role="tab" data-toggle="tab">
+                    <span class="fa fa-info-circle"></span>
                     Info
                 </a>
             </li>
-            <li role="presentation">
-                <a href="#config" aria-controls="config" role="tab" data-toggle="tab">
-                    <span class="glyphicon glyphicon-wrench text-warning"></span>
+            <li class="nav-item">
+                <a class="nav-link" href="#config" aria-controls="config" role="tab" data-toggle="tab">
+                    <span class="fa fa-wrench"></span>
                     Config
                 </a>
             </li>
-            <li role="presentation">
-                <a href="#stats" aria-controls="stats" role="tab" data-toggle="tab">
-                    <span class="glyphicon glyphicon-stats text-warning"></span>
-                    Stats
+            <li class="nav-item">
+                <a class="nav-link" href="#monitor" aria-controls="monitor" role="tab" data-toggle="tab">
+                    <span class="fa fa-chart-bar"></span>
+                    Monitor
                 </a>
             </li>
         </ul>
-
-        <!-- Tab panes -->
         <div class="tab-content">
             <div role="tabpanel" class="tab-pane active" id="keys">
 
@@ -80,25 +77,21 @@
             <div role="tabpanel" class="tab-pane" id="info">
 
                 {% include "Server/Read/Pages/Includes/KeyValueTable.twig"
-                    with {'keyCaption': 'Info key', 'valueCaption': 'Info value', 'keyValues': serverInfo} %}
+                    with {'title': 'Server information', 'keyCaption': 'Info key', 'valueCaption': 'Info value', 'keyValues': serverInfo} %}
 
             </div>
             <div role="tabpanel" class="tab-pane" id="config">
 
                 {% include "Server/Read/Pages/Includes/KeyValueTable.twig"
-                    with {'keyCaption': 'Config key', 'valueCaption': 'Config value', 'keyValues': serverConfig} %}
+                    with {'title': 'Server configuration', 'keyCaption': 'Config key', 'valueCaption': 'Config value', 'keyValues': serverConfig} %}
 
             </div>
-            <div role="tabpanel" class="tab-pane" id="stats">
+            <div role="tabpanel" class="tab-pane" id="monitor">
 
+                {% include "Server/Read/Pages/Includes/ServerMonitor.twig" %}
 
             </div>
         </div>
-
-        <hr>
-
-        {% include "Server/Read/Pages/Includes/ServerStats.twig" %}
-
     </div>
 
 {% endblock %}
