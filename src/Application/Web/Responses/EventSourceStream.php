@@ -30,6 +30,7 @@ final class EventSourceStream
 		$this->active = true;
 
 		header( 'Content-Type: text/event-stream; charset=utf-8' );
+		header( 'Access-Control-Allow-Origin: *' );
 
 		if ( $flushBuffer )
 		{

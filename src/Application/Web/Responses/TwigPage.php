@@ -39,6 +39,7 @@ final class TwigPage
 		try
 		{
 			header( 'Content-Type: text/html; charset=utf-8', true, $httpCode );
+			header( 'Access-Control-Allow-Origin: *' );
 			echo $this->renderer->render( $template, $this->getMergedData( $data ) );
 			flush();
 		}
