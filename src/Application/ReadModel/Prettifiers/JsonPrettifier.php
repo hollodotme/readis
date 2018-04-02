@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace hollodotme\Readis\Application\ReadModel\StringUnserializers;
+namespace hollodotme\Readis\Application\ReadModel\Prettifiers;
 
 use hollodotme\Readis\Application\ReadModel\Interfaces\PrettifiesString;
 use function json_decode;

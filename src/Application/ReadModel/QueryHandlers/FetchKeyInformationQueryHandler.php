@@ -3,10 +3,10 @@
 namespace hollodotme\Readis\Application\ReadModel\QueryHandlers;
 
 use hollodotme\Readis\Application\ReadModel\Constants\ResultType;
+use hollodotme\Readis\Application\ReadModel\Prettifiers\JsonPrettifier;
+use hollodotme\Readis\Application\ReadModel\Prettifiers\PrettifierChain;
 use hollodotme\Readis\Application\ReadModel\Queries\FetchKeyInformationQuery;
 use hollodotme\Readis\Application\ReadModel\Results\FetchKeyInformationResult;
-use hollodotme\Readis\Application\ReadModel\StringUnserializers\JsonPrettifier;
-use hollodotme\Readis\Application\ReadModel\StringUnserializers\PrettifierChain;
 use hollodotme\Readis\Exceptions\ServerConfigNotFound;
 use hollodotme\Readis\Infrastructure\Redis\Exceptions\ConnectionFailedException;
 

@@ -1,13 +1,13 @@
 <?php declare(strict_types=1);
 
-namespace hollodotme\Readis\Tests\Unit\Application\ReadModel\StringUnserializers;
+namespace hollodotme\Readis\Tests\Unit\Application\ReadModel\Prettifiers;
 
-use hollodotme\Readis\Application\ReadModel\StringUnserializers\JsonPrettifier;
+use hollodotme\Readis\Application\ReadModel\Prettifiers\JsonPrettifier;
 use PHPUnit\Framework\ExpectationFailedException;
 use PHPUnit\Framework\TestCase;
 use SebastianBergmann\RecursionContext\InvalidArgumentException;
 
-final class JsonPrettyfierTest extends TestCase
+final class JsonPrettifierTest extends TestCase
 {
 	/**
 	 * @param string $input
@@ -21,10 +21,10 @@ final class JsonPrettyfierTest extends TestCase
 	 */
 	public function testCanPrettifyJsonString( string $input, bool $expectedCanUnserialize, string $expectedOutput ) : void
 	{
-		$jsonPrettyfier = new JsonPrettifier();
+		$jsonPrettifier = new JsonPrettifier();
 
-		$this->assertSame( $expectedCanUnserialize, $jsonPrettyfier->canPrettify( $input ) );
-		$this->assertSame( $expectedOutput, $jsonPrettyfier->prettify( $input ) );
+		$this->assertSame( $expectedCanUnserialize, $jsonPrettifier->canPrettify( $input ) );
+		$this->assertSame( $expectedOutput, $jsonPrettifier->prettify( $input ) );
 	}
 
 	public function jsonInputProvider() : array
