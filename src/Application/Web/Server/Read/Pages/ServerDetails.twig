@@ -8,11 +8,15 @@
 
 {% block breadcrumb %}
     <ul class="nav mr-auto">
-        <li class="nav-item">
-            <a class="nav-link" href="{{ appConfig.getBaseUrl }}/">Server selection</a>
+        <li class="nav-item text-uppercase">
+            <a class="nav-link" href="{{ appConfig.getBaseUrl }}/">
+                <span class="fa fa-th"></span> Servers
+            </a>
         </li>
-        <li class="nav-item active">
-            <a class="nav-link" href="{{ appConfig.getBaseUrl }}/server/{{ serverKey }}/">{{ server.getName }}</a>
+        <li class="nav-item active text-uppercase">
+            <a class="nav-link" href="{{ appConfig.getBaseUrl }}/server/{{ serverKey }}/">
+                <span class="fa fa-server"></span> {{ server.getName }}
+            </a>
         </li>
     </ul>
 {% endblock %}
