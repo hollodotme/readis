@@ -9,9 +9,14 @@ final class AppConfig
 	/** @var array */
 	private $configData;
 
-	public function __construct()
+	public function __construct( array $data )
 	{
-		$this->configData = include __DIR__ . '/../../../config/app.php';
+		$this->configData = $data;
+	}
+
+	public static function fromConfigFile() : self
+	{
+		return new self( (array)include __DIR__ . '/../../../config/app.php' );
 	}
 
 	public function getBaseUrl() : string

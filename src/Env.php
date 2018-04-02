@@ -18,7 +18,7 @@ final class Env extends AbstractObjectPool implements ProvidesInfrastructure
 			'appConfig',
 			function ()
 			{
-				return new AppConfig();
+				return AppConfig::fromConfigFile();
 			}
 		);
 	}
