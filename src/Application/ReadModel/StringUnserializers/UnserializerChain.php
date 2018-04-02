@@ -2,7 +2,7 @@
 
 namespace hollodotme\Readis\Application\ReadModel\StringUnserializers;
 
-use hollodotme\Readis\Infrastructure\Interfaces\UnserializesDataToString;
+use hollodotme\Readis\Application\ReadModel\Interfaces\UnserializesDataToString;
 
 final class UnserializerChain implements UnserializesDataToString
 {
