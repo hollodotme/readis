@@ -2,6 +2,8 @@
 
 namespace hollodotme\Readis\Application\Configs;
 
+use const PHP_URL_PATH;
+
 final class AppConfig
 {
 	/** @var array */
@@ -14,6 +16,15 @@ final class AppConfig
 
 	public function getBaseUrl() : string
 	{
-		return (string)$this->configData['baseUrl'];
+		return rtrim( (string)$this->configData['baseUrl'], '/' );
+	}
+
+	public function getBaseUri() : string
+	{
+		$baseUrl = $this->getBaseUrl();
+
+		$path = parse_url( $baseUrl, PHP_URL_PATH ) ?? '';
+
+		return $path !== false ? $path : $baseUrl;
 	}
 }
