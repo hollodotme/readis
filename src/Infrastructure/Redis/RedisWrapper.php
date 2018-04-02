@@ -59,5 +59,8 @@ final class RedisWrapper
 		{
 			throw (new ConnectionFailedException())->withConnectionData( $this->connectionData );
 		}
+
+		$this->redis->setOption( Redis::OPT_SERIALIZER, (string)Redis::SERIALIZER_NONE );
+		$this->redis->setOption( Redis::OPT_PREFIX, '' );
 	}
 }
