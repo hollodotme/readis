@@ -15,7 +15,7 @@ final class JsonPrettyfier implements UnserializesDataToString
 {
 	public function canUnserialize( string $data ) : bool
 	{
-		return (bool)preg_match( '#^{.+}$#', $data );
+		return (bool)preg_match( '#^({|\[).+(}|\])$#', $data );
 	}
 
 	public function unserialize( string $data ) : string
