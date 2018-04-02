@@ -1,7 +1,7 @@
 <div class="modal-header">
     <h5 class="modal-title">
-        {{ keyInfo.getName }}
-        {% if hashKey is not empty %}- {{ hashKey }}{% endif %}
+        Content of:
+        <code>{{ keyInfo.getName }}{% if hashKey is not empty %} &raquo; {{ hashKey }}{% endif %}</code>
     </h5>
     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
         <span aria-hidden="true">&times;</span>
