@@ -167,8 +167,7 @@ final class ServerManager
 		/** @noinspection PhpUndefinedMethodInspection */
 		$this->redis->setOption( Redis::OPT_SERIALIZER, (string)Redis::SERIALIZER_NONE );
 
-		/** @noinspection PhpUndefinedMethodInspection */
-		$value = $this->redis->get( $key );
+		$value = $this->getValue( $key );
 
 		if ( $value !== false )
 		{
