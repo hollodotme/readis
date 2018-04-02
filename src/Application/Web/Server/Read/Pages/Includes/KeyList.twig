@@ -25,7 +25,7 @@
                     <ol class="collapse" id="collapse_{{ loop.index }}">
                         {% for hashKey in keyInfo.getSubItems %}
                             <li>
-                                <a href="{{ appConfig.getBaseUrl }}/server/{{ serverKey }}/database/{{ database }}/keys/{{ keyInfo.getName|url_encode }}/hash/{{ hashKey|url_encode }}"
+                                <a href="{{ appConfig.getBaseUrl }}/server/{{ serverKey }}/database/{{ database }}/keys/{{ keyInfo.getName|base64encode }}/hash/{{ hashKey|base64encode }}"
                                    data-toggle="modal" data-target="#keyInfoModal" role="button">
                                     {{ hashKey }}
                                 </a>
@@ -33,7 +33,7 @@
                         {% endfor %}
                     </ol>
                 {% else %}
-                    <a href="{{ appConfig.getBaseUrl }}/server/{{ serverKey }}/database/{{ database }}/keys/{{ keyInfo.getName|url_encode }}"
+                    <a href="{{ appConfig.getBaseUrl }}/server/{{ serverKey }}/database/{{ database }}/keys/{{ keyInfo.getName|base64encode }}"
                        data-toggle="modal" data-target="#keyInfoModal" role="button">
                         {{ keyInfo.getName }}
                     </a>

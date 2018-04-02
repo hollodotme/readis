@@ -9,7 +9,7 @@ use hollodotme\Readis\Exceptions\RuntimeException;
 use hollodotme\Readis\TwigPage;
 use IceHawk\IceHawk\Interfaces\HandlesGetRequest;
 use IceHawk\IceHawk\Interfaces\ProvidesReadRequestData;
-use function urldecode;
+use function base64_decode;
 
 final class AjaxKeyDetailsRequestHandler extends AbstractRequestHandler implements HandlesGetRequest
 {
@@ -22,8 +22,8 @@ final class AjaxKeyDetailsRequestHandler extends AbstractRequestHandler implemen
 	{
 		$input     = $request->getInput();
 		$serverKey = (string)$input->get( 'serverKey', '0' );
-		$key       = urldecode( (string)$input->get( 'keyName' ) );
-		$hashKey   = urldecode( $input->get( 'hashKey', '' ) ) ?: null;
+		$key       = base64_decode( (string)$input->get( 'keyName' ) );
+		$hashKey   = base64_decode( $input->get( 'hashKey', '' ) ) ?: null;
 		$database  = (int)$input->get( 'database', 0 );
 
 		$query  = new FetchKeyInformationQuery( $serverKey, $database, $key, $hashKey );
