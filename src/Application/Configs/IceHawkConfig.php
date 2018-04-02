@@ -54,16 +54,16 @@ final class IceHawkConfig implements ConfiguresIceHawk
 			return;
 		}
 
-		$baseUrl       = $this->getEnv()->getAppConfig()->getBaseUrl();
-		$quotedBaseUrl = preg_quote( rtrim( $baseUrl, '/' ), '!' );
+		$baseUrl       = $this->getEnv()->getAppConfig()->getBaseUri();
+		$quotedBaseUri = preg_quote( $baseUrl, '!' );
 
 		$this->readRoutes = [
-			'^' . $quotedBaseUrl . '/?$'                                                                                            => ServerSelectionRequestHandler::class,
-			'^' . $quotedBaseUrl . '/server/(?<serverKey>\d+)/stats/?$'                                                             => ServerStatsRequestHandler::class,
-			'^' . $quotedBaseUrl . '/server/(?<serverKey>\d+)(?:/database/(?<database>\d+))?/?$'                                    => ServerDetailsRequestHandler::class,
-			'^' . $quotedBaseUrl . '/server/(?<serverKey>\d+)/database/(?<database>\d+)/keys/?$'                                    => AjaxSearchKeysRequestHandler::class,
-			'^' . $quotedBaseUrl . '/server/(?<serverKey>\d+)/database/(?<database>\d+)/keys/(?<keyName>.+)/hash/(?<hashKey>.+)/?$' => AjaxKeyDetailsRequestHandler::class,
-			'^' . $quotedBaseUrl . '/server/(?<serverKey>\d+)/database/(?<database>\d+)/keys/(?<keyName>.+)/?$'                     => AjaxKeyDetailsRequestHandler::class,
+			'^' . $quotedBaseUri . '/?$'                                                                                            => ServerSelectionRequestHandler::class,
+			'^' . $quotedBaseUri . '/server/(?<serverKey>\d+)/stats/?$'                                                             => ServerStatsRequestHandler::class,
+			'^' . $quotedBaseUri . '/server/(?<serverKey>\d+)(?:/database/(?<database>\d+))?/?$'                                    => ServerDetailsRequestHandler::class,
+			'^' . $quotedBaseUri . '/server/(?<serverKey>\d+)/database/(?<database>\d+)/keys/?$'                                    => AjaxSearchKeysRequestHandler::class,
+			'^' . $quotedBaseUri . '/server/(?<serverKey>\d+)/database/(?<database>\d+)/keys/(?<keyName>.+)/hash/(?<hashKey>.+)/?$' => AjaxKeyDetailsRequestHandler::class,
+			'^' . $quotedBaseUri . '/server/(?<serverKey>\d+)/database/(?<database>\d+)/keys/(?<keyName>.+)/?$'                     => AjaxKeyDetailsRequestHandler::class,
 		];
 	}
 }
