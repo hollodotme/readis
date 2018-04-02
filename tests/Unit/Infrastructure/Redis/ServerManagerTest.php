@@ -4,7 +4,6 @@ namespace hollodotme\Readis\Tests\Unit\Infrastructure\Redis;
 
 use hollodotme\Readis\Application\Interfaces\ProvidesKeyInformation;
 use hollodotme\Readis\Infrastructure\Interfaces\ProvidesConnectionData;
-use hollodotme\Readis\Infrastructure\Interfaces\UnserializesDataToString;
 use hollodotme\Readis\Infrastructure\Redis\Exceptions\ConnectionFailedException;
 use hollodotme\Readis\Infrastructure\Redis\ServerManager;
 use PHPUnit\Framework\ExpectationFailedException;
@@ -183,55 +182,5 @@ final class ServerManagerTest extends TestCase
 		$keyInfos = $serverManager->getKeyInfoObjects( '*', 100 );
 
 		$this->assertContainsOnlyInstancesOf( ProvidesKeyInformation::class, $keyInfos );
-	}
-
-	/**
-	 * @throws ConnectionFailedException
-	 * @throws ExpectationFailedException
-	 * @throws InvalidArgumentException
-	 */
-	public function testCanGetValueAsUnserializedString() : void
-	{
-		$serverManager = new ServerManager( $this->getServerConnectionMock( 'localhost', 6379 ) );
-
-		$serverManager->selectDatabase( 0 );
-		$unserialized = $serverManager->getValueAsUnserializedString( 'unit', $this->getUnserializerMock() );
-		$notFound     = $serverManager->getValueAsUnserializedString( 'unknown', $this->getUnserializerMock() );
-
-		$this->assertSame( 'unserialized: test', $unserialized );
-		$this->assertFalse( $notFound );
-	}
-
-	private function getUnserializerMock() : UnserializesDataToString
-	{
-		return new class implements UnserializesDataToString
-		{
-			public function canUnserialize( string $data ) : bool
-			{
-				return true;
-			}
-
-			public function unserialize( string $data ) : string
-			{
-				return 'unserialized: ' . $data;
-			}
-		};
-	}
-
-	/**
-	 * @throws ConnectionFailedException
-	 * @throws ExpectationFailedException
-	 * @throws InvalidArgumentException
-	 */
-	public function testCanGetHashValueAsUnserializedString() : void
-	{
-		$serverManager = new ServerManager( $this->getServerConnectionMock( 'localhost', 6379 ) );
-
-		$serverManager->selectDatabase( 0 );
-		$unserialized = $serverManager->getHashValueAsUnserializedString( 'test', 'unit', $this->getUnserializerMock() );
-		$notFound     = $serverManager->getHashValueAsUnserializedString( 'test', 'unknown', $this->getUnserializerMock() );
-
-		$this->assertSame( 'unserialized: {"json": {"key": "value"}}', $unserialized );
-		$this->assertFalse( $notFound );
 	}
 }
