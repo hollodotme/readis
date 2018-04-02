@@ -27,20 +27,19 @@ final class FetchKeyInformationQueryHandler extends AbstractQueryHandler
 
 			if ( null === $query->getHashKey() )
 			{
-				$keyData = $manager->getValueAsUnserializedString( $query->getKeyName(), $unserializer );
+				$rawKeyData = $manager->getValue( $query->getKeyName() ) ?: '';
+				$keyData    = $unserializer->unserialize( $rawKeyData );
 			}
 			else
 			{
-				$keyData = $manager->getHashValueAsUnserializedString(
-					$query->getKeyName(),
-					$query->getHashKey(),
-					$unserializer
-				);
+				$rawKeyData = $manager->getHashValue( $query->getKeyName(), $query->getHashKey() ) ?: '';
+				$keyData    = $unserializer->unserialize( $rawKeyData );
 			}
 
 			$keyInfo = $manager->getKeyInfoObject( $query->getKeyName() );
 
 			$result = new FetchKeyInformationResult();
+			$result->setRawKeyData( $rawKeyData );
 			$result->setKeyData( $keyData );
 			$result->setKeyInfo( $keyInfo );
 

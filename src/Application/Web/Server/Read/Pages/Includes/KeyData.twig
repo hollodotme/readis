@@ -9,7 +9,30 @@
 </div>
 <div class="modal-body">
     <div>
-        <pre>{{ keyData }}</pre>
+        <ul class="nav nav-tabs small">
+            <li class="nav-item">
+                <a class="nav-link active" href="#prettyData" aria-controls="prettyData" role="tab" data-toggle="tab">
+                    <span class="fa fa-eye"></span> PRETTY
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#rawData" aria-controls="rawData" role="tab" data-toggle="tab">
+                    <span class="fa fa-eye-slash"></span> RAW
+                </a>
+            </li>
+        </ul>
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id="prettyData">
+                <div class="container">
+                    <pre>{{ keyData }}</pre>
+                </div>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="rawData">
+                <div class="container">
+                    <pre>{{ rawKeyData }}</pre>
+                </div>
+            </div>
+        </div>
 
         <hr>
 

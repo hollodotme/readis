@@ -38,9 +38,10 @@ final class AjaxKeyDetailsRequestHandler extends AbstractRequestHandler implemen
 		}
 
 		$data = [
-			'keyData' => $result->getKeyData(),
-			'keyInfo' => $result->getKeyInfo(),
-			'hashKey' => $hashKey,
+			'rawKeyData' => $result->getRawKeyData(),
+			'keyData'    => $result->getKeyData(),
+			'keyInfo'    => $result->getKeyInfo(),
+			'hashKey'    => $hashKey,
 		];
 
 		(new TwigPage())->respond( 'Server/Read/Pages/Includes/KeyData.twig', $data );
