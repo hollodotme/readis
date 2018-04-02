@@ -34,25 +34,28 @@
             </div>
         </div>
 
-        <hr>
-
-        <div class="small text-muted">
-            Type: <code>{{ keyInfo.getType }}</code>
-            &middot;
-            TTL in ms:
-            <code>
-                {% if keyInfo.getTimeToLive == -1 %}
-                    &infin;
-                {% elseif keyInfo.getTimeToLive == -2 %}
-                    not existing
-                {% else %}
-                    {{ keyInfo.getTimeToLive }}
-                {% endif %}
-            </code>
-        </div>
-
     </div>
 </div>
 <div class="modal-footer">
-    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+    <div class="container mt-0 mb-0 p-0">
+        <div class="row">
+            <div class="col-auto align-self-start small text-muted mt-2">
+                Type: <code>{{ keyInfo.getType }}</code>
+                &middot;
+                TTL in ms:
+                <code>
+                    {% if keyInfo.getTimeToLive == -1 %}
+                        &infin;
+                    {% elseif keyInfo.getTimeToLive == -2 %}
+                        not existing
+                    {% else %}
+                        {{ keyInfo.getTimeToLive }}
+                    {% endif %}
+                </code>
+            </div>
+            <div class="col align-self-end text-right">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
 </div>
