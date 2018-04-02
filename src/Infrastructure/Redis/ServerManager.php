@@ -5,7 +5,6 @@ namespace hollodotme\Readis\Infrastructure\Redis;
 use hollodotme\Readis\Application\Interfaces\ProvidesKeyInformation;
 use hollodotme\Readis\Application\Interfaces\ProvidesSlowLogData;
 use hollodotme\Readis\Infrastructure\Interfaces\ProvidesConnectionData;
-use hollodotme\Readis\Infrastructure\Interfaces\UnserializesDataToString;
 use hollodotme\Readis\Infrastructure\Redis\DTO\KeyInfo;
 use hollodotme\Readis\Infrastructure\Redis\DTO\SlowLogEntry;
 use hollodotme\Readis\Infrastructure\Redis\Exceptions\ConnectionFailedException;
@@ -153,68 +152,15 @@ final class ServerManager
 	}
 
 	/**
-	 * @param string                   $key
-	 * @param UnserializesDataToString $unserializer
+	 * @param string $key
+	 * @param string $hashKey
 	 *
 	 * @return bool|string
 	 * @throws ConnectionFailedException
 	 */
-	public function getValueAsUnserializedString( string $key, UnserializesDataToString $unserializer )
+	public function getHashValue( string $key, string $hashKey )
 	{
 		/** @noinspection PhpUndefinedMethodInspection */
-		$serializer = $this->redis->getOption( Redis::OPT_SERIALIZER );
-
-		/** @noinspection PhpUndefinedMethodInspection */
-		$this->redis->setOption( Redis::OPT_SERIALIZER, (string)Redis::SERIALIZER_NONE );
-
-		$value = $this->getValue( $key );
-
-		if ( $value !== false )
-		{
-			$unserializedValue = $unserializer->unserialize( $value );
-		}
-		else
-		{
-			$unserializedValue = false;
-		}
-
-		/** @noinspection PhpUndefinedMethodInspection */
-		$this->redis->setOption( Redis::OPT_SERIALIZER, (string)$serializer );
-
-		return $unserializedValue;
-	}
-
-	/**
-	 * @param string                   $key
-	 * @param string                   $hashKey
-	 * @param UnserializesDataToString $unserializer
-	 *
-	 * @return bool|string
-	 * @throws ConnectionFailedException
-	 */
-	public function getHashValueAsUnserializedString( string $key, string $hashKey, UnserializesDataToString $unserializer )
-	{
-		/** @noinspection PhpUndefinedMethodInspection */
-		$serializer = $this->redis->getOption( Redis::OPT_SERIALIZER );
-
-		/** @noinspection PhpUndefinedMethodInspection */
-		$this->redis->setOption( Redis::OPT_SERIALIZER, (string)Redis::SERIALIZER_NONE );
-
-		/** @noinspection PhpUndefinedMethodInspection */
-		$value = $this->redis->hGet( $key, $hashKey );
-
-		if ( $value !== false )
-		{
-			$unserializedValue = $unserializer->unserialize( $value );
-		}
-		else
-		{
-			$unserializedValue = false;
-		}
-
-		/** @noinspection PhpUndefinedMethodInspection */
-		$this->redis->setOption( Redis::OPT_SERIALIZER, (string)$serializer );
-
-		return $unserializedValue;
+		return $this->redis->hGet( $key, $hashKey );
 	}
 }
