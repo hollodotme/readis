@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/hollodotme/readis.svg?branch=master)](https://travis-ci.org/hollodotme/readis)
+[![Coverage Status](https://coveralls.io/repos/github/hollodotme/readis/badge.svg?branch=master)](https://coveralls.io/github/hollodotme/readis?branch=master)
 [![Latest Stable Version](https://poser.pugx.org/hollodotme/readis/v/stable)](https://packagist.org/packages/hollodotme/readis) 
 [![License](https://poser.pugx.org/hollodotme/readis/license)](https://packagist.org/packages/hollodotme/readis)
 
