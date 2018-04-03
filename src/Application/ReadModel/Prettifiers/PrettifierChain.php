@@ -7,13 +7,13 @@ use hollodotme\Readis\Application\ReadModel\Interfaces\PrettifiesString;
 final class PrettifierChain implements PrettifiesString
 {
 	/** @var array|PrettifiesString[] */
-	private $unserializers = [];
+	private $prettifiers = [];
 
-	public function addUnserializers( PrettifiesString ...$unserializers ) : void
+	public function addPrettifiers( PrettifiesString ...$prettifiers ) : void
 	{
-		foreach ( $unserializers as $unserializer )
+		foreach ( $prettifiers as $prettifier )
 		{
-			$this->unserializers[] = $unserializer;
+			$this->prettifiers[] = $prettifier;
 		}
 	}
 
@@ -24,11 +24,11 @@ final class PrettifierChain implements PrettifiesString
 
 	public function prettify( string $data ) : string
 	{
-		foreach ( $this->unserializers as $unserializer )
+		foreach ( $this->prettifiers as $prettifier )
 		{
-			if ( $unserializer->canPrettify( $data ) )
+			if ( $prettifier->canPrettify( $data ) )
 			{
-				return $unserializer->prettify( $data );
+				return $prettifier->prettify( $data );
 			}
 		}
 

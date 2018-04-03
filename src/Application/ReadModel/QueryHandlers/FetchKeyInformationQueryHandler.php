@@ -23,7 +23,7 @@ final class FetchKeyInformationQueryHandler extends AbstractQueryHandler
 			$manager->selectDatabase( $query->getDatabase() );
 
 			$prettifier = new PrettifierChain();
-			$prettifier->addUnserializers( new JsonPrettifier() );
+			$prettifier->addPrettifiers( new JsonPrettifier() );
 
 			if ( null === $query->getHashKey() )
 			{
