@@ -59,3 +59,8 @@ a:focus {
 .navbar a.nav-link:focus {
     color: #dedede;
 }
+
+.dropdown-menu {
+    max-height: 400px;
+    overflow-y: auto;
+}
