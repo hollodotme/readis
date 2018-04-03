@@ -20,9 +20,9 @@ $(document).ready(function () {
 
         var clientOptions = {
             title: 'Connected clients',
-            width: 529,
-            height: 400,
-            hAxis: {viewWindow: {min: 0, max: 10}},
+            width: 1088,
+            height: 300,
+            hAxis: {viewWindow: {min: 0, max: 20}},
             animation: {
                 duration: 250,
                 easing: 'in'
@@ -34,9 +34,9 @@ $(document).ready(function () {
         };
         var ioOptions = {
             title: 'Input / Output in KB/sec.',
-            width: 529,
-            height: 400,
-            hAxis: {viewWindow: {min: 0, max: 10}},
+            width: 1088,
+            height: 300,
+            hAxis: {viewWindow: {min: 0, max: 20}},
             animation: {
                 duration: 250,
                 easing: 'in'
@@ -61,7 +61,7 @@ $(document).ready(function () {
                 source = new EventSource(eventSourceUrl);
                 source.addEventListener('clientsConnected', function (e) {
                     lastClientsTimePoint += 0.5;
-                    if (clientData.getNumberOfRows() > 10) {
+                    if (clientData.getNumberOfRows() > 20) {
                         clientOptions.hAxis.viewWindow.min += 1;
                         clientOptions.hAxis.viewWindow.max += 1;
                     }
@@ -72,7 +72,7 @@ $(document).ready(function () {
 
                 source.addEventListener('ioKbPerSecond', function (e) {
                     lastIoTimePoint += 0.5;
-                    if (ioData.getNumberOfRows() > 10) {
+                    if (ioData.getNumberOfRows() > 20) {
                         ioOptions.hAxis.viewWindow.min += 1;
                         ioOptions.hAxis.viewWindow.max += 1;
                     }
