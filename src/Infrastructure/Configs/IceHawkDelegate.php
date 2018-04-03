@@ -2,22 +2,14 @@
 
 namespace hollodotme\Readis\Infrastructure\Configs;
 
+use IceHawk\IceHawk\Defaults\IceHawkDelegate as DefaultIceHawkDelegate;
 use IceHawk\IceHawk\Interfaces\ProvidesRequestInfo;
-use IceHawk\IceHawk\Interfaces\SetsUpEnvironment;
 
-final class IceHawkDelegate implements SetsUpEnvironment
+final class IceHawkDelegate extends DefaultIceHawkDelegate
 {
-	public function setUpGlobalVars() : void
-	{
-	}
-
 	public function setUpErrorHandling( ProvidesRequestInfo $requestInfo ) : void
 	{
 		error_reporting( E_ALL );
 		ini_set( 'display_errors', 'On' );
-	}
-
-	public function setUpSessionHandling( ProvidesRequestInfo $requestInfo ) : void
-	{
 	}
 }
