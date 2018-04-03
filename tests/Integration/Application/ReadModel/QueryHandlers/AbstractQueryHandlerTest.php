@@ -20,6 +20,7 @@ abstract class AbstractQueryHandlerTest extends TestCase
 		$this->redis = new Redis();
 		$this->redis->connect( 'localhost', 6379 );
 
+		$this->redis->slowlog( 'reset' );
 		$this->redis->select( 0 );
 		$this->redis->set( 'unit', 'test' );
 		$this->redis->hSet( 'test', 'unit', '{"json": {"key": "value"}}' );
