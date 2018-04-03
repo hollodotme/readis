@@ -150,7 +150,7 @@ final class ServerManagerTest extends TestCase
 		$slowLogEntry = $slowLogEntries[0];
 
 		$this->assertGreaterThan( 0, $slowLogEntry->getSlowLogId() );
-		$this->assertGreaterThan( new DateTimeImmutable(), $slowLogEntry->getOccurredOn() );
+		$this->assertGreaterThan( new DateTimeImmutable( '@now' ), $slowLogEntry->getOccurredOn() );
 		$this->assertGreaterThan( 0.0, $slowLogEntry->getDuration() );
 		$this->assertSame( 'FLUSHALL()', $slowLogEntry->getCommand() );
 	}
