@@ -23,6 +23,7 @@ final class ServerManagerTest extends TestCase
 		$this->redis = new Redis();
 		$this->redis->connect( 'localhost', 6379 );
 
+		$this->redis->slowlog( 'reset' );
 		$this->redis->select( 0 );
 		$this->redis->set( 'unit', 'test' );
 		$this->redis->hSet( 'test', 'unit', '{"json": {"key": "value"}}' );
@@ -148,7 +149,7 @@ final class ServerManagerTest extends TestCase
 
 		$slowLogEntry = $slowLogEntries[0];
 
-		$this->assertGreaterThan( 0, $slowLogEntry->getSlowLogId() );
+		$this->assertGreaterThanOrEqual( 0, $slowLogEntry->getSlowLogId() );
 		$this->assertGreaterThan( 0.0, $slowLogEntry->getDuration() );
 		$this->assertSame( 'FLUSHALL()', $slowLogEntry->getCommand() );
 	}
