@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-  "content-hash": "26ed0ae9d781d9252a4493088431d563",
+    "content-hash": "26ed0ae9d781d9252a4493088431d563",
     "packages": [
         {
             "name": "icehawk/icehawk",
@@ -136,16 +136,16 @@
         },
         {
             "name": "twig/twig",
-            "version": "v2.4.7",
+            "version": "v2.4.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "69aacd44dbbaa3199d5afb68605c996d577896fc"
+                "reference": "7b604c89da162034bdf4bb66310f358d313dd16d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/69aacd44dbbaa3199d5afb68605c996d577896fc",
-                "reference": "69aacd44dbbaa3199d5afb68605c996d577896fc",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/7b604c89da162034bdf4bb66310f358d313dd16d",
+                "reference": "7b604c89da162034bdf4bb66310f358d313dd16d",
                 "shasum": ""
             },
             "require": {
@@ -198,7 +198,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2018-03-20T04:31:17+00:00"
+            "time": "2018-04-02T09:24:19+00:00"
         }
     ],
     "packages-dev": [
@@ -208,12 +208,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Roave/SecurityAdvisories.git",
-                "reference": "4a272b63452f4d8ff0d48a759e59db9359a9b5b7"
+                "reference": "c83f6aa0ed08f680c012656d411d1b7c94003012"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/4a272b63452f4d8ff0d48a759e59db9359a9b5b7",
-                "reference": "4a272b63452f4d8ff0d48a759e59db9359a9b5b7",
+                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/c83f6aa0ed08f680c012656d411d1b7c94003012",
+                "reference": "c83f6aa0ed08f680c012656d411d1b7c94003012",
                 "shasum": ""
             },
             "conflict": {
@@ -244,8 +244,8 @@
                 "doctrine/mongodb-odm-bundle": ">=2,<3.0.1",
                 "doctrine/orm": ">=2,<2.4.8|>=2.5,<2.5.1",
                 "dompdf/dompdf": ">=0.6,<0.6.2",
-                "drupal/core": ">=8,<8.4.5",
-                "drupal/drupal": ">=8,<8.4.5",
+                "drupal/core": ">=7,<7.58|>=8,<8.4.6|>=8.5,<8.5.1",
+                "drupal/drupal": ">=7,<7.58|>=8,<8.4.6|>=8.5,<8.5.1",
                 "erusev/parsedown": "<1.7",
                 "ezsystems/ezpublish-legacy": ">=5.3,<5.3.12.3|>=5.4,<5.4.11.3|>=2017.8,<2017.8.1.1|>=2017.12,<2017.12.2.1",
                 "firebase/php-jwt": "<2",
@@ -254,10 +254,11 @@
                 "gree/jose": "<=2.2",
                 "gregwar/rst": "<1.0.3",
                 "guzzlehttp/guzzle": ">=6,<6.2.1|>=4.0.0-rc2,<4.2.4|>=5,<5.3.1",
-                "illuminate/auth": ">=4,<4.0.99|>=4.1,<4.1.26",
+                "illuminate/auth": ">=4,<4.0.99|>=4.1,<=4.1.31|>=4.2,<=4.2.22|>=5,<=5.0.35|>=5.1,<=5.1.46|>=5.2,<=5.2.45|>=5.3,<=5.3.31|>=5.4,<=5.4.36|>=5.5,<5.5.10",
                 "illuminate/database": ">=4,<4.0.99|>=4.1,<4.1.29",
+                "illuminate/encryption": ">=4,<=4.0.11|>=4.1,<=4.1.31|>=4.2,<=4.2.22|>=5,<=5.0.35|>=5.1,<=5.1.46|>=5.2,<=5.2.45|>=5.3,<=5.3.31|>=5.4,<=5.4.36|>=5.5,<5.5.40|>=5.6,<5.6.15",
                 "joomla/session": "<1.3.1",
-                "laravel/framework": ">=4,<4.0.99|>=4.1,<4.1.29",
+                "laravel/framework": ">=4,<4.0.99|>=4.1,<=4.1.31|>=4.2,<=4.2.22|>=5,<=5.0.35|>=5.1,<=5.1.46|>=5.2,<=5.2.45|>=5.3,<=5.3.31|>=5.4,<=5.4.36|>=5.5,<5.5.40|>=5.6,<5.6.15",
                 "laravel/socialite": ">=1,<1.0.99|>=2,<2.0.10",
                 "magento/magento1ce": ">=1.5.0.1,<1.9.3.2",
                 "magento/magento1ee": ">=1.9,<1.14.3.2",
@@ -359,87 +360,87 @@
                 }
             ],
             "description": "Prevents installation of composer packages with known security vulnerabilities: no API, simply require it",
-            "time": "2018-03-22T21:16:54+00:00"
+            "time": "2018-04-02T06:47:13+00:00"
         },
-      {
-        "name": "tm/tooly-composer-script",
-        "version": "1.2.6",
-        "source": {
-          "type": "git",
-          "url": "https://github.com/tommy-muehle/tooly-composer-script.git",
-          "reference": "53cc0551122145b4ae4c523e64f3628329ef8ea5"
-        },
-        "dist": {
-          "type": "zip",
-          "url": "https://api.github.com/repos/tommy-muehle/tooly-composer-script/zipball/53cc0551122145b4ae4c523e64f3628329ef8ea5",
-          "reference": "53cc0551122145b4ae4c523e64f3628329ef8ea5",
-          "shasum": ""
-        },
-        "require": {
-          "php": ">=5.6.0"
-        },
-        "require-dev": {
-          "codeclimate/php-test-reporter": "dev-master",
-          "composer/composer": "1.*",
-          "mikey179/vfsstream": "1.6.*",
-          "php-mock/php-mock-phpunit": "1.1.*",
-          "symfony/console": "^3.0",
-          "tm/gpg-verifier": "1.*"
-        },
-        "suggest": {
-          "tm/gpg-verifier": "Allows verification over GPG for PHAR tools."
-        },
-        "type": "library",
-        "extra": {
-          "tools": {
-            "phpunit": {
-              "url": "https://phar.phpunit.de/phpunit-5.5.0.phar"
+        {
+            "name": "tm/tooly-composer-script",
+            "version": "1.2.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/tommy-muehle/tooly-composer-script.git",
+                "reference": "53cc0551122145b4ae4c523e64f3628329ef8ea5"
             },
-            "phpcpd": {
-              "url": "https://phar.phpunit.de/phpcpd-2.0.4.phar"
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/tommy-muehle/tooly-composer-script/zipball/53cc0551122145b4ae4c523e64f3628329ef8ea5",
+                "reference": "53cc0551122145b4ae4c523e64f3628329ef8ea5",
+                "shasum": ""
             },
-            "phpcs": {
-              "url": "https://squizlabs.github.io/PHP_CodeSniffer/phpcs.phar",
-              "force-replace": true
+            "require": {
+                "php": ">=5.6.0"
             },
-            "phpmd": {
-              "url": "http://static.phpmd.org/php/latest/phpmd.phar",
-              "force-replace": true
+            "require-dev": {
+                "codeclimate/php-test-reporter": "dev-master",
+                "composer/composer": "1.*",
+                "mikey179/vfsstream": "1.6.*",
+                "php-mock/php-mock-phpunit": "1.1.*",
+                "symfony/console": "^3.0",
+                "tm/gpg-verifier": "1.*"
             },
-            "security-checker": {
-              "url": "http://get.sensiolabs.org/security-checker.phar",
-              "force-replace": true
-            }
-          }
-        },
-        "autoload": {
-          "psr-4": {
-            "Tooly\\": "src/"
-          }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-          "MIT"
-        ],
-        "authors": [
-          {
-            "name": "Tommy Muehle",
-            "email": "tommy.muehle@gmail.com",
-            "homepage": "https://tommy-muehle.de"
-          }
-        ],
-        "description": "Simple composer script to manage phar files.",
-        "homepage": "https://github.com/tommy-muehle/tooly-composer-script",
-        "keywords": [
-          "composer",
-          "composer-phar",
-          "composer-script",
-          "gpg-verification",
-          "phar",
-          "phar-handling",
-          "phar-management"
-        ],
-        "time": "2018-03-20T21:26:34+00:00"
+            "suggest": {
+                "tm/gpg-verifier": "Allows verification over GPG for PHAR tools."
+            },
+            "type": "library",
+            "extra": {
+                "tools": {
+                    "phpunit": {
+                        "url": "https://phar.phpunit.de/phpunit-5.5.0.phar"
+                    },
+                    "phpcpd": {
+                        "url": "https://phar.phpunit.de/phpcpd-2.0.4.phar"
+                    },
+                    "phpcs": {
+                        "url": "https://squizlabs.github.io/PHP_CodeSniffer/phpcs.phar",
+                        "force-replace": true
+                    },
+                    "phpmd": {
+                        "url": "http://static.phpmd.org/php/latest/phpmd.phar",
+                        "force-replace": true
+                    },
+                    "security-checker": {
+                        "url": "http://get.sensiolabs.org/security-checker.phar",
+                        "force-replace": true
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Tooly\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Tommy Muehle",
+                    "email": "tommy.muehle@gmail.com",
+                    "homepage": "https://tommy-muehle.de"
+                }
+            ],
+            "description": "Simple composer script to manage phar files.",
+            "homepage": "https://github.com/tommy-muehle/tooly-composer-script",
+            "keywords": [
+                "composer",
+                "composer-phar",
+                "composer-script",
+                "gpg-verification",
+                "phar",
+                "phar-handling",
+                "phar-management"
+            ],
+            "time": "2018-03-20T21:26:34+00:00"
         }
     ],
     "aliases": [],
