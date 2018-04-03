@@ -44,6 +44,10 @@
         "url": "https://phar.phpunit.de/phpunit-7.phar",
         "only-dev": true
       },
+      "coveralls": {
+        "url": "https://github.com/satooshi/php-coveralls/releases/download/v2.0.0/php-coveralls.phar",
+        "only-dev": true
+      },
       "phpmetrics": {
         "url": "https://github.com/phpmetrics/PhpMetrics/releases/download/v2.3.2/phpmetrics.phar",
         "only-dev": true

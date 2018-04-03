@@ -1,6 +1,5 @@
+[![Build Status](https://travis-ci.org/hollodotme/readis.svg?branch=master)](https://travis-ci.org/hollodotme/readis)
 [![Latest Stable Version](https://poser.pugx.org/hollodotme/readis/v/stable)](https://packagist.org/packages/hollodotme/readis) 
-[![Total Downloads](https://poser.pugx.org/hollodotme/readis/downloads)](https://packagist.org/packages/hollodotme/readis) 
-[![Latest Unstable Version](https://poser.pugx.org/hollodotme/readis/v/unstable)](https://packagist.org/packages/hollodotme/readis) 
 [![License](https://poser.pugx.org/hollodotme/readis/license)](https://packagist.org/packages/hollodotme/readis)
 
 # re<sup style="color: #ff0000;">a</sup>dis
