@@ -2,7 +2,9 @@
 
 namespace hollodotme\Readis\Tests\Unit\Infrastructure\Redis;
 
+use DateTimeImmutable;
 use hollodotme\Readis\Application\Interfaces\ProvidesKeyInformation;
+use hollodotme\Readis\Application\Interfaces\ProvidesSlowLogData;
 use hollodotme\Readis\Infrastructure\Interfaces\ProvidesConnectionData;
 use hollodotme\Readis\Infrastructure\Redis\Exceptions\ConnectionFailedException;
 use hollodotme\Readis\Infrastructure\Redis\ServerManager;
@@ -10,7 +12,7 @@ use PHPUnit\Framework\ExpectationFailedException;
 use PHPUnit\Framework\TestCase;
 use Redis;
 use SebastianBergmann\RecursionContext\InvalidArgumentException;
-use function count;
+use function str_repeat;
 
 final class ServerManagerTest extends TestCase
 {
@@ -124,22 +126,55 @@ final class ServerManagerTest extends TestCase
 	{
 		$serverManager = new ServerManager( $this->getServerConnectionMock( 'localhost', 6379 ) );
 
-		$this->assertInternalType( 'array', $serverManager->getServerConfig() );
+		$this->assertNotEmpty( $serverManager->getServerConfig() );
 	}
 
 	/**
 	 * @throws ConnectionFailedException
 	 * @throws ExpectationFailedException
 	 * @throws InvalidArgumentException
+	 * @throws \Exception
 	 */
 	public function testCanGetSlowLogEntries() : void
 	{
 		$serverManager = new ServerManager( $this->getServerConnectionMock( 'localhost', 6379 ) );
-		$serverManager->selectDatabase( 0 );
-		$serverManager->getKeys( '*' );
 
-		$this->assertGreaterThanOrEqual( 0, $serverManager->getSlowLogCount() );
-		$this->assertGreaterThanOrEqual( 0, count( $serverManager->getSlowLogEntries() ) );
+		$this->provokeSlowLogEntry();
+
+		$slowLogEntries = $serverManager->getSlowLogEntries();
+
+		$this->assertSame( 1, $serverManager->getSlowLogCount() );
+		$this->assertCount( 1, $slowLogEntries );
+		$this->assertContainsOnlyInstancesOf( ProvidesSlowLogData::class, $slowLogEntries );
+
+		$slowLogEntry = $slowLogEntries[0];
+
+		$this->assertGreaterThan( 0, $slowLogEntry->getSlowLogId() );
+		$this->assertGreaterThan( new DateTimeImmutable(), $slowLogEntry->getOccurredOn() );
+		$this->assertGreaterThan( 0.0, $slowLogEntry->getDuration() );
+		$this->assertSame( 'FLUSHALL()', $slowLogEntry->getCommand() );
+	}
+
+	private function provokeSlowLogEntry() : void
+	{
+		$this->redis->slowlog( 'reset' );
+
+		for ( $db = 0; $db < 16; $db++ )
+		{
+			$this->redis->select( $db );
+			$this->redis->multi();
+			$keys = [];
+
+			for ( $i = 0; $i < 1000; $i++ )
+			{
+				$keys[] = 'test-' . $i;
+				$this->redis->set( 'test-' . $i, str_repeat( 'a', 2048 ) );
+			}
+
+			$this->redis->exec();
+		}
+
+		$this->redis->flushAll();
 	}
 
 	/**
@@ -167,6 +202,10 @@ final class ServerManagerTest extends TestCase
 		$keyInfo = $serverManager->getKeyInfoObject( 'unit' );
 
 		$this->assertSame( 'string', $keyInfo->getType() );
+		$this->assertSame( -1.0, $keyInfo->getTimeToLive() );
+		$this->assertCount( 0, $keyInfo->getSubItems() );
+		$this->assertSame( 'unit', $keyInfo->getName() );
+		$this->assertSame( 0, $keyInfo->countSubItems() );
 	}
 
 	/**
@@ -182,5 +221,19 @@ final class ServerManagerTest extends TestCase
 		$keyInfos = $serverManager->getKeyInfoObjects( '*', 100 );
 
 		$this->assertContainsOnlyInstancesOf( ProvidesKeyInformation::class, $keyInfos );
+	}
+
+	/**
+	 * @throws ConnectionFailedException
+	 * @throws ExpectationFailedException
+	 * @throws InvalidArgumentException
+	 */
+	public function testCanGetHashValue() : void
+	{
+		$serverManager = new ServerManager( $this->getServerConnectionMock( 'localhost', 6379 ) );
+
+		$hashValue = $serverManager->getHashValue( 'test', 'unit' );
+
+		$this->assertSame( '{"json": {"key": "value"}}', $hashValue );
 	}
 }
