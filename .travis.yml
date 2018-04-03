@@ -23,6 +23,8 @@ before_script:
   - composer self-update
   - mkdir -p vendor/bin
   - mkdir -p build/logs
+  - cp config/app.sample.php config/app.php
+  - cp config/servers.sample.php config/servers.php
   - composer install -o --prefer-dist --no-interaction
 
 script:
