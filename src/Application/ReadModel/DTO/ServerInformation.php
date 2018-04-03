@@ -22,7 +22,13 @@ final class ServerInformation
 	/** @var array */
 	private $serverInfo;
 
-	public function __construct( ProvidesServerConfig $server, array $serverConfig, int $slowLogCount, array $slowLogEntries, array $serverInfo )
+	public function __construct(
+		ProvidesServerConfig $server,
+		array $serverConfig,
+		int $slowLogCount,
+		array $slowLogEntries,
+		array $serverInfo
+	)
 	{
 		$this->server         = $server;
 		$this->serverConfig   = $serverConfig;
