@@ -3,6 +3,21 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/) and [Keep a CHANGELOG](http://keepachangelog.com).
 
+## [2.0.0] - 2018-04-03
+
+### Added
+
+ * Prettified view of compact JSON string values + raw JSON view
+ * Ability to use deeplinks to a specific database of a server
+ * Realtime monitor for connected clients and input/output in KB/sec.
+ * Favicons
+ 
+### Changed
+
+ * Migrated UI to bootstrap v4
+ * Database select becomes scrollable, if list exceeds the 400px
+ * Simplified installation 
+
 ## [1.1.3] - 2017-01-03
 
 ### Fixed
@@ -43,6 +58,8 @@ This project adheres to [Semantic Versioning](http://semver.org/) and [Keep a CH
 
 First stable release.
 
+[2.0.0]: https://github.com/hollodotme/readis/compare/v1.1.3...v2.0.0
+[1.1.3]: https://github.com/hollodotme/readis/compare/v1.1.2...v1.1.3
 [1.1.2]: https://github.com/hollodotme/readis/compare/v1.1.1...v1.1.2
 [1.1.1]: https://github.com/hollodotme/readis/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/hollodotme/readis/compare/v1.0.1...v1.1.0

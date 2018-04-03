@@ -25,11 +25,12 @@ We accept contributions via pull requests on [GitHub](http://github.com/hollodot
 
 ## Running tests
 
+Before running the tests, make sure the redis-server instance is running.
+
 ```bash
+$ docker-compose up -d
 $ php vendor/bin/phpunit.phar -c build/
 ```
-
-This includes a code coverage report in HTML and Clover XML.
 
 ## Analyze code
 
