@@ -11,11 +11,14 @@ final class ServerConfigList implements ProvidesServerConfigList
 	/** @var array|ProvidesServerConfig[] */
 	private $servers;
 
-	public function __construct()
+	public function __construct( array $data )
 	{
-		$serverConfigList = include __DIR__ . '/../../../config/servers.php';
+		$this->loadServerConfigs( $data );
+	}
 
-		$this->loadServerConfigs( $serverConfigList );
+	public static function fromConfigFile() : self
+	{
+		return new self( (array)include __DIR__ . '/../../../config/servers.php' );
 	}
 
 	private function loadServerConfigs( array $serverConfigList ) : void

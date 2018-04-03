@@ -29,7 +29,7 @@ final class Env extends AbstractObjectPool implements ProvidesInfrastructure
 			'serverConfigList',
 			function ()
 			{
-				return new ServerConfigList();
+				return ServerConfigList::fromConfigFile();
 			}
 		);
 	}
