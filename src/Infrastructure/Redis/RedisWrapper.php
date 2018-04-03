@@ -5,6 +5,7 @@ namespace hollodotme\Readis\Infrastructure\Redis;
 use hollodotme\Readis\Infrastructure\Interfaces\ProvidesConnectionData;
 use hollodotme\Readis\Infrastructure\Redis\Exceptions\ConnectionFailedException;
 use Redis;
+use RedisException;
 
 final class RedisWrapper
 {
@@ -47,13 +48,20 @@ final class RedisWrapper
 			return;
 		}
 
-		$this->connected = @$this->redis->connect(
-			$this->connectionData->getHost(),
-			$this->connectionData->getPort(),
-			$this->connectionData->getTimeout(),
-			'',
-			$this->connectionData->getRetryInterval()
-		);
+		try
+		{
+			$this->connected = @$this->redis->connect(
+				$this->connectionData->getHost(),
+				$this->connectionData->getPort(),
+				$this->connectionData->getTimeout(),
+				'',
+				$this->connectionData->getRetryInterval()
+			);
+		}
+		catch ( RedisException $e )
+		{
+			throw (new ConnectionFailedException())->withConnectionData( $this->connectionData );
+		}
 
 		if ( !$this->connected )
 		{
