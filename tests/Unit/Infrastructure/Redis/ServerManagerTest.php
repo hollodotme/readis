@@ -166,7 +166,7 @@ final class ServerManagerTest extends TestCase
 			for ( $i = 0; $i < 1000; $i++ )
 			{
 				$keys[] = 'test-' . $i;
-				$this->redis->set( 'test-' . $i, str_repeat( 'a', 2048 ) );
+				$this->redis->set( 'test-' . $i, str_repeat( 'a', 4048 ) );
 			}
 
 			$this->redis->exec();
