@@ -2,7 +2,6 @@
 
 namespace hollodotme\Readis\Tests\Unit\Infrastructure\Redis;
 
-use DateTimeImmutable;
 use hollodotme\Readis\Application\Interfaces\ProvidesKeyInformation;
 use hollodotme\Readis\Application\Interfaces\ProvidesSlowLogData;
 use hollodotme\Readis\Infrastructure\Interfaces\ProvidesConnectionData;
@@ -150,8 +149,6 @@ final class ServerManagerTest extends TestCase
 		$slowLogEntry = $slowLogEntries[0];
 
 		$this->assertGreaterThan( 0, $slowLogEntry->getSlowLogId() );
-		sleep( 1 );
-		$this->assertGreaterThan( new DateTimeImmutable(), $slowLogEntry->getOccurredOn() );
 		$this->assertGreaterThan( 0.0, $slowLogEntry->getDuration() );
 		$this->assertSame( 'FLUSHALL()', $slowLogEntry->getCommand() );
 	}
