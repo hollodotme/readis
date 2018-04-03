@@ -28,10 +28,7 @@ final class FindKeysInDatabaseQueryHandler extends AbstractQueryHandler
 		}
 		catch ( ServerConfigNotFound $e )
 		{
-			return new FindKeysInDatabaseResult(
-				ResultType::FAILURE,
-				sprintf( 'Could not find configuration for server key: %s', $e->getServerKey() )
-			);
+			return new FindKeysInDatabaseResult( ResultType::FAILURE, $e->getMessage() );
 		}
 		catch ( ConnectionFailedException $e )
 		{

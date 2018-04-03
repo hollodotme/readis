@@ -4,18 +4,10 @@ namespace hollodotme\Readis\Exceptions;
 
 final class ServerConfigNotFound extends RuntimeException
 {
-	/** @var string */
-	private $serverKey;
-
 	public function withServerKey( string $serverKey ) : self
 	{
-		$this->serverKey = $serverKey;
+		$this->message = sprintf( 'Server config not found for server key: %s', $serverKey );
 
 		return $this;
-	}
-
-	public function getServerKey() : string
-	{
-		return $this->serverKey;
 	}
 }

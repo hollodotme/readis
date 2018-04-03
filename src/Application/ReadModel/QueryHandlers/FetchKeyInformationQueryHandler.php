@@ -47,10 +47,7 @@ final class FetchKeyInformationQueryHandler extends AbstractQueryHandler
 		}
 		catch ( ServerConfigNotFound $e )
 		{
-			return new FetchKeyInformationResult(
-				ResultType::FAILURE,
-				sprintf( 'Could not find configuration for server key: %s', $e->getServerKey() )
-			);
+			return new FetchKeyInformationResult( ResultType::FAILURE, $e->getMessage() );
 		}
 		catch ( ConnectionFailedException $e )
 		{
