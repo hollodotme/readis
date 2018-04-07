@@ -11,6 +11,14 @@ A web interface to read data from redis server(s)
 
 **[See the public demo on readis.hollo.me](https://readis.hollo.me)**
 
+## Docker image
+
+**[You can find a ready to run docker image here.](https://hub.docker.com/r/hollodotme/readis/)**
+
+```bash
+docker pull hollodotme/readis
+```
+
 ## Features
 
  * Setup / Selection for multiple redis servers
