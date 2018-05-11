@@ -4,3 +4,7 @@ services:
     image: redis:3
     ports:
       - 6379:6379
+    volumes:
+       - .redis/data:/data
+       - .redis/redis.default.conf:/usr/local/etc/redis/redis.conf
+    command: /usr/local/etc/redis/redis.conf
