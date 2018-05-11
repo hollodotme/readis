@@ -32,7 +32,8 @@ final class ServerConfigList implements ProvidesServerConfigList
 			throw new ServersConfigNotFound( 'Could not find servers config at ' . $serversConfigFile );
 		}
 
-		return new self( (array)include __DIR__ . '/../../../config/servers.php' );
+		/** @noinspection PhpIncludeInspection */
+		return new self( (array)require $serversConfigFile );
 	}
 
 	private function loadServerConfigs( array $serverConfigList ) : void
