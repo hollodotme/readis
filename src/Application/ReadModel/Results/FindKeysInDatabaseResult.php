@@ -9,6 +9,9 @@ final class FindKeysInDatabaseResult extends AbstractResult
 	/** @var array|ProvidesKeyInformation[] */
 	private $keyInfoObjects;
 
+	/**
+	 * @return array|ProvidesKeyInformation[]
+	 */
 	public function getKeyInfoObjects() : array
 	{
 		return $this->keyInfoObjects;
