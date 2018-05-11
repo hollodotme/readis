@@ -2,27 +2,45 @@
 
 namespace hollodotme\Readis\Application\ReadModel\QueryHandlers;
 
-use hollodotme\Readis\Application\Interfaces\ProvidesKeyInformation;
+use hollodotme\Readis\Application\Interfaces\ProvidesKeyInfo;
 use hollodotme\Readis\Application\ReadModel\Constants\KeyType;
 use hollodotme\Readis\Application\ReadModel\Constants\ResultType;
-use hollodotme\Readis\Application\ReadModel\DTO\HashKeyNames;
 use hollodotme\Readis\Application\ReadModel\DTO\KeyData;
 use hollodotme\Readis\Application\ReadModel\DTO\KeyName;
-use hollodotme\Readis\Application\ReadModel\Interfaces\ProvidesHashKeyNames;
+use hollodotme\Readis\Application\ReadModel\Interfaces\PrettifiesString;
 use hollodotme\Readis\Application\ReadModel\Interfaces\ProvidesKeyData;
 use hollodotme\Readis\Application\ReadModel\Interfaces\ProvidesKeyName;
 use hollodotme\Readis\Application\ReadModel\Prettifiers\JsonPrettifier;
 use hollodotme\Readis\Application\ReadModel\Prettifiers\PrettifierChain;
 use hollodotme\Readis\Application\ReadModel\Queries\FetchKeyInformationQuery;
 use hollodotme\Readis\Application\ReadModel\Results\FetchKeyInformationResult;
+use hollodotme\Readis\Exceptions\KeyTypeNotImplemented;
 use hollodotme\Readis\Exceptions\ServerConfigNotFound;
 use hollodotme\Readis\Infrastructure\Redis\Exceptions\ConnectionFailedException;
 use hollodotme\Readis\Infrastructure\Redis\ServerManager;
+use hollodotme\Readis\Interfaces\ProvidesInfrastructure;
 use function implode;
 use function str_repeat;
 
 final class FetchKeyInformationQueryHandler extends AbstractQueryHandler
 {
+	/** @var PrettifiesString */
+	private $prettifier;
+
+	public function __construct( ProvidesInfrastructure $env )
+	{
+		parent::__construct( $env );
+
+		$this->prettifier = new PrettifierChain();
+		$this->prettifier->addPrettifiers( new JsonPrettifier() );
+	}
+
+	/**
+	 * @param FetchKeyInformationQuery $query
+	 *
+	 * @throws KeyTypeNotImplemented
+	 * @return FetchKeyInformationResult
+	 */
 	public function handle( FetchKeyInformationQuery $query ) : FetchKeyInformationResult
 	{
 		try
@@ -35,12 +53,7 @@ final class FetchKeyInformationQueryHandler extends AbstractQueryHandler
 
 			$keyInfo = $manager->getKeyInfoObject( $query->getKeyName() );
 
-			$keyName = new KeyName( $query->getKeyName() );
-			if ( null !== $query->getHashKey() )
-			{
-				$keyName = new HashKeyNames( $query->getKeyName(), $query->getHashKey() );
-			}
-
+			$keyName = new KeyName( $query->getKeyName(), $query->getHashKey() );
 			$keyData = $this->getKeyData( $manager, $keyInfo, $keyName );
 
 			$result = new FetchKeyInformationResult();
@@ -64,72 +77,223 @@ final class FetchKeyInformationQueryHandler extends AbstractQueryHandler
 	}
 
 	/**
-	 * @param ServerManager          $manager
-	 * @param ProvidesKeyInformation $keyInfo
-	 * @param ProvidesKeyName        $keyName
+	 * @param ServerManager   $manager
+	 * @param ProvidesKeyInfo $keyInfo
+	 * @param ProvidesKeyName $keyName
 	 *
 	 * @throws ConnectionFailedException
+	 * @throws KeyTypeNotImplemented
 	 * @return ProvidesKeyData
 	 */
 	private function getKeyData(
 		ServerManager $manager,
-		ProvidesKeyInformation $keyInfo,
+		ProvidesKeyInfo $keyInfo,
 		ProvidesKeyName $keyName
-	) :
-	ProvidesKeyData
+	) : ProvidesKeyData
 	{
-		$prettifier = new PrettifierChain();
-		$prettifier->addPrettifiers( new JsonPrettifier() );
-
-		if ( KeyType::HASH === $keyInfo->getType() && $keyName instanceof ProvidesHashKeyNames )
+		if ( $keyName->hasSubKey() )
 		{
-			$rawKeyData = $manager->getHashValue( $keyName->getKeyName(), $keyName->getHashKeyName() ) ?: '';
-			$keyData    = $prettifier->prettify( $rawKeyData );
-
-			return new KeyData( $keyData, $rawKeyData );
+			return $this->getSubKeyData( $manager, $keyInfo, $keyName );
 		}
 
-		if ( KeyType::LIST === $keyInfo->getType() && $keyName instanceof ProvidesHashKeyNames )
+		return $this->getSingleKeyData( $manager, $keyInfo, $keyName );
+	}
+
+	/**
+	 * @param ServerManager   $manager
+	 * @param ProvidesKeyInfo $keyInfo
+	 * @param ProvidesKeyName $keyName
+	 *
+	 * @throws ConnectionFailedException
+	 * @throws KeyTypeNotImplemented
+	 * @return ProvidesKeyData
+	 */
+	private function getSubKeyData(
+		ServerManager $manager,
+		ProvidesKeyInfo $keyInfo,
+		ProvidesKeyName $keyName
+	) : ProvidesKeyData
+	{
+		if ( KeyType::HASH === $keyInfo->getType() )
 		{
-			$rawKeyData = $manager->getListValue( $keyName->getKeyName(), (int)$keyName->getHashKeyName() ) ?: '';
-			$keyData    = $prettifier->prettify( $rawKeyData );
+			$rawKeyData = $manager->getHashValue( $keyName->getKeyName(), $keyName->getSubKey() ) ?: '';
+			$keyData    = $this->prettifier->prettify( $rawKeyData );
 
 			return new KeyData( $keyData, $rawKeyData );
 		}
 
 		if ( KeyType::LIST === $keyInfo->getType() )
 		{
-			$rawListItems = [];
-			foreach ( $keyInfo->getSubItems() as $index => $listItem )
-			{
-				$rawListItems[] = sprintf(
-					"Element %d:\n%s\n%s",
-					$index,
-					str_repeat( '=', 8 + strlen( (string)$index ) ),
-					$listItem
-				);
-			}
-
-			$prettyListItems = [];
-			foreach ( $keyInfo->getSubItems() as $index => $listItem )
-			{
-				$prettyListItem    = $prettifier->prettify( $listItem );
-				$prettyListItems[] = sprintf(
-					"Element %d:\n%s\n%s",
-					$index,
-					str_repeat( '=', 8 + strlen( (string)$index ) ),
-					$prettyListItem
-				);
-			}
-
-			$rawKeyData = implode( "\n\n---\n\n", $rawListItems );
-			$keyData    = implode( "\n\n---\n\n", $prettyListItems );
+			$rawKeyData = $manager->getListValue( $keyName->getKeyName(), (int)$keyName->getSubKey() ) ?: '';
+			$keyData    = $this->prettifier->prettify( $rawKeyData );
 
 			return new KeyData( $keyData, $rawKeyData );
 		}
 
+		if ( KeyType::SET === $keyInfo->getType() )
+		{
+			$rawKeyData = $keyInfo->getSubItems()[ (int)$keyName->getSubKey() ];
+			$keyData    = $this->prettifier->prettify( $rawKeyData );
+
+			return new KeyData( $keyData, $rawKeyData );
+		}
+
+		throw new KeyTypeNotImplemented(
+			'Key type not implemented or does not support sub keys: ' . $keyInfo->getType()
+		);
+	}
+
+	/**
+	 * @param ServerManager   $manager
+	 * @param ProvidesKeyInfo $keyInfo
+	 * @param ProvidesKeyName $keyName
+	 *
+	 * @throws ConnectionFailedException
+	 * @throws KeyTypeNotImplemented
+	 * @return ProvidesKeyData
+	 */
+	private function getSingleKeyData(
+		ServerManager $manager,
+		ProvidesKeyInfo $keyInfo,
+		ProvidesKeyName $keyName
+	) : ProvidesKeyData
+	{
+		if ( KeyType::HASH === $keyInfo->getType() )
+		{
+			return $this->getKeyDataForWholeHash( $manager, $keyName );
+		}
+
+		if ( KeyType::LIST === $keyInfo->getType() )
+		{
+			return $this->getKeyDataForWholeList( $keyInfo );
+		}
+
+		if ( KeyType::SET === $keyInfo->getType() )
+		{
+			return $this->getKeyDataForWholeSet( $keyInfo );
+		}
+
+		if ( KeyType::STRING === $keyInfo->getType() )
+		{
+			return $this->getKeyDataForString( $manager, $keyName );
+		}
+
+		throw new KeyTypeNotImplemented( 'Key type not implemented: ' . $keyInfo->getType() );
+	}
+
+	/**
+	 * @param ServerManager   $manager
+	 * @param ProvidesKeyName $keyName
+	 *
+	 * @throws ConnectionFailedException
+	 * @return ProvidesKeyData
+	 */
+	private function getKeyDataForWholeHash( ServerManager $manager, ProvidesKeyName $keyName ) : ProvidesKeyData
+	{
+		$rawListItems = [];
+		$hashValues   = $manager->getAllHashValues( $keyName->getKeyName() );
+
+		foreach ( $hashValues as $hashKey => $hashValue )
+		{
+			$rawListItems[] = sprintf(
+				"Hash key %s:\n%s\n%s",
+				$hashKey,
+				str_repeat( '=', 8 + strlen( (string)$hashKey ) ),
+				$hashValue
+			);
+		}
+
+		$prettyListItems = [];
+		foreach ( $hashValues as $hashKey => $hashValue )
+		{
+			$prettyListItem    = $this->prettifier->prettify( $hashValue );
+			$prettyListItems[] = sprintf(
+				"Hash key %s:\n%s\n%s",
+				$hashKey,
+				str_repeat( '=', 8 + strlen( (string)$hashKey ) ),
+				$prettyListItem
+			);
+		}
+
+		$rawKeyData = implode( "\n\n---\n\n", $rawListItems );
+		$keyData    = implode( "\n\n---\n\n", $prettyListItems );
+
+		return new KeyData( $keyData, $rawKeyData );
+	}
+
+	private function getKeyDataForWholeList( ProvidesKeyInfo $keyInfo ) : ProvidesKeyData
+	{
+		$rawListItems = [];
+		foreach ( $keyInfo->getSubItems() as $index => $listItem )
+		{
+			$rawListItems[] = sprintf(
+				"Element %d:\n%s\n%s",
+				$index,
+				str_repeat( '=', 9 + strlen( (string)$index ) ),
+				$listItem
+			);
+		}
+
+		$prettyListItems = [];
+		foreach ( $keyInfo->getSubItems() as $index => $listItem )
+		{
+			$prettyListItem    = $this->prettifier->prettify( $listItem );
+			$prettyListItems[] = sprintf(
+				"Element %d:\n%s\n%s",
+				$index,
+				str_repeat( '=', 9 + strlen( (string)$index ) ),
+				$prettyListItem
+			);
+		}
+
+		$rawKeyData = implode( "\n\n---\n\n", $rawListItems );
+		$keyData    = implode( "\n\n---\n\n", $prettyListItems );
+
+		return new KeyData( $keyData, $rawKeyData );
+	}
+
+	private function getKeyDataForWholeSet( ProvidesKeyInfo $keyInfo ) : ProvidesKeyData
+	{
+		$rawMembers = [];
+		foreach ( $keyInfo->getSubItems() as $index => $member )
+		{
+			$rawMembers[] = sprintf(
+				"Member %d:\n%s\n%s",
+				$index,
+				str_repeat( '=', 9 + strlen( (string)$index ) ),
+				$member
+			);
+		}
+
+		$prettyMembers = [];
+		foreach ( $keyInfo->getSubItems() as $index => $member )
+		{
+			$prettyMember    = $this->prettifier->prettify( $member );
+			$prettyMembers[] = sprintf(
+				"Member %d:\n%s\n%s",
+				$index,
+				str_repeat( '=', 9 + strlen( (string)$index ) ),
+				$prettyMember
+			);
+		}
+
+		$rawKeyData = implode( "\n\n---\n\n", $rawMembers );
+		$keyData    = implode( "\n\n---\n\n", $prettyMembers );
+
+		return new KeyData( $keyData, $rawKeyData );
+	}
+
+	/**
+	 * @param ServerManager   $manager
+	 * @param ProvidesKeyName $keyName
+	 *
+	 * @throws ConnectionFailedException
+	 * @return ProvidesKeyData
+	 */
+	private function getKeyDataForString( ServerManager $manager, ProvidesKeyName $keyName ) : ProvidesKeyData
+	{
 		$rawKeyData = $manager->getValue( $keyName->getKeyName() ) ?: '';
-		$keyData    = $prettifier->prettify( $rawKeyData );
+		$keyData    = $this->prettifier->prettify( $rawKeyData );
 
 		return new KeyData( $keyData, $rawKeyData );
 	}

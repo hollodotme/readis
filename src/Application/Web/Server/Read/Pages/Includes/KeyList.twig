@@ -19,15 +19,74 @@
                        role="button">
                         {{ keyInfo.getName }}
                         <small class="text-muted">
-                            ({{ keyInfo.countSubItems }} sub items)
+                            ({{ keyInfo.countSubItems }} fields)
                         </small>
                     </a>
-                    <ol class="collapse" id="collapse_{{ loop.index }}">
+                    <ul class="collapse" id="collapse_{{ loop.index }}">
+                        <li style="list-style-type: none;">
+                            <a href="{{ appConfig.getBaseUrl }}/server/{{ serverKey }}/database/{{ database }}/keys/{{ keyInfo.getName|base64encode }}"
+                               data-toggle="modal" data-target="#keyInfoModal" role="button">
+                                (show all fields)
+                            </a>
+                        </li>
                         {% for hashKey in keyInfo.getSubItems %}
                             <li>
                                 <a href="{{ appConfig.getBaseUrl }}/server/{{ serverKey }}/database/{{ database }}/keys/{{ keyInfo.getName|base64encode }}/hash/{{ hashKey|base64encode }}"
                                    data-toggle="modal" data-target="#keyInfoModal" role="button">
                                     {{ hashKey }}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% elseif keyInfo.getType == 'set' %}
+                    <a href="#collapse_{{ loop.index }}" data-key="{{ keyInfo.getName }}" data-toggle="collapse"
+                       role="button">
+                        {{ keyInfo.getName }}
+                        <small class="text-muted">
+                            ({{ keyInfo.countSubItems }} members)
+                        </small>
+                    </a>
+                    <ul class="collapse" id="collapse_{{ loop.index }}">
+                        <li style="list-style-type: none;">
+                            <a href="{{ appConfig.getBaseUrl }}/server/{{ serverKey }}/database/{{ database }}/keys/{{ keyInfo.getName|base64encode }}"
+                               data-toggle="modal" data-target="#keyInfoModal" role="button">
+                                (show all members)
+                            </a>
+                        </li>
+                        {% for hashKey in keyInfo.getSubItems %}
+                            <li>
+                                <a href="{{ appConfig.getBaseUrl }}/server/{{ serverKey }}/database/{{ database }}/keys/{{ keyInfo.getName|base64encode }}/hash/{{ loop.index0|base64encode }}"
+                                   data-toggle="modal" data-target="#keyInfoModal" role="button">
+                                    Member {{ loop.index0 }}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% elseif keyInfo.getType == 'zset' %}
+                    <a href="#collapse_{{ loop.index }}" data-key="{{ keyInfo.getName }}" data-toggle="collapse"
+                       role="button">
+                        {{ keyInfo.getName }}
+                        <small class="text-muted">
+                            ({{ keyInfo.countSubItems }} members)
+                        </small>
+                    </a>
+                    <ol class="collapse" id="collapse_{{ loop.index }}" start="-1">
+                        <li style="list-style-type: none;">
+                            <a href="{{ appConfig.getBaseUrl }}/server/{{ serverKey }}/database/{{ database }}/keys/{{ keyInfo.getName|base64encode }}"
+                               data-toggle="modal" data-target="#keyInfoModal" role="button">
+                                (show all members)
+                            </a>
+                        </li>
+                        {% for score,member in keyInfo.getSubItems %}
+                            <li>
+                                <span class="float-right">
+                                    <small class="text-muted">
+                                        Score: {{ member }}
+                                    </small>
+                                </span>
+                                <a href="{{ appConfig.getBaseUrl }}/server/{{ serverKey }}/database/{{ database }}/keys/{{ keyInfo.getName|base64encode }}/hash/{{ loop.index0|base64encode }}"
+                                   data-toggle="modal" data-target="#keyInfoModal" role="button">
+                                    Member {{ loop.index0 }}
                                 </a>
                             </li>
                         {% endfor %}
@@ -40,7 +99,7 @@
                             ({{ keyInfo.countSubItems }} elements)
                         </small>
                     </a>
-                    <ul class="collapse" id="collapse_{{ loop.index }}">
+                    <ol class="collapse" id="collapse_{{ loop.index }}" start="-1">
                         <li style="list-style-type: none;">
                             <a href="{{ appConfig.getBaseUrl }}/server/{{ serverKey }}/database/{{ database }}/keys/{{ keyInfo.getName|base64encode }}"
                                data-toggle="modal" data-target="#keyInfoModal" role="button">
@@ -51,11 +110,11 @@
                             <li>
                                 <a href="{{ appConfig.getBaseUrl }}/server/{{ serverKey }}/database/{{ database }}/keys/{{ keyInfo.getName|base64encode }}/hash/{{ hashKey|base64encode }}"
                                    data-toggle="modal" data-target="#keyInfoModal" role="button">
-                                    Element {{ hashKey }}
+                                    List element
                                 </a>
                             </li>
                         {% endfor %}
-                    </ul>
+                    </ol>
                 {% else %}
                     <a href="{{ appConfig.getBaseUrl }}/server/{{ serverKey }}/database/{{ database }}/keys/{{ keyInfo.getName|base64encode }}"
                        data-toggle="modal" data-target="#keyInfoModal" role="button">

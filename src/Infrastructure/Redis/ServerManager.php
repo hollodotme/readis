@@ -2,7 +2,7 @@
 
 namespace hollodotme\Readis\Infrastructure\Redis;
 
-use hollodotme\Readis\Application\Interfaces\ProvidesKeyInformation;
+use hollodotme\Readis\Application\Interfaces\ProvidesKeyInfo;
 use hollodotme\Readis\Application\Interfaces\ProvidesSlowLogData;
 use hollodotme\Readis\Infrastructure\Interfaces\ProvidesConnectionData;
 use hollodotme\Readis\Infrastructure\Redis\DTO\KeyInfo;
@@ -99,7 +99,7 @@ final class ServerManager
 	 * @param string   $keyPattern
 	 * @param int|null $limit
 	 *
-	 * @return array|ProvidesKeyInformation[]
+	 * @return array|ProvidesKeyInfo[]
 	 * @throws ConnectionFailedException
 	 */
 	public function getKeyInfoObjects( string $keyPattern, ?int $limit ) : array
@@ -118,10 +118,10 @@ final class ServerManager
 	/**
 	 * @param string $key
 	 *
-	 * @return ProvidesKeyInformation
+	 * @return ProvidesKeyInfo
 	 * @throws ConnectionFailedException
 	 */
-	public function getKeyInfoObject( string $key ) : ProvidesKeyInformation
+	public function getKeyInfoObject( string $key ) : ProvidesKeyInfo
 	{
 		/** @noinspection PhpUndefinedMethodInspection */
 		[$type, $ttl] = $this->redis->multi()->type( $key )->pttl( $key )->exec();
@@ -141,6 +141,25 @@ final class ServerManager
 
 			/** @noinspection PhpUndefinedMethodInspection */
 			$subItems = $this->redis->lrange( $key, 0, $listLength - 1 );
+
+			return new KeyInfo( $key, $type, $ttl, $subItems );
+		}
+
+		if ( $type === Redis::REDIS_SET )
+		{
+			/** @noinspection PhpUndefinedMethodInspection */
+			$subItems = $this->redis->smembers( $key );
+
+			return new KeyInfo( $key, $type, $ttl, $subItems );
+		}
+
+		if ( $type === Redis::REDIS_ZSET )
+		{
+			/** @noinspection PhpUndefinedMethodInspection */
+			$setLength = $this->redis->zcard( $key );
+
+			/** @noinspection PhpUndefinedMethodInspection */
+			$subItems = $this->redis->zrange( $key, 0, $setLength - 1, true );
 
 			return new KeyInfo( $key, $type, $ttl, $subItems );
 		}
@@ -171,6 +190,18 @@ final class ServerManager
 	{
 		/** @noinspection PhpUndefinedMethodInspection */
 		return $this->redis->hGet( $key, $hashKey );
+	}
+
+	/**
+	 * @param string $key
+	 *
+	 * @throws ConnectionFailedException
+	 * @return array
+	 */
+	public function getAllHashValues( string $key ) : array
+	{
+		/** @noinspection PhpUndefinedMethodInspection */
+		return (array)$this->redis->hGetAll( $key );
 	}
 
 	/**
