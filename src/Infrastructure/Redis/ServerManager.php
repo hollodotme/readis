@@ -130,13 +130,22 @@ final class ServerManager
 		{
 			/** @noinspection PhpUndefinedMethodInspection */
 			$subItems = $this->redis->hKeys( $key );
-		}
-		else
-		{
-			$subItems = [];
+
+			return new KeyInfo( $key, $type, $ttl, $subItems );
 		}
 
-		return new KeyInfo( $key, $type, $ttl, $subItems );
+		if ( $type === Redis::REDIS_LIST )
+		{
+			/** @noinspection PhpUndefinedMethodInspection */
+			$listLength = $this->redis->llen( $key );
+
+			/** @noinspection PhpUndefinedMethodInspection */
+			$subItems = $this->redis->lrange( $key, 0, $listLength - 1 );
+
+			return new KeyInfo( $key, $type, $ttl, $subItems );
+		}
+
+		return new KeyInfo( $key, $type, $ttl, [] );
 	}
 
 	/**
@@ -162,5 +171,18 @@ final class ServerManager
 	{
 		/** @noinspection PhpUndefinedMethodInspection */
 		return $this->redis->hGet( $key, $hashKey );
+	}
+
+	/**
+	 * @param string $key
+	 * @param int    $index
+	 *
+	 * @throws ConnectionFailedException
+	 * @return mixed
+	 */
+	public function getListValue( string $key, int $index )
+	{
+		/** @noinspection PhpUndefinedMethodInspection */
+		return $this->redis->lindex( $key, $index );
 	}
 }
