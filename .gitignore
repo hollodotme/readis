@@ -4,3 +4,5 @@
 # local configs
 /config/servers.php
 /config/app.php
+/.redis/data/*
+!.gitkeep
