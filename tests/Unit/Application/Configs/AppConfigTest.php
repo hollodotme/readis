@@ -3,6 +3,7 @@
 namespace hollodotme\Readis\Tests\Unit\Application\Configs;
 
 use hollodotme\Readis\Application\Configs\AppConfig;
+use hollodotme\Readis\Exceptions\ApplicationConfigNotFound;
 use PHPUnit\Framework\ExpectationFailedException;
 use PHPUnit\Framework\TestCase;
 use SebastianBergmann\RecursionContext\InvalidArgumentException;
@@ -99,5 +100,16 @@ final class AppConfigTest extends TestCase
 				'expectedBaseUri' => '/readis',
 			],
 		];
+	}
+
+	/**
+	 * @throws ApplicationConfigNotFound
+	 */
+	public function testThrowsExceptionIfApplicationConfigWasNotFound() : void
+	{
+		$this->expectException( ApplicationConfigNotFound::class );
+		$this->expectExceptionMessage( 'Could not find application config at /path/to/app.php' );
+
+		AppConfig::fromConfigFile( '/path/to/app.php' );
 	}
 }
