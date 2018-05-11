@@ -2,6 +2,7 @@
 
 namespace hollodotme\Readis\Infrastructure\Configs;
 
+use hollodotme\Readis\Exceptions\NoServersConfigured;
 use hollodotme\Readis\Exceptions\ServerConfigNotFound;
 use hollodotme\Readis\Exceptions\ServersConfigNotFound;
 use hollodotme\Readis\Infrastructure\Interfaces\ProvidesServerConfig;
@@ -53,10 +54,16 @@ final class ServerConfigList implements ProvidesServerConfigList
 	}
 
 	/**
+	 * @throws NoServersConfigured
 	 * @return array|ProvidesServerConfig[]
 	 */
 	public function getServerConfigs() : array
 	{
+		if ( 0 === count( $this->servers ) )
+		{
+			throw new NoServersConfigured( 'No servers were configured.' );
+		}
+
 		return $this->servers;
 	}
 
