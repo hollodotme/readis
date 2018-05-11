@@ -3,6 +3,7 @@
 namespace hollodotme\Readis\Tests\Unit\Infrastructure\Configs;
 
 use hollodotme\Readis\Exceptions\ServerConfigNotFound;
+use hollodotme\Readis\Exceptions\ServersConfigNotFound;
 use hollodotme\Readis\Infrastructure\Configs\ServerConfigList;
 use hollodotme\Readis\Infrastructure\Interfaces\ProvidesServerConfig;
 use PHPUnit\Framework\ExpectationFailedException;
@@ -22,7 +23,11 @@ final class ServerConfigListTest extends TestCase
 	 *
 	 * @dataProvider serverConfigsProvider
 	 */
-	public function testCanGetServerConfigForKey( array $serverConfigs, string $serverKey, array $expectedServerConfig ) : void
+	public function testCanGetServerConfigForKey(
+		array $serverConfigs,
+		string $serverKey,
+		array $expectedServerConfig
+	) : void
 	{
 		$serverConfigList = new ServerConfigList( $serverConfigs );
 		$serverConfig     = $serverConfigList->getServerConfig( $serverKey );
@@ -103,5 +108,16 @@ final class ServerConfigListTest extends TestCase
 		$this->expectExceptionMessage( 'Server config not found for server key: 3' );
 
 		$serverConfigList->getServerConfig( '3' );
+	}
+
+	/**
+	 * @throws ServersConfigNotFound
+	 */
+	public function testThrowsExceptionIfServersConfigFileNotFound() : void
+	{
+		$this->expectException( ServersConfigNotFound::class );
+		$this->expectExceptionMessage( 'Could not find servers config at /path/to/servers.php' );
+
+		ServerConfigList::fromConfigFile( '/path/to/servers.php' );
 	}
 }
