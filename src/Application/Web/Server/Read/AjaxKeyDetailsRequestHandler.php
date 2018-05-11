@@ -23,8 +23,12 @@ final class AjaxKeyDetailsRequestHandler extends AbstractRequestHandler implemen
 		$input     = $request->getInput();
 		$serverKey = (string)$input->get( 'serverKey', '0' );
 		$key       = base64_decode( (string)$input->get( 'keyName' ) );
-		$hashKey   = base64_decode( $input->get( 'hashKey', '' ) ) ?: null;
-		$database  = (int)$input->get( 'database', 0 );
+		$hashKey   = base64_decode( $input->get( 'hashKey', '' ) );
+		if ( '' === $hashKey )
+		{
+			$hashKey = null;
+		}
+		$database = (int)$input->get( 'database', 0 );
 
 		$query  = new FetchKeyInformationQuery( $serverKey, $database, $key, $hashKey );
 		$result = (new FetchKeyInformationQueryHandler( $this->getEnv() ))->handle( $query );
