@@ -2,6 +2,8 @@
 
 namespace hollodotme\Readis\Application\Configs;
 
+use hollodotme\Readis\Exceptions\ApplicationConfigNotFound;
+use function file_exists;
 use const PHP_URL_PATH;
 
 final class AppConfig
@@ -14,9 +16,23 @@ final class AppConfig
 		$this->configData = $data;
 	}
 
-	public static function fromConfigFile() : self
+	/**
+	 * @param null|string $configFile
+	 *
+	 * @throws ApplicationConfigNotFound
+	 * @return AppConfig
+	 */
+	public static function fromConfigFile( ?string $configFile = null ) : self
 	{
-		return new self( (array)include __DIR__ . '/../../../config/app.php' );
+		$appConfigFile = $configFile ?? dirname( __DIR__, 3 ) . '/config/app.php';
+
+		if ( !file_exists( $appConfigFile ) )
+		{
+			throw new ApplicationConfigNotFound( 'Could not find application config at ' . $appConfigFile );
+		}
+
+		/** @noinspection PhpIncludeInspection */
+		return new self( (array)require $appConfigFile );
 	}
 
 	public function getBaseUrl() : string
