@@ -6,6 +6,13 @@ php:
   - 7.2
   - 7.2snapshot
 
+git:
+  depth: 5
+
+cache:
+  directories:
+    - $HOME/.composer/cache/files
+
 branches:
   only:
     - master
