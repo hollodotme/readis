@@ -101,7 +101,7 @@ final class TwigPage
 			$name,
 			function ( $value )
 			{
-				return base64_encode( $value );
+				return base64_encode( (string)$value );
 			}
 		);
 	}
