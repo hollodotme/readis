@@ -3,8 +3,10 @@
 namespace hollodotme\Readis\Infrastructure\Configs;
 
 use hollodotme\Readis\Exceptions\ServerConfigNotFound;
+use hollodotme\Readis\Exceptions\ServersConfigNotFound;
 use hollodotme\Readis\Infrastructure\Interfaces\ProvidesServerConfig;
 use hollodotme\Readis\Infrastructure\Interfaces\ProvidesServerConfigList;
+use function file_exists;
 
 final class ServerConfigList implements ProvidesServerConfigList
 {
@@ -16,8 +18,20 @@ final class ServerConfigList implements ProvidesServerConfigList
 		$this->loadServerConfigs( $data );
 	}
 
-	public static function fromConfigFile() : self
+	/**
+	 * @param null|string $configFile
+	 *
+	 * @throws ServersConfigNotFound
+	 * @return ServerConfigList
+	 */
+	public static function fromConfigFile( ?string $configFile = null ) : self
 	{
+		$serversConfigFile = $configFile ?? dirname( __DIR__, 3 ) . '/config/servers.php';
+		if ( !file_exists( $serversConfigFile ) )
+		{
+			throw new ServersConfigNotFound( 'Could not find servers config at ' . $serversConfigFile );
+		}
+
 		return new self( (array)include __DIR__ . '/../../../config/servers.php' );
 	}
 
