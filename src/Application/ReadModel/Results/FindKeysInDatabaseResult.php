@@ -2,22 +2,22 @@
 
 namespace hollodotme\Readis\Application\ReadModel\Results;
 
-use hollodotme\Readis\Application\Interfaces\ProvidesKeyInformation;
+use hollodotme\Readis\Application\Interfaces\ProvidesKeyInfo;
 
 final class FindKeysInDatabaseResult extends AbstractResult
 {
-	/** @var array|ProvidesKeyInformation[] */
+	/** @var array|ProvidesKeyInfo[] */
 	private $keyInfoObjects;
 
 	/**
-	 * @return array|ProvidesKeyInformation[]
+	 * @return array|ProvidesKeyInfo[]
 	 */
 	public function getKeyInfoObjects() : array
 	{
 		return $this->keyInfoObjects;
 	}
 
-	public function setKeyInfoObjects( ProvidesKeyInformation ...$keyInfoObjects ) : void
+	public function setKeyInfoObjects( ProvidesKeyInfo ...$keyInfoObjects ) : void
 	{
 		$this->keyInfoObjects = $keyInfoObjects;
 	}

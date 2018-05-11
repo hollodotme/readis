@@ -2,11 +2,11 @@
 
 namespace hollodotme\Readis\Infrastructure\Redis\DTO;
 
-use hollodotme\Readis\Application\Interfaces\ProvidesKeyInformation;
+use hollodotme\Readis\Application\Interfaces\ProvidesKeyInfo;
 use Redis;
 use function count;
 
-final class KeyInfo implements ProvidesKeyInformation
+final class KeyInfo implements ProvidesKeyInfo
 {
 	/** @var string */
 	private $name;
