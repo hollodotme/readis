@@ -39,6 +39,7 @@ final class ServerConfigList implements ProvidesServerConfigList
 
 	private function loadServerConfigs( array $serverConfigList ) : void
 	{
+		$this->servers = [];
 		foreach ( $serverConfigList as $serverConfig )
 		{
 			$this->servers[] = new ServerConfig(
