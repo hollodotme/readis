@@ -9,13 +9,27 @@ final class KeyName implements ProvidesKeyName
 	/** @var string */
 	private $keyName;
 
-	public function __construct( string $keyName )
+	/** @var null|string */
+	private $subKey;
+
+	public function __construct( string $keyName, ?string $subKey = null )
 	{
 		$this->keyName = $keyName;
+		$this->subKey  = $subKey;
 	}
 
 	public function getKeyName() : string
 	{
 		return $this->keyName;
+	}
+
+	public function hasSubKey() : bool
+	{
+		return (null !== $this->subKey);
+	}
+
+	public function getSubKey() : ?string
+	{
+		return $this->subKey;
 	}
 }
