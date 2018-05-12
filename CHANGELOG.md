@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/) and [Keep a CHANGELOG](http://keepachangelog.com).
 
+## [2.1.0] - YYYY-MM-DD
+
+### Added
+
+**Related to [issue #9]:**
+
+* Output handling for keys of type "set"
+* Output handling for keys of type "zset" (sorted sets)
+* Output handling for keys of type "list"
+* New output of all elements/members/fields in lists, (sorted) sets and hashes
+* HyperLogLog prettifier that adds a hint on HLL encoded values
+
 ## [2.0.0] - 2018-04-03
 
 ### Added
@@ -65,3 +77,5 @@ First stable release.
 [1.1.0]: https://github.com/hollodotme/readis/compare/v1.0.1...v1.1.0
 [1.0.1]: https://github.com/hollodotme/readis/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/hollodotme/readis/tree/v1.0.0
+
+[issue #9]: https://github.com/hollodotme/readis/issues/9

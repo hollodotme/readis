@@ -2,7 +2,7 @@
 
 namespace hollodotme\Readis\Tests\Unit\Infrastructure\Redis;
 
-use hollodotme\Readis\Application\Interfaces\ProvidesKeyInformation;
+use hollodotme\Readis\Application\Interfaces\ProvidesKeyInfo;
 use hollodotme\Readis\Application\Interfaces\ProvidesSlowLogData;
 use hollodotme\Readis\Infrastructure\Interfaces\ProvidesConnectionData;
 use hollodotme\Readis\Infrastructure\Redis\Exceptions\ConnectionFailedException;
@@ -219,7 +219,7 @@ final class ServerManagerTest extends TestCase
 		$serverManager->selectDatabase( 0 );
 		$keyInfos = $serverManager->getKeyInfoObjects( '*', 100 );
 
-		$this->assertContainsOnlyInstancesOf( ProvidesKeyInformation::class, $keyInfos );
+		$this->assertContainsOnlyInstancesOf( ProvidesKeyInfo::class, $keyInfos );
 	}
 
 	/**

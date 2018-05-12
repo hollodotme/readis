@@ -14,14 +14,14 @@ final class FetchKeyInformationQuery
 	private $keyName;
 
 	/** @var null|string */
-	private $hashKey;
+	private $subKey;
 
-	public function __construct( string $serverKey, int $database, string $keyName, ?string $hashKey )
+	public function __construct( string $serverKey, int $database, string $keyName, ?string $subKey )
 	{
 		$this->serverKey = $serverKey;
 		$this->database  = $database;
 		$this->keyName   = $keyName;
-		$this->hashKey   = $hashKey;
+		$this->subKey    = $subKey;
 	}
 
 	public function getServerKey() : string
@@ -39,8 +39,8 @@ final class FetchKeyInformationQuery
 		return $this->keyName;
 	}
 
-	public function getHashKey() : ?string
+	public function getSubKey() : ?string
 	{
-		return $this->hashKey;
+		return $this->subKey;
 	}
 }

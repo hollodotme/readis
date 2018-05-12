@@ -2,45 +2,33 @@
 
 namespace hollodotme\Readis\Application\ReadModel\Results;
 
-use hollodotme\Readis\Application\Interfaces\ProvidesKeyInformation;
+use hollodotme\Readis\Application\Interfaces\ProvidesKeyInfo;
+use hollodotme\Readis\Application\ReadModel\Interfaces\ProvidesKeyData;
 
 final class FetchKeyInformationResult extends AbstractResult
 {
-	/** @var string */
-	private $rawKeyData;
-
-	/** @var string */
+	/** @var ProvidesKeyData */
 	private $keyData;
 
-	/** @var ProvidesKeyInformation */
+	/** @var ProvidesKeyInfo */
 	private $keyInfo;
 
-	public function getRawKeyData() : string
-	{
-		return $this->rawKeyData;
-	}
-
-	public function setRawKeyData( string $rawKeyData ) : void
-	{
-		$this->rawKeyData = $rawKeyData;
-	}
-
-	public function getKeyData() : string
+	public function getKeyData() : ProvidesKeyData
 	{
 		return $this->keyData;
 	}
 
-	public function setKeyData( string $keyData ) : void
+	public function setKeyData( ProvidesKeyData $keyData ) : void
 	{
 		$this->keyData = $keyData;
 	}
 
-	public function getKeyInfo() : ProvidesKeyInformation
+	public function getKeyInfo() : ProvidesKeyInfo
 	{
 		return $this->keyInfo;
 	}
 
-	public function setKeyInfo( ProvidesKeyInformation $keyInfo ) : void
+	public function setKeyInfo( ProvidesKeyInfo $keyInfo ) : void
 	{
 		$this->keyInfo = $keyInfo;
 	}

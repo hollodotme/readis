@@ -4,6 +4,7 @@ namespace hollodotme\Readis\Tests\Integration\Application\ReadModel\QueryHandler
 
 use hollodotme\Readis\Application\ReadModel\Queries\FetchKeyInformationQuery;
 use hollodotme\Readis\Application\ReadModel\QueryHandlers\FetchKeyInformationQueryHandler;
+use hollodotme\Readis\Exceptions\KeyTypeNotImplemented;
 use hollodotme\Readis\Exceptions\ServerConfigNotFound;
 use PHPUnit\Framework\ExpectationFailedException;
 use SebastianBergmann\RecursionContext\InvalidArgumentException;
@@ -16,11 +17,13 @@ final class FetchKeyInformationQueryHandlerTest extends AbstractQueryHandlerTest
 	 * @param string      $expectedKeyType
 	 * @param string      $expectedKeyData
 	 * @param string      $expectedRawKeyData
+	 * @param bool        $expectedHasScore
+	 * @param float|null  $expectedScore
 	 *
 	 * @throws ExpectationFailedException
 	 * @throws InvalidArgumentException
+	 * @throws KeyTypeNotImplemented
 	 * @throws ServerConfigNotFound
-	 *
 	 * @dataProvider keyInfoProvider
 	 */
 	public function testCanFetchKeyInformation(
@@ -28,7 +31,9 @@ final class FetchKeyInformationQueryHandlerTest extends AbstractQueryHandlerTest
 		?string $hashKey,
 		string $expectedKeyType,
 		string $expectedKeyData,
-		string $expectedRawKeyData
+		string $expectedRawKeyData,
+		bool $expectedHasScore,
+		?float $expectedScore
 	) : void
 	{
 		$serverKey = '0';
@@ -39,13 +44,14 @@ final class FetchKeyInformationQueryHandlerTest extends AbstractQueryHandlerTest
 		$this->assertTrue( $result->succeeded() );
 		$this->assertFalse( $result->failed() );
 
-		$keyInfo    = $result->getKeyInfo();
-		$keyData    = $result->getKeyData();
-		$rawKeyData = $result->getRawKeyData();
+		$keyInfo = $result->getKeyInfo();
+		$keyData = $result->getKeyData();
 
 		$this->assertSame( $expectedKeyType, $keyInfo->getType() );
-		$this->assertSame( $expectedKeyData, $keyData );
-		$this->assertSame( $expectedRawKeyData, $rawKeyData );
+		$this->assertSame( $expectedKeyData, $keyData->getKeyData() );
+		$this->assertSame( $expectedRawKeyData, $keyData->getRawKeyData() );
+		$this->assertSame( $expectedHasScore, $keyData->hasScore() );
+		$this->assertSame( $expectedScore, $keyData->getScore() );
 	}
 
 	public function keyInfoProvider() : array
@@ -57,6 +63,8 @@ final class FetchKeyInformationQueryHandlerTest extends AbstractQueryHandlerTest
 				'expectedType'       => 'string',
 				'expectedKeyData'    => 'test',
 				'expectedRawKeyData' => 'test',
+				'expectedHasScore'   => false,
+				'expectedScore'      => null,
 			],
 			[
 				'key'                => 'test',
@@ -64,6 +72,8 @@ final class FetchKeyInformationQueryHandlerTest extends AbstractQueryHandlerTest
 				'expectedType'       => 'hash',
 				'expectedKeyData'    => "{\n    \"json\": {\n        \"key\": \"value\"\n    }\n}",
 				'expectedRawKeyData' => '{"json": {"key": "value"}}',
+				'expectedHasScore'   => false,
+				'expectedScore'      => null,
 			],
 		];
 	}
@@ -72,6 +82,7 @@ final class FetchKeyInformationQueryHandlerTest extends AbstractQueryHandlerTest
 	 * @throws ExpectationFailedException
 	 * @throws InvalidArgumentException
 	 * @throws ServerConfigNotFound
+	 * @throws KeyTypeNotImplemented
 	 */
 	public function testResultFailsIfServerConfigNotFound() : void
 	{
@@ -91,6 +102,7 @@ final class FetchKeyInformationQueryHandlerTest extends AbstractQueryHandlerTest
 	 * @throws ExpectationFailedException
 	 * @throws InvalidArgumentException
 	 * @throws ServerConfigNotFound
+	 * @throws KeyTypeNotImplemented
 	 */
 	public function testResultFailsIfConnectionToServerFailed() : void
 	{

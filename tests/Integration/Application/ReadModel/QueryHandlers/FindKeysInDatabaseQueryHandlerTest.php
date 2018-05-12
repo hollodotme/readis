@@ -2,7 +2,7 @@
 
 namespace hollodotme\Readis\Tests\Integration\Application\ReadModel\QueryHandlers;
 
-use hollodotme\Readis\Application\Interfaces\ProvidesKeyInformation;
+use hollodotme\Readis\Application\Interfaces\ProvidesKeyInfo;
 use hollodotme\Readis\Application\ReadModel\Queries\FindKeysInDatabaseQuery;
 use hollodotme\Readis\Application\ReadModel\QueryHandlers\FindKeysInDatabaseQueryHandler;
 use hollodotme\Readis\Exceptions\ServerConfigNotFound;
@@ -37,7 +37,7 @@ final class FindKeysInDatabaseQueryHandlerTest extends AbstractQueryHandlerTest
 		$this->assertTrue( $result->succeeded() );
 		$this->assertFalse( $result->failed() );
 		$this->assertCount( $expectedKeyCount, $result->getKeyInfoObjects() );
-		$this->assertContainsOnlyInstancesOf( ProvidesKeyInformation::class, $result->getKeyInfoObjects() );
+		$this->assertContainsOnlyInstancesOf( ProvidesKeyInfo::class, $result->getKeyInfoObjects() );
 	}
 
 	public function keySearchProvider() : array

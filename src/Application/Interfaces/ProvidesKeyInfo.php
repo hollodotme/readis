@@ -2,7 +2,7 @@
 
 namespace hollodotme\Readis\Application\Interfaces;
 
-interface ProvidesKeyInformation
+interface ProvidesKeyInfo
 {
 	public function getName() : string;
 

@@ -1,7 +1,7 @@
 <div class="modal-header">
     <span class="modal-title">
         Content of:
-        <code>{{ keyInfo.getName }}{% if hashKey is not empty %} &raquo; {{ hashKey }}{% endif %}</code>
+        <code>{{ keyInfo.getName }}{% if subKey is not empty %} &raquo; {{ subKey }}{% endif %}</code>
     </span>
     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
         <span aria-hidden="true">&times;</span>
@@ -9,7 +9,7 @@
 </div>
 <div class="modal-body">
     <div>
-        {% if rawKeyData != keyData %}
+        {% if keyData.getRawKeyData != keyData.getKeyData %}
             <ul class="nav nav-tabs small">
                 <li class="nav-item">
                     <a class="nav-link active" href="#prettyData" aria-controls="prettyData" role="tab"
@@ -26,19 +26,18 @@
             <div class="tab-content">
                 <div role="tabpanel" class="tab-pane active" id="prettyData">
                     <div class="container">
-                        <pre>{{ keyData }}</pre>
+                        <pre>{{ keyData.getKeyData }}</pre>
                     </div>
                 </div>
                 <div role="tabpanel" class="tab-pane" id="rawData">
                     <div class="container">
-                        <pre>{{ rawKeyData }}</pre>
+                        <pre>{{ keyData.getRawKeyData }}</pre>
                     </div>
                 </div>
             </div>
         {% else %}
-            <pre>{{ keyData }}</pre>
+            <pre>{{ keyData.getKeyData }}</pre>
         {% endif %}
-
     </div>
 </div>
 <div class="modal-footer">
@@ -57,6 +56,13 @@
                         {{ keyInfo.getTimeToLive }}
                     {% endif %}
                 </code>
+                {% if keyData.hasScore %}
+                    &middot;
+                    Score:
+                    <code>
+                        {{ keyData.getScore }}
+                    </code>
+                {% endif %}
             </div>
             <div class="col align-self-end text-right">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

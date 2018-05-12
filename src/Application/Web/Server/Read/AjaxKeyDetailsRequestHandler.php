@@ -23,10 +23,14 @@ final class AjaxKeyDetailsRequestHandler extends AbstractRequestHandler implemen
 		$input     = $request->getInput();
 		$serverKey = (string)$input->get( 'serverKey', '0' );
 		$key       = base64_decode( (string)$input->get( 'keyName' ) );
-		$hashKey   = base64_decode( $input->get( 'hashKey', '' ) ) ?: null;
-		$database  = (int)$input->get( 'database', 0 );
+		$subKey    = base64_decode( $input->get( 'subKey', '' ) );
+		if ( '' === $subKey )
+		{
+			$subKey = null;
+		}
+		$database = (int)$input->get( 'database', 0 );
 
-		$query  = new FetchKeyInformationQuery( $serverKey, $database, $key, $hashKey );
+		$query  = new FetchKeyInformationQuery( $serverKey, $database, $key, $subKey );
 		$result = (new FetchKeyInformationQueryHandler( $this->getEnv() ))->handle( $query );
 
 		if ( $result->failed() )
@@ -38,10 +42,9 @@ final class AjaxKeyDetailsRequestHandler extends AbstractRequestHandler implemen
 		}
 
 		$data = [
-			'rawKeyData' => $result->getRawKeyData(),
-			'keyData'    => $result->getKeyData(),
-			'keyInfo'    => $result->getKeyInfo(),
-			'hashKey'    => $hashKey,
+			'keyData' => $result->getKeyData(),
+			'keyInfo' => $result->getKeyInfo(),
+			'subKey'  => $subKey,
 		];
 
 		(new TwigPage())->respond( 'Server/Read/Pages/Includes/KeyData.twig', $data );
