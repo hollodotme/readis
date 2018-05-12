@@ -42,7 +42,6 @@ final class AjaxKeyDetailsRequestHandler extends AbstractRequestHandler implemen
 		}
 
 		$data = [
-			'rawKeyData' => $result->getRawKeyData(),
 			'keyData'    => $result->getKeyData(),
 			'keyInfo'    => $result->getKeyInfo(),
 			'hashKey'    => $hashKey,

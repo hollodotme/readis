@@ -77,17 +77,15 @@
                                 (show all members)
                             </a>
                         </li>
-                        {% for score,member in keyInfo.getSubItems %}
+                        {% for member,score in keyInfo.getSubItems %}
                             <li>
-                                <span class="float-right">
-                                    <small class="text-muted">
-                                        Score: {{ member }}
-                                    </small>
-                                </span>
                                 <a href="{{ appConfig.getBaseUrl }}/server/{{ serverKey }}/database/{{ database }}/keys/{{ keyInfo.getName|base64encode }}/hash/{{ loop.index0|base64encode }}"
                                    data-toggle="modal" data-target="#keyInfoModal" role="button">
                                     Member {{ loop.index0 }}
                                 </a>
+                                <small class="text-muted">
+                                    | Score: {{ score }}
+                                </small>
                             </li>
                         {% endfor %}
                     </ol>

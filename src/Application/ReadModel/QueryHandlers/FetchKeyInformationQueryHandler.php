@@ -57,8 +57,7 @@ final class FetchKeyInformationQueryHandler extends AbstractQueryHandler
 			$keyData = $this->getKeyData( $manager, $keyInfo, $keyName );
 
 			$result = new FetchKeyInformationResult();
-			$result->setRawKeyData( $keyData->getRawKeyData() );
-			$result->setKeyData( $keyData->getKeyData() );
+			$result->setKeyData( $keyData );
 			$result->setKeyInfo( $keyInfo );
 
 			return $result;
@@ -96,7 +95,7 @@ final class FetchKeyInformationQueryHandler extends AbstractQueryHandler
 			return $this->getSubKeyData( $manager, $keyInfo, $keyName );
 		}
 
-		return $this->getSingleKeyData( $manager, $keyInfo, $keyName );
+		return $this->getWholeKeyData( $manager, $keyInfo, $keyName );
 	}
 
 	/**
@@ -138,6 +137,23 @@ final class FetchKeyInformationQueryHandler extends AbstractQueryHandler
 			return new KeyData( $keyData, $rawKeyData );
 		}
 
+		if ( KeyType::SORTED_SET === $keyInfo->getType() )
+		{
+			$i = 0;
+			foreach ( $keyInfo->getSubItems() as $member => $score )
+			{
+				if ( (int)$keyName->getSubKey() !== $i++ )
+				{
+					continue;
+				}
+
+				$rawKeyData = $member;
+				$keyData    = $this->prettifier->prettify( $member );
+
+				return new KeyData( $keyData, $rawKeyData, $score );
+			}
+		}
+
 		throw new KeyTypeNotImplemented(
 			'Key type not implemented or does not support sub keys: ' . $keyInfo->getType()
 		);
@@ -152,7 +168,7 @@ final class FetchKeyInformationQueryHandler extends AbstractQueryHandler
 	 * @throws KeyTypeNotImplemented
 	 * @return ProvidesKeyData
 	 */
-	private function getSingleKeyData(
+	private function getWholeKeyData(
 		ServerManager $manager,
 		ProvidesKeyInfo $keyInfo,
 		ProvidesKeyName $keyName
@@ -171,6 +187,11 @@ final class FetchKeyInformationQueryHandler extends AbstractQueryHandler
 		if ( KeyType::SET === $keyInfo->getType() )
 		{
 			return $this->getKeyDataForWholeSet( $keyInfo );
+		}
+
+		if ( KeyType::SORTED_SET === $keyInfo->getType() )
+		{
+			return $this->getKeyDataForWholeSortedSet( $keyInfo );
 		}
 
 		if ( KeyType::STRING === $keyInfo->getType() )
@@ -198,7 +219,7 @@ final class FetchKeyInformationQueryHandler extends AbstractQueryHandler
 			$rawListItems[] = sprintf(
 				"Hash key %s:\n%s\n%s",
 				$hashKey,
-				str_repeat( '=', 8 + strlen( (string)$hashKey ) ),
+				str_repeat( '=', 10 + strlen( (string)$hashKey ) ),
 				$hashValue
 			);
 		}
@@ -210,7 +231,7 @@ final class FetchKeyInformationQueryHandler extends AbstractQueryHandler
 			$prettyListItems[] = sprintf(
 				"Hash key %s:\n%s\n%s",
 				$hashKey,
-				str_repeat( '=', 8 + strlen( (string)$hashKey ) ),
+				str_repeat( '=', 10 + strlen( (string)$hashKey ) ),
 				$prettyListItem
 			);
 		}
@@ -260,7 +281,7 @@ final class FetchKeyInformationQueryHandler extends AbstractQueryHandler
 			$rawMembers[] = sprintf(
 				"Member %d:\n%s\n%s",
 				$index,
-				str_repeat( '=', 9 + strlen( (string)$index ) ),
+				str_repeat( '=', 8 + strlen( (string)$index ) ),
 				$member
 			);
 		}
@@ -272,9 +293,46 @@ final class FetchKeyInformationQueryHandler extends AbstractQueryHandler
 			$prettyMembers[] = sprintf(
 				"Member %d:\n%s\n%s",
 				$index,
-				str_repeat( '=', 9 + strlen( (string)$index ) ),
+				str_repeat( '=', 8 + strlen( (string)$index ) ),
 				$prettyMember
 			);
+		}
+
+		$rawKeyData = implode( "\n\n---\n\n", $rawMembers );
+		$keyData    = implode( "\n\n---\n\n", $prettyMembers );
+
+		return new KeyData( $keyData, $rawKeyData );
+	}
+
+	private function getKeyDataForWholeSortedSet( ProvidesKeyInfo $keyInfo ) : ProvidesKeyData
+	{
+		$rawMembers = [];
+		$i          = 0;
+		foreach ( $keyInfo->getSubItems() as $member => $score )
+		{
+			$rawMembers[] = sprintf(
+				"Member %d (Score: %d):\n%s\n%s",
+				$i,
+				$score,
+				str_repeat( '=', 18 + strlen( (string)$i ) + strlen( (string)$score ) ),
+				$member
+			);
+			$i++;
+		}
+
+		$prettyMembers = [];
+		$i             = 0;
+		foreach ( $keyInfo->getSubItems() as $member => $score )
+		{
+			$prettyMember    = $this->prettifier->prettify( $member );
+			$prettyMembers[] = sprintf(
+				"Member %d (Score: %d):\n%s\n%s",
+				$i,
+				$score,
+				str_repeat( '=', 18 + strlen( (string)$i ) + strlen( (string)$score ) ),
+				$prettyMember
+			);
+			$i++;
 		}
 
 		$rawKeyData = implode( "\n\n---\n\n", $rawMembers );
