@@ -48,4 +48,18 @@ final class Env extends AbstractObjectPool implements ProvidesInfrastructure
 			}
 		);
 	}
+
+	/**
+	 * @param string $serverKey
+	 *
+	 * @throws Exceptions\ServerConfigNotFound
+	 * @return ServerManager
+	 */
+	public function getServerManagerForServerKey( string $serverKey ) : ServerManager
+	{
+		$serverConfigList = $this->getServerConfigList();
+		$serverConfig     = $serverConfigList->getServerConfig( $serverKey );
+
+		return $this->getServerManager( $serverConfig );
+	}
 }

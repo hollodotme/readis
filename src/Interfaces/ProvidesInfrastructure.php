@@ -14,4 +14,6 @@ interface ProvidesInfrastructure
 	public function getServerConfigList() : ProvidesServerConfigList;
 
 	public function getServerManager( ProvidesServerConfig $serverConfig ) : ServerManager;
+
+	public function getServerManagerForServerKey( string $serverKey ) : ServerManager;
 }
