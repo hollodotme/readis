@@ -57,7 +57,7 @@ final class FetchKeyInformationQueryHandler extends AbstractQueryHandler
 
 			$keyInfo = $manager->getKeyInfoObject( $query->getKeyName() );
 
-			$keyName = new KeyName( $query->getKeyName(), $query->getHashKey() );
+			$keyName = new KeyName( $query->getKeyName(), $query->getSubKey() );
 			$keyData = $this->getKeyData( $manager, $keyInfo, $keyName );
 
 			$result = new FetchKeyInformationResult();
