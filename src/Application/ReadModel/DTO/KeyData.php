@@ -12,10 +12,14 @@ final class KeyData implements ProvidesKeyData
 	/** @var string */
 	private $rawKeyData;
 
-	public function __construct( string $keyData, string $rawKeyData )
+	/** @var null|float */
+	private $score;
+
+	public function __construct( string $keyData, string $rawKeyData, ?float $score = null )
 	{
 		$this->keyData    = $keyData;
 		$this->rawKeyData = $rawKeyData;
+		$this->score      = $score;
 	}
 
 	public function getKeyData() : string
@@ -27,4 +31,15 @@ final class KeyData implements ProvidesKeyData
 	{
 		return $this->rawKeyData;
 	}
+
+	public function hasScore() : bool
+	{
+		return (null !== $this->score);
+	}
+
+	public function getScore() : ?float
+	{
+		return $this->score;
+	}
+
 }

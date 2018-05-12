@@ -7,4 +7,8 @@ interface ProvidesKeyData
 	public function getKeyData() : string;
 
 	public function getRawKeyData() : string;
+
+	public function hasScore() : bool;
+
+	public function getScore() : ?float;
 }
