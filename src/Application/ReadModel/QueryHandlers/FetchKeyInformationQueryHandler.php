@@ -10,6 +10,7 @@ use hollodotme\Readis\Application\ReadModel\DTO\KeyName;
 use hollodotme\Readis\Application\ReadModel\Interfaces\PrettifiesString;
 use hollodotme\Readis\Application\ReadModel\Interfaces\ProvidesKeyData;
 use hollodotme\Readis\Application\ReadModel\Interfaces\ProvidesKeyName;
+use hollodotme\Readis\Application\ReadModel\Prettifiers\HyperLogLogPrettifier;
 use hollodotme\Readis\Application\ReadModel\Prettifiers\JsonPrettifier;
 use hollodotme\Readis\Application\ReadModel\Prettifiers\PrettifierChain;
 use hollodotme\Readis\Application\ReadModel\Queries\FetchKeyInformationQuery;
@@ -32,7 +33,10 @@ final class FetchKeyInformationQueryHandler extends AbstractQueryHandler
 		parent::__construct( $env );
 
 		$this->prettifier = new PrettifierChain();
-		$this->prettifier->addPrettifiers( new JsonPrettifier() );
+		$this->prettifier->addPrettifiers(
+			new JsonPrettifier(),
+			new HyperLogLogPrettifier()
+		);
 	}
 
 	/**
@@ -304,16 +308,22 @@ final class FetchKeyInformationQueryHandler extends AbstractQueryHandler
 		return new KeyData( $keyData, $rawKeyData );
 	}
 
+	/**
+	 * @param ProvidesKeyInfo $keyInfo
+	 *
+	 * @return ProvidesKeyData
+	 */
 	private function getKeyDataForWholeSortedSet( ProvidesKeyInfo $keyInfo ) : ProvidesKeyData
 	{
+		$setMembers = $keyInfo->getSubItems();
 		$rawMembers = [];
 		$i          = 0;
-		foreach ( $keyInfo->getSubItems() as $member => $score )
+		foreach ( $setMembers as $member => $score )
 		{
 			$rawMembers[] = sprintf(
-				"Member %d (Score: %d):\n%s\n%s",
+				"Member %d (Score: %s):\n%s\n%s",
 				$i,
-				$score,
+				(string)$score,
 				str_repeat( '=', 18 + strlen( (string)$i ) + strlen( (string)$score ) ),
 				$member
 			);
@@ -322,13 +332,13 @@ final class FetchKeyInformationQueryHandler extends AbstractQueryHandler
 
 		$prettyMembers = [];
 		$i             = 0;
-		foreach ( $keyInfo->getSubItems() as $member => $score )
+		foreach ( $setMembers as $member => $score )
 		{
 			$prettyMember    = $this->prettifier->prettify( $member );
 			$prettyMembers[] = sprintf(
-				"Member %d (Score: %d):\n%s\n%s",
+				"Member %d (Score: %s):\n%s\n%s",
 				$i,
-				$score,
+				(string)$score,
 				str_repeat( '=', 18 + strlen( (string)$i ) + strlen( (string)$score ) ),
 				$prettyMember
 			);
