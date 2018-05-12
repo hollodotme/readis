@@ -1,0 +1,73 @@
+*8
+$4
+ZADD
+$4
+zset
+$1
+1
+$3
+one
+$1
+2
+$3
+two
+$1
+3
+$25
+{"json":{"key": "value"}}
+*4
+$4
+ZADD
+$4
+zset
+$1
+2
+$9
+two again
+*3
+$3
+SET
+$6
+string
+$25
+{"json":{"key": "value"}}
+*5
+$4
+SADD
+$3
+set
+$3
+one
+$3
+two
+$25
+{"json":{"key": "value"}}
+*5
+$5
+RPUSH
+$4
+list
+$3
+one
+$1
+2
+$25
+{"json":{"key": "value"}}
+*4
+$4
+HSET
+$4
+hash
+$5
+field
+$5
+value
+*4
+$4
+HSET
+$4
+hash
+$4
+json
+$25
+{"json":{"key": "value"}}
