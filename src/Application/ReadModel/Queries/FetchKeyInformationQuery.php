@@ -4,9 +4,6 @@ namespace hollodotme\Readis\Application\ReadModel\Queries;
 
 final class FetchKeyInformationQuery
 {
-	/** @var string */
-	private $serverKey;
-
 	/** @var int */
 	private $database;
 
@@ -16,17 +13,11 @@ final class FetchKeyInformationQuery
 	/** @var null|string */
 	private $subKey;
 
-	public function __construct( string $serverKey, int $database, string $keyName, ?string $subKey )
+	public function __construct( int $database, string $keyName, ?string $subKey )
 	{
-		$this->serverKey = $serverKey;
-		$this->database  = $database;
-		$this->keyName   = $keyName;
-		$this->subKey    = $subKey;
-	}
-
-	public function getServerKey() : string
-	{
-		return $this->serverKey;
+		$this->database = $database;
+		$this->keyName  = $keyName;
+		$this->subKey   = $subKey;
 	}
 
 	public function getDatabase() : int

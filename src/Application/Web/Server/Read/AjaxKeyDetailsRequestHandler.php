@@ -29,9 +29,10 @@ final class AjaxKeyDetailsRequestHandler extends AbstractRequestHandler implemen
 			$subKey = null;
 		}
 		$database = (int)$input->get( 'database', 0 );
+		$manager  = $this->getEnv()->getServerManagerForServerKey( $serverKey );
 
-		$query  = new FetchKeyInformationQuery( $serverKey, $database, $key, $subKey );
-		$result = (new FetchKeyInformationQueryHandler( $this->getEnv() ))->handle( $query );
+		$query  = new FetchKeyInformationQuery( $database, $key, $subKey );
+		$result = (new FetchKeyInformationQueryHandler( $manager ))->handle( $query );
 
 		if ( $result->failed() )
 		{

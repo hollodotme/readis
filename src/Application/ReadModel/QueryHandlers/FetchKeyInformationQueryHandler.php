@@ -2,12 +2,9 @@
 
 namespace hollodotme\Readis\Application\ReadModel\QueryHandlers;
 
-use hollodotme\Readis\Application\Interfaces\ProvidesKeyInfo;
 use hollodotme\Readis\Application\ReadModel\Constants\ResultType;
 use hollodotme\Readis\Application\ReadModel\DTO\KeyName;
-use hollodotme\Readis\Application\ReadModel\Interfaces\PrettifiesString;
-use hollodotme\Readis\Application\ReadModel\Interfaces\ProvidesKeyData;
-use hollodotme\Readis\Application\ReadModel\Interfaces\ProvidesKeyName;
+use hollodotme\Readis\Application\ReadModel\Interfaces\BuildsKeyData;
 use hollodotme\Readis\Application\ReadModel\KeyDataBuilders\HashKeyDataBuilder;
 use hollodotme\Readis\Application\ReadModel\KeyDataBuilders\HashSubKeyDataBuilder;
 use hollodotme\Readis\Application\ReadModel\KeyDataBuilders\KeyDataBuilder;
@@ -24,24 +21,37 @@ use hollodotme\Readis\Application\ReadModel\Prettifiers\PrettifierChain;
 use hollodotme\Readis\Application\ReadModel\Queries\FetchKeyInformationQuery;
 use hollodotme\Readis\Application\ReadModel\Results\FetchKeyInformationResult;
 use hollodotme\Readis\Exceptions\KeyTypeNotImplemented;
-use hollodotme\Readis\Exceptions\ServerConfigNotFound;
 use hollodotme\Readis\Infrastructure\Redis\Exceptions\ConnectionFailedException;
 use hollodotme\Readis\Infrastructure\Redis\ServerManager;
-use hollodotme\Readis\Interfaces\ProvidesInfrastructure;
 
-final class FetchKeyInformationQueryHandler extends AbstractQueryHandler
+final class FetchKeyInformationQueryHandler
 {
-	/** @var PrettifiesString */
-	private $prettifier;
+	/** @var ServerManager */
+	private $manager;
 
-	public function __construct( ProvidesInfrastructure $env )
+	/** @var BuildsKeyData */
+	private $keyDataBuilder;
+
+	public function __construct( ServerManager $manager )
 	{
-		parent::__construct( $env );
+		$this->manager = $manager;
 
-		$this->prettifier = new PrettifierChain();
-		$this->prettifier->addPrettifiers(
+		$prettifier = new PrettifierChain();
+		$prettifier->addPrettifiers(
 			new JsonPrettifier(),
 			new HyperLogLogPrettifier()
+		);
+
+		$this->keyDataBuilder = new KeyDataBuilder(
+			new HashKeyDataBuilder( $manager, $prettifier ),
+			new HashSubKeyDataBuilder( $manager, $prettifier ),
+			new ListKeyDataBuilder( $manager, $prettifier ),
+			new ListSubKeyDataBuilder( $manager, $prettifier ),
+			new SetKeyDataBuilder( $manager, $prettifier ),
+			new SetSubKeyDataBuilder( $manager, $prettifier ),
+			new SortedSetKeyDataBuilder( $manager, $prettifier ),
+			new SortedSetSubKeyDataBuilder( $manager, $prettifier ),
+			new StringKeyDataBuilder( $manager, $prettifier )
 		);
 	}
 
@@ -54,16 +64,11 @@ final class FetchKeyInformationQueryHandler extends AbstractQueryHandler
 	{
 		try
 		{
-			$serverConfigList = $this->getEnv()->getServerConfigList();
-			$serverConfig     = $serverConfigList->getServerConfig( $query->getServerKey() );
-			$manager          = $this->getEnv()->getServerManager( $serverConfig );
+			$this->manager->selectDatabase( $query->getDatabase() );
 
-			$manager->selectDatabase( $query->getDatabase() );
-
-			$keyInfo = $manager->getKeyInfoObject( $query->getKeyName() );
-
+			$keyInfo = $this->manager->getKeyInfoObject( $query->getKeyName() );
 			$keyName = new KeyName( $query->getKeyName(), $query->getSubKey() );
-			$keyData = $this->getKeyData( $manager, $keyInfo, $keyName );
+			$keyData = $this->keyDataBuilder->buildKeyData( $keyInfo, $keyName );
 
 			$result = new FetchKeyInformationResult();
 			$result->setKeyData( $keyData );
@@ -71,7 +76,7 @@ final class FetchKeyInformationQueryHandler extends AbstractQueryHandler
 
 			return $result;
 		}
-		catch ( ServerConfigNotFound | KeyTypeNotImplemented $e )
+		catch ( KeyTypeNotImplemented $e )
 		{
 			return new FetchKeyInformationResult( ResultType::FAILURE, $e->getMessage() );
 		}
@@ -82,34 +87,5 @@ final class FetchKeyInformationQueryHandler extends AbstractQueryHandler
 				sprintf( 'Could not connect to redis server: %s', $e->getMessage() )
 			);
 		}
-	}
-
-	/**
-	 * @param ServerManager   $manager
-	 * @param ProvidesKeyInfo $keyInfo
-	 * @param ProvidesKeyName $keyName
-	 *
-	 * @throws KeyTypeNotImplemented
-	 * @return ProvidesKeyData
-	 */
-	private function getKeyData(
-		ServerManager $manager,
-		ProvidesKeyInfo $keyInfo,
-		ProvidesKeyName $keyName
-	) : ProvidesKeyData
-	{
-		$keyDataBuilder = new KeyDataBuilder(
-			new HashKeyDataBuilder( $manager, $this->prettifier ),
-			new HashSubKeyDataBuilder( $manager, $this->prettifier ),
-			new ListKeyDataBuilder( $manager, $this->prettifier ),
-			new ListSubKeyDataBuilder( $manager, $this->prettifier ),
-			new SetKeyDataBuilder( $manager, $this->prettifier ),
-			new SetSubKeyDataBuilder( $manager, $this->prettifier ),
-			new SortedSetKeyDataBuilder( $manager, $this->prettifier ),
-			new SortedSetSubKeyDataBuilder( $manager, $this->prettifier ),
-			new StringKeyDataBuilder( $manager, $this->prettifier )
-		);
-
-		return $keyDataBuilder->buildKeyData( $keyInfo, $keyName );
 	}
 }
