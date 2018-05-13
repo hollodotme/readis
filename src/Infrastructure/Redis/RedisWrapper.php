@@ -50,7 +50,7 @@ final class RedisWrapper
 
 		try
 		{
-			$this->connected = $this->redis->connect(
+			$this->connected = @$this->redis->connect(
 				$this->connectionData->getHost(),
 				$this->connectionData->getPort(),
 				$this->connectionData->getTimeout(),
