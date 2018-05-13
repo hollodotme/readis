@@ -34,12 +34,27 @@ abstract class AbstractKeyDataBuilderTest extends TestCase
 			              $this->returnCallback(
 				              function ( string $key, int $index )
 				              {
-					              if ( 0 === $index )
+					              if ( 'set' === $key && 0 === $index )
 					              {
 						              return '{"json": {"key": "value"}}';
 					              }
 
-					              throw new RuntimeException( 'Could not find key in set anymore.' );
+					              throw new RuntimeException( 'Could not find member in set anymore.' );
+				              }
+			              )
+		              );
+
+		$this->manager->method( 'getListElement' )
+		              ->will(
+			              $this->returnCallback(
+				              function ( string $key, int $index )
+				              {
+					              if ( 'list' === $key && 0 === $index )
+					              {
+						              return '{"json": {"key": "value"}}';
+					              }
+
+					              throw new RuntimeException( 'Could not find element in list anymore.' );
 				              }
 			              )
 		              );
