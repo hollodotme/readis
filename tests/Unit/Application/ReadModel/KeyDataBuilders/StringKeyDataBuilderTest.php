@@ -53,4 +53,28 @@ final class StringKeyDataBuilderTest extends AbstractKeyDataBuilderTest
 		/** @var ProvidesKeyName $keysNameStub */
 		$this->assertTrue( $keyDataBuilder->canBuildKeyData( $keyInfoStub, $keysNameStub ) );
 	}
+
+	/**
+	 * @throws \PHPUnit\Framework\ExpectationFailedException
+	 * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+	 */
+	public function testCanNotBuildKeyData()
+	{
+		$keyDataBuilder = new StringKeyDataBuilder( $this->getManager(), $this->getPrettifier() );
+
+		$keyInfoStub = $this->getMockBuilder( ProvidesKeyInfo::class )->getMockForAbstractClass();
+		$keyInfoStub->method( 'getType' )->willReturn( 'string' );
+		$keysNameStub = $this->getMockBuilder( ProvidesKeyName::class )->getMockForAbstractClass();
+		$keysNameStub->method( 'hasSubKey' )->willReturn( true );
+
+		/** @var ProvidesKeyInfo $keyInfoStub */
+		/** @var ProvidesKeyName $keysNameStub */
+
+		$this->assertFalse( $keyDataBuilder->canBuildKeyData( $keyInfoStub, $keysNameStub ) );
+
+		$keyInfoStub->method( 'getType' )->willReturn( 'hash' );
+		$keysNameStub->method( 'hasSubKey' )->willReturn( false );
+
+		$this->assertFalse( $keyDataBuilder->canBuildKeyData( $keyInfoStub, $keysNameStub ) );
+	}
 }
