@@ -88,6 +88,13 @@ abstract class AbstractKeyDataBuilderTest extends TestCase
 			]
 		);
 
+		$this->manager->method( 'getAllSetMembers' )->willReturn(
+			[
+				'value',
+				'{"json": {"key": "value"}}',
+			]
+		);
+
 		$this->prettifier = new class implements PrettifiesString
 		{
 			public function canPrettify( string $data ) : bool
