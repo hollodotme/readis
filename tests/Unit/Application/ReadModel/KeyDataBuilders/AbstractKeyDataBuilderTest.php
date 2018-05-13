@@ -74,6 +74,13 @@ abstract class AbstractKeyDataBuilderTest extends TestCase
 			              )
 		              );
 
+		$this->manager->method( 'getAllHashValues' )->willReturn(
+			[
+				'field' => 'value',
+				'json'  => '{"json": {"key": "value"}}',
+			]
+		);
+
 		$this->prettifier = new class implements PrettifiesString
 		{
 			public function canPrettify( string $data ) : bool
