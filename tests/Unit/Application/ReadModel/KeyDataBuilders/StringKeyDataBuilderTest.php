@@ -14,18 +14,18 @@ final class StringKeyDataBuilderTest extends AbstractKeyDataBuilderTest
 	 * @throws \PHPUnit\Framework\ExpectationFailedException
 	 * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
 	 */
-	public function testBuildKeyData()
+	public function testBuildKeyData() : void
 	{
 		$keyDataBuilder = new StringKeyDataBuilder( $this->getManager(), $this->getPrettifier() );
 
 		$keyInfoStub = $this->getMockBuilder( ProvidesKeyInfo::class )->getMockForAbstractClass();
 		$keyInfoStub->method( 'getType' )->willReturn( 'string' );
-		$keysNameStub = $this->getMockBuilder( ProvidesKeyName::class )->getMockForAbstractClass();
-		$keysNameStub->method( 'getKeyName' )->willReturn( 'string' );
+		$keyNameStub = $this->getMockBuilder( ProvidesKeyName::class )->getMockForAbstractClass();
+		$keyNameStub->method( 'getKeyName' )->willReturn( 'string' );
 
 		/** @var ProvidesKeyInfo $keyInfoStub */
-		/** @var ProvidesKeyName $keysNameStub */
-		$keyData = $keyDataBuilder->buildKeyData( $keyInfoStub, $keysNameStub );
+		/** @var ProvidesKeyName $keyNameStub */
+		$keyData = $keyDataBuilder->buildKeyData( $keyInfoStub, $keyNameStub );
 
 		$expectedKeyData    = 'Pretty: {"json": {"key": "value"}}';
 		$expectedRawKeyData = '{"json": {"key": "value"}}';
@@ -40,41 +40,41 @@ final class StringKeyDataBuilderTest extends AbstractKeyDataBuilderTest
 	 * @throws \PHPUnit\Framework\ExpectationFailedException
 	 * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
 	 */
-	public function testCanBuildKeyData()
+	public function testCanBuildKeyData() : void
 	{
 		$keyDataBuilder = new StringKeyDataBuilder( $this->getManager(), $this->getPrettifier() );
 
 		$keyInfoStub = $this->getMockBuilder( ProvidesKeyInfo::class )->getMockForAbstractClass();
 		$keyInfoStub->method( 'getType' )->willReturn( 'string' );
-		$keysNameStub = $this->getMockBuilder( ProvidesKeyName::class )->getMockForAbstractClass();
-		$keysNameStub->method( 'hasSubKey' )->willReturn( false );
+		$keyNameStub = $this->getMockBuilder( ProvidesKeyName::class )->getMockForAbstractClass();
+		$keyNameStub->method( 'hasSubKey' )->willReturn( false );
 
 		/** @var ProvidesKeyInfo $keyInfoStub */
-		/** @var ProvidesKeyName $keysNameStub */
-		$this->assertTrue( $keyDataBuilder->canBuildKeyData( $keyInfoStub, $keysNameStub ) );
+		/** @var ProvidesKeyName $keyNameStub */
+		$this->assertTrue( $keyDataBuilder->canBuildKeyData( $keyInfoStub, $keyNameStub ) );
 	}
 
 	/**
 	 * @throws \PHPUnit\Framework\ExpectationFailedException
 	 * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
 	 */
-	public function testCanNotBuildKeyData()
+	public function testCanNotBuildKeyData() : void
 	{
 		$keyDataBuilder = new StringKeyDataBuilder( $this->getManager(), $this->getPrettifier() );
 
 		$keyInfoStub = $this->getMockBuilder( ProvidesKeyInfo::class )->getMockForAbstractClass();
 		$keyInfoStub->method( 'getType' )->willReturn( 'string' );
-		$keysNameStub = $this->getMockBuilder( ProvidesKeyName::class )->getMockForAbstractClass();
-		$keysNameStub->method( 'hasSubKey' )->willReturn( true );
+		$keyNameStub = $this->getMockBuilder( ProvidesKeyName::class )->getMockForAbstractClass();
+		$keyNameStub->method( 'hasSubKey' )->willReturn( true );
 
 		/** @var ProvidesKeyInfo $keyInfoStub */
-		/** @var ProvidesKeyName $keysNameStub */
+		/** @var ProvidesKeyName $keyNameStub */
 
-		$this->assertFalse( $keyDataBuilder->canBuildKeyData( $keyInfoStub, $keysNameStub ) );
+		$this->assertFalse( $keyDataBuilder->canBuildKeyData( $keyInfoStub, $keyNameStub ) );
 
 		$keyInfoStub->method( 'getType' )->willReturn( 'hash' );
-		$keysNameStub->method( 'hasSubKey' )->willReturn( false );
+		$keyNameStub->method( 'hasSubKey' )->willReturn( false );
 
-		$this->assertFalse( $keyDataBuilder->canBuildKeyData( $keyInfoStub, $keysNameStub ) );
+		$this->assertFalse( $keyDataBuilder->canBuildKeyData( $keyInfoStub, $keyNameStub ) );
 	}
 }

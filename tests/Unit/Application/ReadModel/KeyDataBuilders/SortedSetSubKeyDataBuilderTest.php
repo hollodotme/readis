@@ -14,20 +14,20 @@ final class SortedSetSubKeyDataBuilderTest extends AbstractKeyDataBuilderTest
 	 * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
 	 * @throws \hollodotme\Readis\Exceptions\RuntimeException
 	 */
-	public function testBuildKeyData()
+	public function testBuildKeyData() : void
 	{
 		$keyDataBuilder = new SortedSetSubKeyDataBuilder( $this->getManager(), $this->getPrettifier() );
 
 		$keyInfoStub = $this->getMockBuilder( ProvidesKeyInfo::class )->getMockForAbstractClass();
 		$keyInfoStub->method( 'getType' )->willReturn( 'zset' );
-		$keysNameStub = $this->getMockBuilder( ProvidesKeyName::class )->getMockForAbstractClass();
-		$keysNameStub->method( 'getKeyName' )->willReturn( 'sorted set' );
-		$keysNameStub->method( 'getSubKey' )->willReturn( '1' );
+		$keyNameStub = $this->getMockBuilder( ProvidesKeyName::class )->getMockForAbstractClass();
+		$keyNameStub->method( 'getKeyName' )->willReturn( 'sorted set' );
+		$keyNameStub->method( 'getSubKey' )->willReturn( '1' );
 
 		/** @var ProvidesKeyInfo $keyInfoStub */
-		/** @var ProvidesKeyName $keysNameStub */
+		/** @var ProvidesKeyName $keyNameStub */
 
-		$keyData = $keyDataBuilder->buildKeyData( $keyInfoStub, $keysNameStub );
+		$keyData = $keyDataBuilder->buildKeyData( $keyInfoStub, $keyNameStub );
 
 		$expectedKeyData    = 'Pretty: {"json": {"key": "value"}}';
 		$expectedRawKeyData = '{"json": {"key": "value"}}';
@@ -47,59 +47,59 @@ final class SortedSetSubKeyDataBuilderTest extends AbstractKeyDataBuilderTest
 
 		$keyInfoStub = $this->getMockBuilder( ProvidesKeyInfo::class )->getMockForAbstractClass();
 		$keyInfoStub->method( 'getType' )->willReturn( 'zset' );
-		$keysNameStub = $this->getMockBuilder( ProvidesKeyName::class )->getMockForAbstractClass();
-		$keysNameStub->method( 'getKeyName' )->willReturn( 'sorted set' );
-		$keysNameStub->method( 'getSubKey' )->willReturn( '2' );
+		$keyNameStub = $this->getMockBuilder( ProvidesKeyName::class )->getMockForAbstractClass();
+		$keyNameStub->method( 'getKeyName' )->willReturn( 'sorted set' );
+		$keyNameStub->method( 'getSubKey' )->willReturn( '2' );
 
 		$this->expectException( RuntimeException::class );
 		$this->expectExceptionMessage( 'Could not find key in sorted set anymore.' );
 
 		/** @var ProvidesKeyInfo $keyInfoStub */
-		/** @var ProvidesKeyName $keysNameStub */
+		/** @var ProvidesKeyName $keyNameStub */
 
-		$keyDataBuilder->buildKeyData( $keyInfoStub, $keysNameStub );
+		$keyDataBuilder->buildKeyData( $keyInfoStub, $keyNameStub );
 	}
 
 	/**
 	 * @throws \PHPUnit\Framework\ExpectationFailedException
 	 * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
 	 */
-	public function testCanBuildKeyData()
+	public function testCanBuildKeyData() : void
 	{
 		$keyDataBuilder = new SortedSetSubKeyDataBuilder( $this->getManager(), $this->getPrettifier() );
 
 		$keyInfoStub = $this->getMockBuilder( ProvidesKeyInfo::class )->getMockForAbstractClass();
 		$keyInfoStub->method( 'getType' )->willReturn( 'zset' );
-		$keysNameStub = $this->getMockBuilder( ProvidesKeyName::class )->getMockForAbstractClass();
-		$keysNameStub->method( 'hasSubKey' )->willReturn( true );
+		$keyNameStub = $this->getMockBuilder( ProvidesKeyName::class )->getMockForAbstractClass();
+		$keyNameStub->method( 'hasSubKey' )->willReturn( true );
 
 		/** @var ProvidesKeyInfo $keyInfoStub */
-		/** @var ProvidesKeyName $keysNameStub */
+		/** @var ProvidesKeyName $keyNameStub */
 
-		$this->assertTrue( $keyDataBuilder->canBuildKeyData( $keyInfoStub, $keysNameStub ) );
+		$this->assertTrue( $keyDataBuilder->canBuildKeyData( $keyInfoStub, $keyNameStub ) );
 	}
 
 	/**
 	 * @throws \PHPUnit\Framework\ExpectationFailedException
 	 * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
 	 */
-	public function testCanNotBuildKeyData()
+	public function testCanNotBuildKeyData() : void
 	{
 		$keyDataBuilder = new SortedSetSubKeyDataBuilder( $this->getManager(), $this->getPrettifier() );
 
 		$keyInfoStub = $this->getMockBuilder( ProvidesKeyInfo::class )->getMockForAbstractClass();
 		$keyInfoStub->method( 'getType' )->willReturn( 'zset' );
-		$keysNameStub = $this->getMockBuilder( ProvidesKeyName::class )->getMockForAbstractClass();
-		$keysNameStub->method( 'hasSubKey' )->willReturn( false );
+		$keyNameStub = $this->getMockBuilder( ProvidesKeyName::class )->getMockForAbstractClass();
+		$keyNameStub->method( 'hasSubKey' )->willReturn( false );
 
 		/** @var ProvidesKeyInfo $keyInfoStub */
-		/** @var ProvidesKeyName $keysNameStub */
+		/** @var ProvidesKeyName $keyNameStub */
 
-		$this->assertFalse( $keyDataBuilder->canBuildKeyData( $keyInfoStub, $keysNameStub ) );
+		$this->assertFalse( $keyDataBuilder->canBuildKeyData( $keyInfoStub, $keyNameStub ) );
 
 		$keyInfoStub->method( 'getType' )->willReturn( 'string' );
-		$keysNameStub->method( 'hasSubKey' )->willReturn( true );
+		$keyNameStub->method( 'hasSubKey' )->willReturn( true );
 
-		$this->assertFalse( $keyDataBuilder->canBuildKeyData( $keyInfoStub, $keysNameStub ) );
+		$this->assertFalse( $keyDataBuilder->canBuildKeyData( $keyInfoStub, $keyNameStub ) );
 	}
 }
