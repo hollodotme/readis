@@ -27,7 +27,8 @@ docker pull hollodotme/readis
  * Searching for keys (with placeholders) inside a database
  * Listing of found keys with variable limit
  * Basic information about keys
- * Viewing the content of keys and hash keys
+ * Viewing the content of all key types
+ * Viewing all elements/members/fields in lists, (sorted) sets and hashes all at once
  * Prettified JSON view, if value is a compact JSON string
  * Listing of slow logs
  * Table with all the current server instance information / stats
@@ -120,6 +121,9 @@ return [
 
 You can map the numeric database keys to plain text names. 
 Keys that were not mapped will still be displayed as `Database [KEY]`.
+
+**Please note:** If the `CONFIG` command is disabled in your redis server, the database map becomes the fallback 
+listing of available databases.
 
 ### Sample nginx configuration
 

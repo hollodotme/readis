@@ -3,7 +3,9 @@
 namespace hollodotme\Readis\Infrastructure\Redis;
 
 use hollodotme\Readis\Application\Interfaces\ProvidesKeyInfo;
+use hollodotme\Readis\Application\Interfaces\ProvidesRedisData;
 use hollodotme\Readis\Application\Interfaces\ProvidesSlowLogData;
+use hollodotme\Readis\Exceptions\RuntimeException;
 use hollodotme\Readis\Infrastructure\Interfaces\ProvidesConnectionData;
 use hollodotme\Readis\Infrastructure\Redis\DTO\KeyInfo;
 use hollodotme\Readis\Infrastructure\Redis\DTO\SlowLogEntry;
@@ -12,7 +14,7 @@ use Redis;
 use function array_map;
 use function array_slice;
 
-final class ServerManager
+final class ServerManager implements ProvidesRedisData
 {
 	/** @var RedisWrapper */
 	private $redis;
@@ -34,60 +36,84 @@ final class ServerManager
 	}
 
 	/**
-	 * @return array
 	 * @throws ConnectionFailedException
+	 * @return array
 	 */
 	public function getServerConfig() : array
 	{
-		/** @noinspection PhpUndefinedMethodInspection */
-		return (array)$this->redis->config( 'GET', '*' );
+		if ( $this->commandExists( 'CONFIG' ) )
+		{
+			/** @noinspection PhpUndefinedMethodInspection */
+			return (array)$this->redis->config( 'GET', '*' );
+		}
+
+		return [
+			'CONFIG COMMAND IS DISABLED' => 'readis is not able to show the server config.',
+		];
 	}
 
 	/**
-	 * @return int
 	 * @throws ConnectionFailedException
+	 * @return int
 	 */
 	public function getSlowLogCount() : int
 	{
-		/** @noinspection PhpUndefinedMethodInspection */
-		return (int)$this->redis->slowlog( 'len' );
+		if ( $this->commandExists( 'SLOWLOG' ) )
+		{
+			/** @noinspection PhpUndefinedMethodInspection */
+			return (int)$this->redis->slowlog( 'len' );
+		}
+
+		return 0;
 	}
 
 	/**
 	 * @param int $limit
 	 *
-	 * @return array|ProvidesSlowLogData[]
 	 * @throws \Exception
 	 * @throws ConnectionFailedException
+	 * @return array|ProvidesSlowLogData[]
 	 */
 	public function getSlowLogEntries( int $limit = 100 ) : array
 	{
-		/** @noinspection PhpMethodParametersCountMismatchInspection */
-		/** @noinspection PhpUndefinedMethodInspection */
-		return array_map(
-			function ( array $slowLogData )
-			{
-				return new SlowLogEntry( $slowLogData );
-			},
-			(array)$this->redis->slowlog( 'get', $limit )
-		);
+		if ( $this->commandExists( 'SLOWLOG' ) )
+		{
+			/** @noinspection PhpMethodParametersCountMismatchInspection */
+			/** @noinspection PhpUndefinedMethodInspection */
+			return array_map(
+				function ( array $slowLogData )
+				{
+					return new SlowLogEntry( $slowLogData );
+				},
+				(array)$this->redis->slowlog( 'get', $limit )
+			);
+		}
+
+		return [];
 	}
 
 	/**
-	 * @return array
 	 * @throws ConnectionFailedException
+	 * @return array
 	 */
 	public function getServerInfo() : array
 	{
-		/** @noinspection PhpUndefinedMethodInspection */
-		return (array)$this->redis->info();
+		if ( $this->commandExists( 'INFO' ) )
+		{
+			/** @noinspection PhpUndefinedMethodInspection */
+			return (array)$this->redis->info();
+		}
+
+		return [
+			'INFO COMMAND IS DISABLED' => 'readis is not able to show the server informtion.',
+		];
 	}
 
 	/**
 	 * @param string $keyPattern
 	 *
-	 * @return array
 	 * @throws ConnectionFailedException
+	 * @return array
 	 */
 	public function getKeys( string $keyPattern = '*' ) : array
 	{
@@ -99,8 +125,8 @@ final class ServerManager
 	 * @param string   $keyPattern
 	 * @param int|null $limit
 	 *
-	 * @return array|ProvidesKeyInfo[]
 	 * @throws ConnectionFailedException
+	 * @return array|ProvidesKeyInfo[]
 	 */
 	public function getKeyInfoObjects( string $keyPattern, ?int $limit ) : array
 	{
@@ -118,8 +144,8 @@ final class ServerManager
 	/**
 	 * @param string $key
 	 *
-	 * @return ProvidesKeyInfo
 	 * @throws ConnectionFailedException
+	 * @return ProvidesKeyInfo
 	 */
 	public function getKeyInfoObject( string $key ) : ProvidesKeyInfo
 	{
@@ -140,7 +166,7 @@ final class ServerManager
 			$listLength = $this->redis->llen( $key );
 
 			/** @noinspection PhpUndefinedMethodInspection */
-			$subItems = $this->redis->lrange( $key, 0, $listLength - 1 );
+			$subItems = range( 0, $listLength - 1 );
 
 			return new KeyInfo( $key, $type, $ttl, $subItems );
 		}
@@ -148,7 +174,7 @@ final class ServerManager
 		if ( $type === Redis::REDIS_SET )
 		{
 			/** @noinspection PhpUndefinedMethodInspection */
-			$subItems = $this->redis->smembers( $key );
+			$subItems = range( 0, $this->redis->scard( $key ) - 1 );
 
 			return new KeyInfo( $key, $type, $ttl, $subItems );
 		}
@@ -159,7 +185,10 @@ final class ServerManager
 			$setLength = $this->redis->zcard( $key );
 
 			/** @noinspection PhpUndefinedMethodInspection */
-			$subItems = $this->redis->zrange( $key, 0, $setLength - 1, true );
+			$subItems = array_combine(
+				range( 0, $setLength - 1 ),
+				array_values( $this->redis->zrange( $key, 0, $setLength - 1, true ) )
+			);
 
 			return new KeyInfo( $key, $type, $ttl, $subItems );
 		}
@@ -170,26 +199,26 @@ final class ServerManager
 	/**
 	 * @param string $key
 	 *
-	 * @return bool|string
 	 * @throws ConnectionFailedException
+	 * @return string
 	 */
-	public function getValue( string $key )
+	public function getValue( string $key ) : string
 	{
 		/** @noinspection PhpUndefinedMethodInspection */
-		return $this->redis->get( $key );
+		return (string)$this->redis->get( $key );
 	}
 
 	/**
 	 * @param string $key
 	 * @param string $hashKey
 	 *
-	 * @return bool|string
 	 * @throws ConnectionFailedException
+	 * @return string
 	 */
-	public function getHashValue( string $key, string $hashKey )
+	public function getHashValue( string $key, string $hashKey ) : string
 	{
 		/** @noinspection PhpUndefinedMethodInspection */
-		return $this->redis->hGet( $key, $hashKey );
+		return (string)$this->redis->hGet( $key, $hashKey );
 	}
 
 	/**
@@ -209,11 +238,89 @@ final class ServerManager
 	 * @param int    $index
 	 *
 	 * @throws ConnectionFailedException
-	 * @return mixed
+	 * @return string
 	 */
-	public function getListValue( string $key, int $index )
+	public function getListElement( string $key, int $index ) : string
 	{
 		/** @noinspection PhpUndefinedMethodInspection */
-		return $this->redis->lindex( $key, $index );
+		return (string)$this->redis->lindex( $key, $index );
+	}
+
+	/**
+	 * @param string $key
+	 *
+	 * @throws ConnectionFailedException
+	 * @return array
+	 */
+	public function getAllListElements( string $key ) : array
+	{
+		/** @noinspection PhpUndefinedMethodInspection */
+		$count = $this->redis->llen( $key );
+
+		/** @noinspection PhpUndefinedMethodInspection */
+		return (array)$this->redis->lrange( $key, 0, $count - 1 );
+	}
+
+	/**
+	 * @param string $key
+	 * @param int    $index
+	 *
+	 * @throws ConnectionFailedException
+	 * @throws RuntimeException
+	 * @return string
+	 */
+	public function getSetMember( string $key, int $index ) : string
+	{
+		$members = $this->getAllSetMembers( $key );
+
+		if ( !isset( $members[ $index ] ) )
+		{
+			throw new RuntimeException( 'Could not find member in set anymore.' );
+		}
+
+		return $members[ $index ];
+	}
+
+	/**
+	 * @param string $key
+	 *
+	 * @throws ConnectionFailedException
+	 * @return array
+	 */
+	public function getAllSetMembers( string $key ) : array
+	{
+		/** @noinspection PhpUndefinedMethodInspection */
+		return (array)$this->redis->smembers( $key );
+	}
+
+	/**
+	 * @param string $key
+	 *
+	 * @throws ConnectionFailedException
+	 * @return array
+	 */
+	public function getAllSortedSetMembers( string $key ) : array
+	{
+		/** @noinspection PhpUndefinedMethodInspection */
+		$setLength = $this->redis->zcard( $key );
+
+		/** @noinspection PhpUndefinedMethodInspection */
+		return (array)$this->redis->zrange( $key, 0, $setLength - 1, true );
+	}
+
+	/**
+	 * @param string $command
+	 *
+	 * @throws ConnectionFailedException
+	 * @return bool
+	 */
+	public function commandExists( string $command ) : bool
+	{
+		/** @noinspection PhpUndefinedMethodInspection */
+		$this->redis->rawCommand( $command );
+		/** @noinspection PhpUndefinedMethodInspection */
+		$error = $this->redis->getLastError();
+
+		return (false === strpos( (string)$error, 'unknown command' ));
 	}
 }

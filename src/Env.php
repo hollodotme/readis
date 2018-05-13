@@ -3,6 +3,7 @@
 namespace hollodotme\Readis;
 
 use hollodotme\Readis\Application\Configs\AppConfig;
+use hollodotme\Readis\Application\Interfaces\ProvidesRedisData;
 use hollodotme\Readis\Infrastructure\Configs\ServerConfigList;
 use hollodotme\Readis\Infrastructure\Interfaces\ProvidesServerConfig;
 use hollodotme\Readis\Infrastructure\Interfaces\ProvidesServerConfigList;
@@ -34,7 +35,7 @@ final class Env extends AbstractObjectPool implements ProvidesInfrastructure
 		);
 	}
 
-	public function getServerManager( ProvidesServerConfig $serverConfig ) : ServerManager
+	public function getServerManager( ProvidesServerConfig $serverConfig ) : ProvidesRedisData
 	{
 		$name = sprintf( 'serverManager-%s:%d', $serverConfig->getHost(), $serverConfig->getPort() );
 
@@ -47,5 +48,19 @@ final class Env extends AbstractObjectPool implements ProvidesInfrastructure
 				return new ServerManager( $connection );
 			}
 		);
+	}
+
+	/**
+	 * @param string $serverKey
+	 *
+	 * @throws Exceptions\ServerConfigNotFound
+	 * @return ProvidesRedisData
+	 */
+	public function getServerManagerForServerKey( string $serverKey ) : ProvidesRedisData
+	{
+		$serverConfigList = $this->getServerConfigList();
+		$serverConfig     = $serverConfigList->getServerConfig( $serverKey );
+
+		return $this->getServerManager( $serverConfig );
 	}
 }

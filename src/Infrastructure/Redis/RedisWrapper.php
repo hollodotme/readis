@@ -58,6 +58,7 @@ final class RedisWrapper
 				$this->connectionData->getRetryInterval()
 			);
 		}
+			/** @noinspection PhpRedundantCatchClauseInspection */
 		catch ( RedisException $e )
 		{
 			throw (new ConnectionFailedException())->withConnectionData( $this->connectionData );

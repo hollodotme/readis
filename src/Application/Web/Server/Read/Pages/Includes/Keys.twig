@@ -9,31 +9,31 @@
                     <button class="btn btn-outline-dark btn-sm dropdown-toggle" type="button"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <span id="current-db">
-                            {% if server.getDatabaseMap[database] is not empty %}
-                                <span class="text-muted">{{ database }}:</span> {{ server.getDatabaseMap[database] }}
+                            {% if databases is empty %}
+                                No databases configured.
                             {% else %}
-                                Database {{ database }}
-                            {% endif %}
-                            {% if serverInfo['db' ~ database] is not empty %}
+                                <span class="text-muted">{{ database }}:</span> {{ databases[database] }}
+                                {% if serverInfo['db' ~ database] is not empty %}
                                 <span class="small text-muted">({{ serverInfo['db' ~ database] }})</span>
-                            {% else %}
-                                <span class="small text-muted">(empty)</span>
+                                {% else %}
+                                <span class="small text-muted">(empty or unknown)</span>
+                            {% endif %}
                             {% endif %}
                         </span>
                     </button>
                     <div class="dropdown-menu">
-                        {% for i in 0..serverConfig.databases-1 %}
-                            <a class="dropdown-item btn-sm" data-database="{{ i }}">
-                                {% if server.getDatabaseMap[i] is not empty %}
-                                    <span class="text-muted">{{ i }}:</span> {{ server.getDatabaseMap[i] }}
+                        {% for dbIndex,dbName in databases %}
+                            <a class="dropdown-item btn-sm" data-database="{{ dbIndex }}">
+                                <span class="text-muted">{{ dbIndex }}:</span> {{ dbName }}
+                                {% if serverInfo["db"~dbIndex] is not empty %}
+                                    <span class="small text-muted">({{ serverInfo["db"~dbIndex] }})</span>
                                 {% else %}
-                                    Database {{ i }}
+                                    <span class="small text-muted">(empty or unknown)</span>
                                 {% endif %}
-                                {% if serverInfo["db"~i] is not empty %}
-                                    <span class="small text-muted">({{ serverInfo["db"~i] }})</span>
-                                {% else %}
-                                    <span class="small text-muted">(empty)</span>
-                                {% endif %}
+                            </a>
+                        {% else %}
+                            <a class="dropdown-item btn-sm">
+                                No databases configured.
                             </a>
                         {% endfor %}
                     </div>
@@ -90,4 +90,35 @@
     </div>
 </form>
 
-<div id="keyValues"></div>
+<div id="keyValues">
+    {% if databases is empty %}
+        <table class="table table-striped table-hover table-sm">
+            <tbody>
+            <tr>
+                <td>
+                    <h4>Readis could not find any database configuration.</h4>
+                    <p>
+                        This could be caused by one of the following reasons:
+                    </p>
+                    <ul>
+                        <li>
+                            Your redis server is configured with zero databases.
+                            Please consult the
+                            <a href="https://redis.io/topics/config" target="_blank">official redis documentation</a>
+                            to learn how to configure the number of available databases.
+                        </li>
+                        <li>
+                            The <code>CONFIG</code> command was disabled in your redis server and you
+                            did not provide a database map in readis' <code>config/servers.php</code>.
+                            The <code>CONFIG</code> command is disabled on AWS redis instances for example.
+                            Please consult the
+                            <a href="https://github.com/hollodotme/readis/blob/master/README.md#sample-server-configuration"
+                               target="_blank">official readis documentation to learn how to set up a database map</a>.
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    {% endif %}
+</div>

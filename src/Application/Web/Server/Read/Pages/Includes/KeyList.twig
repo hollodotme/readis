@@ -77,11 +77,11 @@
                                 (show all members)
                             </a>
                         </li>
-                        {% for member,score in keyInfo.getSubItems %}
+                        {% for index,score in keyInfo.getSubItems %}
                             <li>
-                                <a href="{{ appConfig.getBaseUrl }}/server/{{ serverKey }}/database/{{ database }}/keys/{{ keyInfo.getName|base64encode }}/hash/{{ loop.index0|base64encode }}"
+                                <a href="{{ appConfig.getBaseUrl }}/server/{{ serverKey }}/database/{{ database }}/keys/{{ keyInfo.getName|base64encode }}/hash/{{ index|base64encode }}"
                                    data-toggle="modal" data-target="#keyInfoModal" role="button">
-                                    Member {{ loop.index0 }}
+                                    Member {{ index }}
                                 </a>
                                 <small class="text-muted">
                                     | Score: {{ score }}
@@ -104,7 +104,7 @@
                                 (show all elements)
                             </a>
                         </li>
-                        {% for index,value in keyInfo.getSubItems %}
+                        {% for index in keyInfo.getSubItems %}
                             <li>
                                 <a href="{{ appConfig.getBaseUrl }}/server/{{ serverKey }}/database/{{ database }}/keys/{{ keyInfo.getName|base64encode }}/hash/{{ index|base64encode }}"
                                    data-toggle="modal" data-target="#keyInfoModal" role="button">

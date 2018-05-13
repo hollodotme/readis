@@ -2,9 +2,12 @@
 
 namespace hollodotme\Readis\Infrastructure\Configs;
 
+use hollodotme\Readis\Exceptions\NoServersConfigured;
 use hollodotme\Readis\Exceptions\ServerConfigNotFound;
+use hollodotme\Readis\Exceptions\ServersConfigNotFound;
 use hollodotme\Readis\Infrastructure\Interfaces\ProvidesServerConfig;
 use hollodotme\Readis\Infrastructure\Interfaces\ProvidesServerConfigList;
+use function file_exists;
 
 final class ServerConfigList implements ProvidesServerConfigList
 {
@@ -16,13 +19,27 @@ final class ServerConfigList implements ProvidesServerConfigList
 		$this->loadServerConfigs( $data );
 	}
 
-	public static function fromConfigFile() : self
+	/**
+	 * @param null|string $configFile
+	 *
+	 * @throws ServersConfigNotFound
+	 * @return ServerConfigList
+	 */
+	public static function fromConfigFile( ?string $configFile = null ) : self
 	{
-		return new self( (array)include __DIR__ . '/../../../config/servers.php' );
+		$serversConfigFile = $configFile ?? dirname( __DIR__, 3 ) . '/config/servers.php';
+		if ( !file_exists( $serversConfigFile ) )
+		{
+			throw new ServersConfigNotFound( 'Could not find servers config at ' . $serversConfigFile );
+		}
+
+		/** @noinspection PhpIncludeInspection */
+		return new self( (array)require $serversConfigFile );
 	}
 
 	private function loadServerConfigs( array $serverConfigList ) : void
 	{
+		$this->servers = [];
 		foreach ( $serverConfigList as $serverConfig )
 		{
 			$this->servers[] = new ServerConfig(
@@ -38,10 +55,16 @@ final class ServerConfigList implements ProvidesServerConfigList
 	}
 
 	/**
+	 * @throws NoServersConfigured
 	 * @return array|ProvidesServerConfig[]
 	 */
 	public function getServerConfigs() : array
 	{
+		if ( 0 === count( $this->servers ) )
+		{
+			throw new NoServersConfigured( 'No servers were configured.' );
+		}
+
 		return $this->servers;
 	}
 

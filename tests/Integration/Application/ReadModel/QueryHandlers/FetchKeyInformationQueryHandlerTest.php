@@ -4,16 +4,17 @@ namespace hollodotme\Readis\Tests\Integration\Application\ReadModel\QueryHandler
 
 use hollodotme\Readis\Application\ReadModel\Queries\FetchKeyInformationQuery;
 use hollodotme\Readis\Application\ReadModel\QueryHandlers\FetchKeyInformationQueryHandler;
-use hollodotme\Readis\Exceptions\KeyTypeNotImplemented;
+use hollodotme\Readis\Exceptions\NoServersConfigured;
 use hollodotme\Readis\Exceptions\ServerConfigNotFound;
 use PHPUnit\Framework\ExpectationFailedException;
 use SebastianBergmann\RecursionContext\InvalidArgumentException;
+use function preg_quote;
 
 final class FetchKeyInformationQueryHandlerTest extends AbstractQueryHandlerTest
 {
 	/**
 	 * @param string      $key
-	 * @param null|string $hashKey
+	 * @param null|string $subKey
 	 * @param string      $expectedKeyType
 	 * @param string      $expectedKeyData
 	 * @param string      $expectedRawKeyData
@@ -22,13 +23,13 @@ final class FetchKeyInformationQueryHandlerTest extends AbstractQueryHandlerTest
 	 *
 	 * @throws ExpectationFailedException
 	 * @throws InvalidArgumentException
-	 * @throws KeyTypeNotImplemented
+	 * @throws NoServersConfigured
 	 * @throws ServerConfigNotFound
 	 * @dataProvider keyInfoProvider
 	 */
 	public function testCanFetchKeyInformation(
 		string $key,
-		?string $hashKey,
+		?string $subKey,
 		string $expectedKeyType,
 		string $expectedKeyData,
 		string $expectedRawKeyData,
@@ -38,8 +39,8 @@ final class FetchKeyInformationQueryHandlerTest extends AbstractQueryHandlerTest
 	{
 		$serverKey = '0';
 
-		$query  = new FetchKeyInformationQuery( $serverKey, 0, $key, $hashKey );
-		$result = (new FetchKeyInformationQueryHandler( $this->getEnvMock( $serverKey ) ))->handle( $query );
+		$query  = new FetchKeyInformationQuery( 0, $key, $subKey );
+		$result = (new FetchKeyInformationQueryHandler( $this->getServerManagerMock( $serverKey ) ))->handle( $query );
 
 		$this->assertTrue( $result->succeeded() );
 		$this->assertFalse( $result->failed() );
@@ -47,31 +48,160 @@ final class FetchKeyInformationQueryHandlerTest extends AbstractQueryHandlerTest
 		$keyInfo = $result->getKeyInfo();
 		$keyData = $result->getKeyData();
 
+		$keyDataPattern    = '#' . preg_quote( $expectedKeyData, '#s' ) . '#';
+		$rawKeyDataPattern = '#' . preg_quote( $expectedRawKeyData, '#s' ) . '#';
+
 		$this->assertSame( $expectedKeyType, $keyInfo->getType() );
-		$this->assertSame( $expectedKeyData, $keyData->getKeyData() );
-		$this->assertSame( $expectedRawKeyData, $keyData->getRawKeyData() );
+		$this->assertRegExp( $keyDataPattern, $keyData->getKeyData() );
+		$this->assertRegExp( $rawKeyDataPattern, $keyData->getRawKeyData() );
 		$this->assertSame( $expectedHasScore, $keyData->hasScore() );
-		$this->assertSame( $expectedScore, $keyData->getScore() );
+		$this->assertSame( (string)$expectedScore, (string)$keyData->getScore() );
 	}
 
 	public function keyInfoProvider() : array
 	{
 		return [
 			[
-				'key'                => 'unit',
-				'hashKey'            => null,
+				'key'                => 'string',
+				'subKey'             => null,
 				'expectedType'       => 'string',
-				'expectedKeyData'    => 'test',
-				'expectedRawKeyData' => 'test',
+				'expectedKeyData'    => "{\n    \"json\": {\n        \"key\": \"value\"\n    }\n}",
+				'expectedRawKeyData' => '{"json": {"key": "value"}}',
 				'expectedHasScore'   => false,
 				'expectedScore'      => null,
 			],
 			[
-				'key'                => 'test',
-				'hashKey'            => 'unit',
+				'key'                => 'hash',
+				'subKey'             => 'field',
+				'expectedType'       => 'hash',
+				'expectedKeyData'    => 'value',
+				'expectedRawKeyData' => 'value',
+				'expectedHasScore'   => false,
+				'expectedScore'      => null,
+			],
+			[
+				'key'                => 'hash',
+				'subKey'             => 'json',
 				'expectedType'       => 'hash',
 				'expectedKeyData'    => "{\n    \"json\": {\n        \"key\": \"value\"\n    }\n}",
 				'expectedRawKeyData' => '{"json": {"key": "value"}}',
+				'expectedHasScore'   => false,
+				'expectedScore'      => null,
+			],
+			[
+				'key'                => 'hash',
+				'subKey'             => null,
+				'expectedType'       => 'hash',
+				'expectedKeyData'    => "Field field:\n============\nvalue\n\n---\n\nField json:\n===========\n{\n    \"json\": {\n        \"key\": \"value\"\n    }\n}",
+				'expectedRawKeyData' => "Field field:\n============\nvalue\n\n---\n\nField json:\n===========\n{\"json\": {\"key\": \"value\"}}",
+				'expectedHasScore'   => false,
+				'expectedScore'      => null,
+			],
+			[
+				'key'                => 'list',
+				'subKey'             => '0',
+				'expectedType'       => 'list',
+				'expectedKeyData'    => 'one',
+				'expectedRawKeyData' => 'one',
+				'expectedHasScore'   => false,
+				'expectedScore'      => null,
+			],
+			[
+				'key'                => 'list',
+				'subKey'             => '1',
+				'expectedType'       => 'list',
+				'expectedKeyData'    => 'two',
+				'expectedRawKeyData' => 'two',
+				'expectedHasScore'   => false,
+				'expectedScore'      => null,
+			],
+			[
+				'key'                => 'list',
+				'subKey'             => '2',
+				'expectedType'       => 'list',
+				'expectedKeyData'    => "{\n    \"json\": {\n        \"key\": \"value\"\n    }\n}",
+				'expectedRawKeyData' => '{"json": {"key": "value"}}',
+				'expectedHasScore'   => false,
+				'expectedScore'      => null,
+			],
+			[
+				'key'                => 'list',
+				'subKey'             => null,
+				'expectedType'       => 'list',
+				'expectedKeyData'    => "Element 0:\n==========\none\n\n---\n\nElement 1:\n==========\ntwo\n\n---\n\nElement 2:\n==========\n{\n    \"json\": {\n        \"key\": \"value\"\n    }\n}",
+				'expectedRawKeyData' => "Element 0:\n==========\none\n\n---\n\nElement 1:\n==========\ntwo\n\n---\n\nElement 2:\n==========\n{\"json\": {\"key\": \"value\"}}",
+				'expectedHasScore'   => false,
+				'expectedScore'      => null,
+			],
+			[
+				'key'                => 'sorted set',
+				'subKey'             => '0',
+				'expectedType'       => 'zset',
+				'expectedKeyData'    => 'one',
+				'expectedRawKeyData' => 'one',
+				'expectedHasScore'   => true,
+				'expectedScore'      => 1,
+			],
+			[
+				'key'                => 'sorted set',
+				'subKey'             => '1',
+				'expectedType'       => 'zset',
+				'expectedKeyData'    => 'two',
+				'expectedRawKeyData' => 'two',
+				'expectedHasScore'   => true,
+				'expectedScore'      => 2,
+			],
+			[
+				'key'                => 'sorted set',
+				'subKey'             => '2',
+				'expectedType'       => 'zset',
+				'expectedKeyData'    => 'two again',
+				'expectedRawKeyData' => 'two again',
+				'expectedHasScore'   => true,
+				'expectedScore'      => 2,
+			],
+			[
+				'key'                => 'sorted set',
+				'subKey'             => '3',
+				'expectedType'       => 'zset',
+				'expectedKeyData'    => "{\n    \"json\": {\n        \"key\": \"value\"\n    }\n}",
+				'expectedRawKeyData' => '{"json": {"key": "value"}}',
+				'expectedHasScore'   => true,
+				'expectedScore'      => 3,
+			],
+			[
+				'key'                => 'sorted set',
+				'subKey'             => null,
+				'expectedType'       => 'zset',
+				'expectedKeyData'    => "Member 0 (Score: 1):\n====================\none\n\n---\n\nMember 1 (Score: 2):\n====================\ntwo\n\n---\n\nMember 2 (Score: 2):\n====================\ntwo again\n\n---\n\nMember 3 (Score: 3):\n====================\n{\n    \"json\": {\n        \"key\": \"value\"\n    }\n}",
+				'expectedRawKeyData' => "Member 0 (Score: 1):\n====================\none\n\n---\n\nMember 1 (Score: 2):\n====================\ntwo\n\n---\n\nMember 2 (Score: 2):\n====================\ntwo again\n\n---\n\nMember 3 (Score: 3):\n====================\n{\"json\": {\"key\": \"value\"}}",
+				'expectedHasScore'   => false,
+				'expectedScore'      => null,
+			],
+			[
+				'key'                => 'geo',
+				'subKey'             => '0',
+				'expectedType'       => 'zset',
+				'expectedKeyData'    => 'Palermo',
+				'expectedRawKeyData' => 'Palermo',
+				'expectedHasScore'   => true,
+				'expectedScore'      => 3479099956230700,
+			],
+			[
+				'key'                => 'geo',
+				'subKey'             => '1',
+				'expectedType'       => 'zset',
+				'expectedKeyData'    => 'Catania',
+				'expectedRawKeyData' => 'Catania',
+				'expectedHasScore'   => true,
+				'expectedScore'      => 3479447370796900,
+			],
+			[
+				'key'                => 'hyperLogLog',
+				'subKey'             => null,
+				'expectedType'       => 'string',
+				'expectedKeyData'    => '(HyperLogLog encoded value)',
+				'expectedRawKeyData' => 'HYLL',
 				'expectedHasScore'   => false,
 				'expectedScore'      => null,
 			],
@@ -81,37 +211,37 @@ final class FetchKeyInformationQueryHandlerTest extends AbstractQueryHandlerTest
 	/**
 	 * @throws ExpectationFailedException
 	 * @throws InvalidArgumentException
+	 * @throws NoServersConfigured
 	 * @throws ServerConfigNotFound
-	 * @throws KeyTypeNotImplemented
 	 */
-	public function testResultFailsIfServerConfigNotFound() : void
+	public function testResultFailsIfKeyIsUnknown() : void
 	{
-		$serverKey = '3';
-		$key       = 'some-key';
-		$hashKey   = null;
+		$serverKey = '0';
+		$key       = 'unknown-key';
+		$subKey    = null;
 
-		$query  = new FetchKeyInformationQuery( $serverKey, 0, $key, $hashKey );
-		$result = (new FetchKeyInformationQueryHandler( $this->getEnvMock( $serverKey ) ))->handle( $query );
+		$query  = new FetchKeyInformationQuery( 0, $key, $subKey );
+		$result = (new FetchKeyInformationQueryHandler( $this->getServerManagerMock( $serverKey ) ))->handle( $query );
 
 		$this->assertFalse( $result->succeeded() );
 		$this->assertTrue( $result->failed() );
-		$this->assertSame( 'Server config not found for server key: 3', $result->getMessage() );
+		$this->assertSame( 'Key type not implemented or supported: unknown', $result->getMessage() );
 	}
 
 	/**
 	 * @throws ExpectationFailedException
 	 * @throws InvalidArgumentException
+	 * @throws NoServersConfigured
 	 * @throws ServerConfigNotFound
-	 * @throws KeyTypeNotImplemented
 	 */
 	public function testResultFailsIfConnectionToServerFailed() : void
 	{
 		$serverKey = '1';
 		$key       = 'some-key';
-		$hashKey   = null;
+		$subKey    = null;
 
-		$query  = new FetchKeyInformationQuery( $serverKey, 0, $key, $hashKey );
-		$result = (new FetchKeyInformationQueryHandler( $this->getEnvMock( $serverKey ) ))->handle( $query );
+		$query  = new FetchKeyInformationQuery( 0, $key, $subKey );
+		$result = (new FetchKeyInformationQueryHandler( $this->getServerManagerMock( $serverKey ) ))->handle( $query );
 
 		$this->assertFalse( $result->succeeded() );
 		$this->assertTrue( $result->failed() );

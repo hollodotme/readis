@@ -1,9 +1,12 @@
 <div class="container">
     <button class="btn btn-danger" id="b1"
+            {% if infoCommandDisabled %} disabled{% endif %}
             data-event-source="{{ appConfig.getBaseUrl }}/server/{{ serverKey }}/stats">
         <span class="fa fa-play"></span> Start monitor
     </button>
-
+    {% if infoCommandDisabled %}
+        <span class="text-muted">INFO COMMAND IS DISABLED, re<sup>a</sup>dis is not able to operate the monitor.</span>
+    {% endif %}
     <hr>
 
     <div id="clientstats"></div>

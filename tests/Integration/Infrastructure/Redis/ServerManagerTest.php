@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace hollodotme\Readis\Tests\Unit\Infrastructure\Redis;
+namespace hollodotme\Readis\Tests\Integration\Infrastructure\Redis;
 
 use hollodotme\Readis\Application\Interfaces\ProvidesKeyInfo;
 use hollodotme\Readis\Application\Interfaces\ProvidesSlowLogData;
@@ -97,7 +97,9 @@ final class ServerManagerTest extends TestCase
 		$serverManager = new ServerManager( $this->getServerConnectionMock( 'localhost', 9999 ) );
 
 		$this->expectException( ConnectionFailedException::class );
-		$this->expectExceptionMessage( 'host: localhost, port: 9999, timeout: 2.5, retryInterval: 100, using auth: no' );
+		$this->expectExceptionMessage(
+			'host: localhost, port: 9999, timeout: 2.5, retryInterval: 100, using auth: no'
+		);
 
 		$serverManager->getKeys( '*' );
 	}
@@ -234,5 +236,18 @@ final class ServerManagerTest extends TestCase
 		$hashValue = $serverManager->getHashValue( 'test', 'unit' );
 
 		$this->assertSame( '{"json": {"key": "value"}}', $hashValue );
+	}
+
+	/**
+	 * @throws ConnectionFailedException
+	 * @throws ExpectationFailedException
+	 * @throws InvalidArgumentException
+	 */
+	public function testCanCheckIfCommandExists() : void
+	{
+		$serverManager = new ServerManager( $this->getServerConnectionMock( 'localhost', 6379 ) );
+
+		$this->assertTrue( $serverManager->commandExists( 'INFO' ) );
+		$this->assertFalse( $serverManager->commandExists( 'UNKNOWN' ) );
 	}
 }

@@ -27,8 +27,10 @@ final class AjaxSearchKeysRequestHandler extends AbstractRequestHandler implemen
 		$searchPattern = ((string)$input->get( 'searchPattern', '*' )) ?: '*';
 		$appConfig     = $this->getEnv()->getAppConfig();
 
-		$query  = new FindKeysInDatabaseQuery( $serverKey, $database, $searchPattern, $limit );
-		$result = (new FindKeysInDatabaseQueryHandler( $this->getEnv() ))->handle( $query );
+		$serverManager = $this->getEnv()->getServerManagerForServerKey( $serverKey );
+
+		$query  = new FindKeysInDatabaseQuery( $database, $searchPattern, $limit );
+		$result = (new FindKeysInDatabaseQueryHandler( $serverManager ))->handle( $query );
 
 		if ( $result->failed() )
 		{
