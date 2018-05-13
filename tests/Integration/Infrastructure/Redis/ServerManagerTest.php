@@ -237,4 +237,17 @@ final class ServerManagerTest extends TestCase
 
 		$this->assertSame( '{"json": {"key": "value"}}', $hashValue );
 	}
+
+	/**
+	 * @throws ConnectionFailedException
+	 * @throws ExpectationFailedException
+	 * @throws InvalidArgumentException
+	 */
+	public function testCanCheckIfCommandExists() : void
+	{
+		$serverManager = new ServerManager( $this->getServerConnectionMock( 'localhost', 6379 ) );
+
+		$this->assertTrue( $serverManager->commandExists( 'INFO' ) );
+		$this->assertFalse( $serverManager->commandExists( 'UNKNOWN' ) );
+	}
 }

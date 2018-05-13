@@ -283,4 +283,18 @@ final class ServerManager implements ProvidesRedisData
 		/** @noinspection PhpUndefinedMethodInspection */
 		return (array)$this->redis->zrange( $key, 0, $setLength - 1, true );
 	}
+
+	/**
+	 * @param string $command
+	 *
+	 * @throws ConnectionFailedException
+	 * @return bool
+	 */
+	public function commandExists( string $command ) : bool
+	{
+		/** @noinspection PhpUndefinedMethodInspection */
+		$result = $this->redis->rawCommand( $command );
+
+		return (false !== $result);
+	}
 }

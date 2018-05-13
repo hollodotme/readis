@@ -131,4 +131,12 @@ interface ProvidesRedisData
 	 * @return array
 	 */
 	public function getAllSortedSetMembers( string $key ) : array;
+
+	/**
+	 * @param string $command
+	 *
+	 * @throws ConnectionFailedException
+	 * @return bool
+	 */
+	public function commandExists( string $command ) : bool;
 }
