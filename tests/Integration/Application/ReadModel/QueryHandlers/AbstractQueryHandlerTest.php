@@ -2,6 +2,7 @@
 
 namespace hollodotme\Readis\Tests\Integration\Application\ReadModel\QueryHandlers;
 
+use hollodotme\Readis\Exceptions\NoServersConfigured;
 use hollodotme\Readis\Exceptions\ServerConfigNotFound;
 use hollodotme\Readis\Infrastructure\Configs\ServerConfigList;
 use hollodotme\Readis\Infrastructure\Redis\ServerConnection;
@@ -22,8 +23,36 @@ abstract class AbstractQueryHandlerTest extends TestCase
 
 		$this->redis->slowlog( 'reset' );
 		$this->redis->select( 0 );
-		$this->redis->set( 'unit', 'test' );
-		$this->redis->hSet( 'test', 'unit', '{"json": {"key": "value"}}' );
+		$this->redis->set( 'string', '{"json": {"key": "value"}}' );
+		$this->redis->hSet( 'hash', 'field', 'value' );
+		$this->redis->hSet( 'hash', 'json', '{"json": {"key": "value"}}' );
+		$this->redis->rPush( 'list', 'one', 'two', '{"json": {"key": "value"}}' );
+		$this->redis->sAdd( 'set', 'one', 'two', '{"json": {"key": "value"}}' );
+		/** @noinspection PhpMethodParametersCountMismatchInspection */
+		$this->redis->zAdd(
+			'sorted set',
+			1,
+			'one',
+			2,
+			'two',
+			2,
+			'two again',
+			3,
+			'{"json": {"key": "value"}}'
+		);
+		/** @noinspection PhpUndefinedMethodInspection */
+		$this->redis->geoAdd(
+			'geo',
+			13.361389,
+			38.115556,
+			'Palermo',
+			15.087269,
+			37.502669,
+			'Catania'
+		);
+		/** @noinspection PhpMethodParametersCountMismatchInspection */
+		/** @noinspection PhpParamsInspection */
+		$this->redis->rawCommand( 'PFADD', 'hyperLogLog', 'a', 'b', 'c', 'd', 'e', 'f' );
 	}
 
 	protected function tearDown() : void
@@ -35,6 +64,7 @@ abstract class AbstractQueryHandlerTest extends TestCase
 	/**
 	 * @param string $serverKey
 	 *
+	 * @throws NoServersConfigured
 	 * @return ProvidesInfrastructure
 	 * @throws ServerConfigNotFound
 	 */
@@ -44,16 +74,33 @@ abstract class AbstractQueryHandlerTest extends TestCase
 		$serverConfig     = $serverConfigList->getServerConfig(
 			$serverKey > count( $serverConfigList->getServerConfigs() ) ? '0' : $serverKey
 		);
-		$serverConnection = new ServerConnection( $serverConfig );
 
 		$env = $this->getMockBuilder( ProvidesInfrastructure::class )->getMockForAbstractClass();
 		$env->method( 'getServerConfigList' )->willReturn( $serverConfigList );
 		$env->method( 'getServerManager' )
-			->with( $serverConfig )
-			->willReturn( new ServerManager( $serverConnection ) );
+		    ->with( $serverConfig )
+		    ->willReturn( $this->getServerManagerMock( $serverKey ) );
 
 		/** @var ProvidesInfrastructure $env */
 		return $env;
+	}
+
+	/**
+	 * @param string $serverKey
+	 *
+	 * @throws ServerConfigNotFound
+	 * @throws NoServersConfigured
+	 * @return ServerManager
+	 */
+	protected function getServerManagerMock( string $serverKey ) : ServerManager
+	{
+		$serverConfigList = $this->getServerConfigListMock();
+		$serverConfig     = $serverConfigList->getServerConfig(
+			$serverKey > count( $serverConfigList->getServerConfigs() ) ? '0' : $serverKey
+		);
+		$serverConnection = new ServerConnection( $serverConfig );
+
+		return new ServerManager( $serverConnection );
 	}
 
 	protected function getServerConfigListMock() : ServerConfigList
