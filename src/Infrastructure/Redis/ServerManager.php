@@ -251,7 +251,7 @@ final class ServerManager implements ProvidesRedisData
 
 		if ( !isset( $members[ $index ] ) )
 		{
-			throw new RuntimeException( 'Could not find key in set anymore.' );
+			throw new RuntimeException( 'Could not find member in set anymore.' );
 		}
 
 		return $members[ $index ];

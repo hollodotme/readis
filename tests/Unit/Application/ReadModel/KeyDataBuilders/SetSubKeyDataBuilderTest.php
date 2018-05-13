@@ -52,7 +52,7 @@ final class SetSubKeyDataBuilderTest extends AbstractKeyDataBuilderTest
 		$keyNameStub->method( 'getSubKey' )->willReturn( '1' );
 
 		$this->expectException( RuntimeException::class );
-		$this->expectExceptionMessage( 'Could not find key in set anymore.' );
+		$this->expectExceptionMessage( 'Could not find member in set anymore.' );
 
 		/** @var ProvidesKeyInfo $keyInfoStub */
 		/** @var ProvidesKeyName $keyNameStub */
