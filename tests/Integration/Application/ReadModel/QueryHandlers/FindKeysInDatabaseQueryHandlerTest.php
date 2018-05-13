@@ -33,8 +33,10 @@ final class FindKeysInDatabaseQueryHandlerTest extends AbstractQueryHandlerTest
 		int $expectedKeyCount
 	) : void
 	{
-		$query  = new FindKeysInDatabaseQuery( $serverKey, $database, $searchPattern, $limit );
-		$result = (new FindKeysInDatabaseQueryHandler( $this->getEnvMock( $serverKey ) ))->handle( $query );
+		$serverManager = $this->getServerManagerMock( $serverKey );
+
+		$query  = new FindKeysInDatabaseQuery( $database, $searchPattern, $limit );
+		$result = (new FindKeysInDatabaseQueryHandler( $serverManager ))->handle( $query );
 
 		$this->assertTrue( $result->succeeded() );
 		$this->assertFalse( $result->failed() );
@@ -96,30 +98,13 @@ final class FindKeysInDatabaseQueryHandlerTest extends AbstractQueryHandlerTest
 	 * @throws ServerConfigNotFound
 	 * @throws \Exception
 	 */
-	public function testResultFailsIfServerConfigNotFound() : void
-	{
-		$serverKey = '3';
-
-		$query  = new FindKeysInDatabaseQuery( $serverKey, 0, '*', null );
-		$result = (new FindKeysInDatabaseQueryHandler( $this->getEnvMock( $serverKey ) ))->handle( $query );
-
-		$this->assertFalse( $result->succeeded() );
-		$this->assertTrue( $result->failed() );
-		$this->assertSame( 'Server config not found for server key: 3', $result->getMessage() );
-	}
-
-	/**
-	 * @throws ExpectationFailedException
-	 * @throws InvalidArgumentException
-	 * @throws ServerConfigNotFound
-	 * @throws \Exception
-	 */
 	public function testResultFailsIfConnectionToServerFailed() : void
 	{
-		$serverKey = '1';
+		$serverKey     = '1';
+		$serverManager = $this->getServerManagerMock( $serverKey );
 
-		$query  = new FindKeysInDatabaseQuery( $serverKey, 0, '*', null );
-		$result = (new FindKeysInDatabaseQueryHandler( $this->getEnvMock( $serverKey ) ))->handle( $query );
+		$query  = new FindKeysInDatabaseQuery( 0, '*', null );
+		$result = (new FindKeysInDatabaseQueryHandler( $serverManager ))->handle( $query );
 
 		$this->assertFalse( $result->succeeded() );
 		$this->assertTrue( $result->failed() );
