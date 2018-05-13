@@ -66,9 +66,9 @@ final class HashKeyDataBuilder implements BuildsKeyData
 	private function getFieldOutput( string $hashKey, string $hashValue ) : string
 	{
 		return sprintf(
-			"Hash key %s:\n%s\n%s",
+			"Field %s:\n%s\n%s",
 			$hashKey,
-			str_repeat( '=', 10 + strlen( (string)$hashKey ) ),
+			str_repeat( '=', 7 + strlen( (string)$hashKey ) ),
 			$hashValue
 		);
 	}
