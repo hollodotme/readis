@@ -38,18 +38,40 @@ final class ServerDetailsRequestHandler extends AbstractRequestHandler implement
 		}
 
 		$serverInformation = $result->getServerInformation();
+		$databases         = $this->getDatabases( $serverInformation->getServerConfig(), $server->getDatabaseMap() );
 
 		$data = [
-			'appConfig'      => $appConfig,
-			'database'       => $database,
-			'serverKey'      => $serverKey,
-			'server'         => $server,
-			'serverConfig'   => $serverInformation->getServerConfig(),
-			'slowLogCount'   => $serverInformation->getSlowLogCount(),
-			'slowLogEntries' => $serverInformation->getSlowLogEntries(),
-			'serverInfo'     => $serverInformation->getServerInfo(),
+			'appConfig'           => $appConfig,
+			'database'            => isset( $databases[ $database ] )
+				? $database
+				: (array_keys( $databases )[0] ?? null),
+			'serverKey'           => $serverKey,
+			'server'              => $server,
+			'databases'           => $databases,
+			'serverConfig'        => $serverInformation->getServerConfig(),
+			'slowLogCount'        => $serverInformation->getSlowLogCount(),
+			'slowLogEntries'      => $serverInformation->getSlowLogEntries(),
+			'serverInfo'          => $serverInformation->getServerInfo(),
+			'infoCommandDisabled' => !$serverManager->commandExists( 'INFO' ),
 		];
 
 		(new TwigPage())->respond( 'Server/Read/Pages/ServerDetails.twig', $data );
+	}
+
+	private function getDatabases( array $serverConfig, array $databaseMap ) : array
+	{
+		$databases = [];
+
+		if ( isset( $serverConfig['databases'] ) )
+		{
+			for ( $i = 0; $i < (int)$serverConfig['databases']; $i++ )
+			{
+				$databases[ (string)$i ] = $databaseMap[ (string)$i ] ?? "Database {$i}";
+			}
+
+			return $databases;
+		}
+
+		return $databaseMap;
 	}
 }

@@ -36,60 +36,84 @@ final class ServerManager implements ProvidesRedisData
 	}
 
 	/**
-	 * @return array
 	 * @throws ConnectionFailedException
+	 * @return array
 	 */
 	public function getServerConfig() : array
 	{
-		/** @noinspection PhpUndefinedMethodInspection */
-		return (array)$this->redis->config( 'GET', '*' );
+		if ( $this->commandExists( 'CONFIG' ) )
+		{
+			/** @noinspection PhpUndefinedMethodInspection */
+			return (array)$this->redis->config( 'GET', '*' );
+		}
+
+		return [
+			'CONFIG COMMAND IS DISABLED' => 'readis is not able to show the server config.',
+		];
 	}
 
 	/**
-	 * @return int
 	 * @throws ConnectionFailedException
+	 * @return int
 	 */
 	public function getSlowLogCount() : int
 	{
-		/** @noinspection PhpUndefinedMethodInspection */
-		return (int)$this->redis->slowlog( 'len' );
+		if ( $this->commandExists( 'SLOWLOG' ) )
+		{
+			/** @noinspection PhpUndefinedMethodInspection */
+			return (int)$this->redis->slowlog( 'len' );
+		}
+
+		return 0;
 	}
 
 	/**
 	 * @param int $limit
 	 *
-	 * @return array|ProvidesSlowLogData[]
 	 * @throws \Exception
 	 * @throws ConnectionFailedException
+	 * @return array|ProvidesSlowLogData[]
 	 */
 	public function getSlowLogEntries( int $limit = 100 ) : array
 	{
-		/** @noinspection PhpMethodParametersCountMismatchInspection */
-		/** @noinspection PhpUndefinedMethodInspection */
-		return array_map(
-			function ( array $slowLogData )
-			{
-				return new SlowLogEntry( $slowLogData );
-			},
-			(array)$this->redis->slowlog( 'get', $limit )
-		);
+		if ( $this->commandExists( 'SLOWLOG' ) )
+		{
+			/** @noinspection PhpMethodParametersCountMismatchInspection */
+			/** @noinspection PhpUndefinedMethodInspection */
+			return array_map(
+				function ( array $slowLogData )
+				{
+					return new SlowLogEntry( $slowLogData );
+				},
+				(array)$this->redis->slowlog( 'get', $limit )
+			);
+		}
+
+		return [];
 	}
 
 	/**
-	 * @return array
 	 * @throws ConnectionFailedException
+	 * @return array
 	 */
 	public function getServerInfo() : array
 	{
-		/** @noinspection PhpUndefinedMethodInspection */
-		return (array)$this->redis->info();
+		if ( $this->commandExists( 'INFO' ) )
+		{
+			/** @noinspection PhpUndefinedMethodInspection */
+			return (array)$this->redis->info();
+		}
+
+		return [
+			'INFO COMMAND IS DISABLED' => 'readis is not able to show the server informtion.',
+		];
 	}
 
 	/**
 	 * @param string $keyPattern
 	 *
-	 * @return array
 	 * @throws ConnectionFailedException
+	 * @return array
 	 */
 	public function getKeys( string $keyPattern = '*' ) : array
 	{
@@ -101,8 +125,8 @@ final class ServerManager implements ProvidesRedisData
 	 * @param string   $keyPattern
 	 * @param int|null $limit
 	 *
-	 * @return array|ProvidesKeyInfo[]
 	 * @throws ConnectionFailedException
+	 * @return array|ProvidesKeyInfo[]
 	 */
 	public function getKeyInfoObjects( string $keyPattern, ?int $limit ) : array
 	{
@@ -120,8 +144,8 @@ final class ServerManager implements ProvidesRedisData
 	/**
 	 * @param string $key
 	 *
-	 * @return ProvidesKeyInfo
 	 * @throws ConnectionFailedException
+	 * @return ProvidesKeyInfo
 	 */
 	public function getKeyInfoObject( string $key ) : ProvidesKeyInfo
 	{
@@ -175,8 +199,8 @@ final class ServerManager implements ProvidesRedisData
 	/**
 	 * @param string $key
 	 *
-	 * @return string
 	 * @throws ConnectionFailedException
+	 * @return string
 	 */
 	public function getValue( string $key ) : string
 	{
@@ -188,8 +212,8 @@ final class ServerManager implements ProvidesRedisData
 	 * @param string $key
 	 * @param string $hashKey
 	 *
-	 * @return string
 	 * @throws ConnectionFailedException
+	 * @return string
 	 */
 	public function getHashValue( string $key, string $hashKey ) : string
 	{
@@ -293,8 +317,10 @@ final class ServerManager implements ProvidesRedisData
 	public function commandExists( string $command ) : bool
 	{
 		/** @noinspection PhpUndefinedMethodInspection */
-		$result = $this->redis->rawCommand( $command );
+		$this->redis->rawCommand( $command );
+		/** @noinspection PhpUndefinedMethodInspection */
+		$error = $this->redis->getLastError();
 
-		return (false !== $result);
+		return (false === strpos( (string)$error, 'unknown command' ));
 	}
 }
