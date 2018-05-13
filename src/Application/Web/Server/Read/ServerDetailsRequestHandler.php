@@ -2,7 +2,6 @@
 
 namespace hollodotme\Readis\Application\Web\Server\Read;
 
-use hollodotme\Readis\Application\ReadModel\Queries\FetchServerInformationQuery;
 use hollodotme\Readis\Application\ReadModel\QueryHandlers\FetchServerInformationQueryHandler;
 use hollodotme\Readis\Application\Web\AbstractRequestHandler;
 use hollodotme\Readis\Exceptions\RuntimeException;
@@ -25,8 +24,10 @@ final class ServerDetailsRequestHandler extends AbstractRequestHandler implement
 		$database  = (string)$input->get( 'database', '0' );
 		$serverKey = (string)$input->get( 'serverKey', '0' );
 
-		$query  = new FetchServerInformationQuery( $serverKey );
-		$result = (new FetchServerInformationQueryHandler( $this->getEnv() ))->handle( $query );
+		$server        = $this->getEnv()->getServerConfigList()->getServerConfig( $serverKey );
+		$serverManager = $this->getEnv()->getServerManagerForServerKey( $serverKey );
+
+		$result = (new FetchServerInformationQueryHandler( $serverManager ))->handle();
 
 		if ( $result->failed() )
 		{
@@ -42,7 +43,7 @@ final class ServerDetailsRequestHandler extends AbstractRequestHandler implement
 			'appConfig'      => $appConfig,
 			'database'       => $database,
 			'serverKey'      => $serverKey,
-			'server'         => $serverInformation->getServer(),
+			'server'         => $server,
 			'serverConfig'   => $serverInformation->getServerConfig(),
 			'slowLogCount'   => $serverInformation->getSlowLogCount(),
 			'slowLogEntries' => $serverInformation->getSlowLogEntries(),

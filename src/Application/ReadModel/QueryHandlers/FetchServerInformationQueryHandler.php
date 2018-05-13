@@ -2,36 +2,36 @@
 
 namespace hollodotme\Readis\Application\ReadModel\QueryHandlers;
 
+use hollodotme\Readis\Application\Interfaces\ProvidesRedisData;
 use hollodotme\Readis\Application\ReadModel\Constants\ResultType;
 use hollodotme\Readis\Application\ReadModel\DTO\ServerInformation;
-use hollodotme\Readis\Application\ReadModel\Queries\FetchServerInformationQuery;
 use hollodotme\Readis\Application\ReadModel\Results\FetchServerInformationResult;
-use hollodotme\Readis\Exceptions\ServerConfigNotFound;
 use hollodotme\Readis\Infrastructure\Redis\Exceptions\ConnectionFailedException;
 
-final class FetchServerInformationQueryHandler extends AbstractQueryHandler
+final class FetchServerInformationQueryHandler
 {
+	/** @var ProvidesRedisData */
+	private $serverManager;
+
+	public function __construct( ProvidesRedisData $serverManager )
+	{
+		$this->serverManager = $serverManager;
+	}
+
 	/**
-	 * @param FetchServerInformationQuery $query
-	 *
-	 * @return FetchServerInformationResult
 	 * @throws \Exception
+	 * @return FetchServerInformationResult
 	 */
-	public function handle( FetchServerInformationQuery $query ) : FetchServerInformationResult
+	public function handle() : FetchServerInformationResult
 	{
 		try
 		{
-			$serverConfigList = $this->getEnv()->getServerConfigList();
-			$server           = $serverConfigList->getServerConfig( $query->getServerKey() );
-			$serverManager    = $this->getEnv()->getServerManager( $server );
-
-			$serverConfig    = $serverManager->getServerConfig();
-			$slowLogCount    = $serverManager->getSlowLogCount();
-			$slowLogsEntries = $serverManager->getSlowLogEntries();
-			$serverInfo      = $serverManager->getServerInfo();
+			$serverConfig    = $this->serverManager->getServerConfig();
+			$slowLogCount    = $this->serverManager->getSlowLogCount();
+			$slowLogsEntries = $this->serverManager->getSlowLogEntries();
+			$serverInfo      = $this->serverManager->getServerInfo();
 
 			$serverInformation = new ServerInformation(
-				$server,
 				$serverConfig,
 				$slowLogCount,
 				$slowLogsEntries,
@@ -42,10 +42,6 @@ final class FetchServerInformationQueryHandler extends AbstractQueryHandler
 			$result->setServerInformation( $serverInformation );
 
 			return $result;
-		}
-		catch ( ServerConfigNotFound $e )
-		{
-			return new FetchServerInformationResult( ResultType::FAILURE, $e->getMessage() );
 		}
 		catch ( ConnectionFailedException $e )
 		{
