@@ -5,6 +5,7 @@ namespace hollodotme\Readis\Infrastructure\Redis;
 use hollodotme\Readis\Application\Interfaces\ProvidesKeyInfo;
 use hollodotme\Readis\Application\Interfaces\ProvidesRedisData;
 use hollodotme\Readis\Application\Interfaces\ProvidesSlowLogData;
+use hollodotme\Readis\Exceptions\RuntimeException;
 use hollodotme\Readis\Infrastructure\Interfaces\ProvidesConnectionData;
 use hollodotme\Readis\Infrastructure\Redis\DTO\KeyInfo;
 use hollodotme\Readis\Infrastructure\Redis\DTO\SlowLogEntry;
@@ -241,11 +242,17 @@ final class ServerManager implements ProvidesRedisData
 	 * @param int    $index
 	 *
 	 * @throws ConnectionFailedException
+	 * @throws RuntimeException
 	 * @return string
 	 */
 	public function getSetMember( string $key, int $index ) : string
 	{
 		$members = $this->getAllSetMembers( $key );
+
+		if ( !isset( $members[ $index ] ) )
+		{
+			throw new RuntimeException( 'Could not find key in set anymore.' );
+		}
 
 		return $members[ $index ];
 	}
