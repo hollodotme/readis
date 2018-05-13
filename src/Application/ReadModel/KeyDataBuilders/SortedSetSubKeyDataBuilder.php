@@ -40,8 +40,10 @@ final class SortedSetSubKeyDataBuilder implements BuildsKeyData
 	 */
 	public function buildKeyData( ProvidesKeyInfo $keyInfo, ProvidesKeyName $keyName ) : ProvidesKeyData
 	{
-		$i = 0;
-		foreach ( $keyInfo->getSubItems() as $member => $score )
+		$members = $this->manager->getAllSortedSetMembers( $keyName->getKeyName() );
+		$i       = 0;
+
+		foreach ( $members as $member => $score )
 		{
 			if ( (int)$keyName->getSubKey() !== $i++ )
 			{

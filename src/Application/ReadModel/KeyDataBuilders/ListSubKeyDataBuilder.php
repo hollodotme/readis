@@ -40,7 +40,7 @@ final class ListSubKeyDataBuilder implements BuildsKeyData
 	 */
 	public function buildKeyData( ProvidesKeyInfo $keyInfo, ProvidesKeyName $keyName ) : ProvidesKeyData
 	{
-		$rawKeyData = $this->manager->getListValue( $keyName->getKeyName(), (int)$keyName->getSubKey() ) ?: '';
+		$rawKeyData = $this->manager->getListElement( $keyName->getKeyName(), (int)$keyName->getSubKey() ) ?: '';
 		$keyData    = $this->prettifier->prettify( $rawKeyData );
 
 		return new KeyData( $keyData, $rawKeyData );

@@ -9,6 +9,7 @@ use hollodotme\Readis\Application\ReadModel\Interfaces\BuildsKeyData;
 use hollodotme\Readis\Application\ReadModel\Interfaces\PrettifiesString;
 use hollodotme\Readis\Application\ReadModel\Interfaces\ProvidesKeyData;
 use hollodotme\Readis\Application\ReadModel\Interfaces\ProvidesKeyName;
+use hollodotme\Readis\Infrastructure\Redis\Exceptions\ConnectionFailedException;
 use hollodotme\Readis\Infrastructure\Redis\ServerManager;
 
 final class ListKeyDataBuilder implements BuildsKeyData
@@ -32,16 +33,25 @@ final class ListKeyDataBuilder implements BuildsKeyData
 		return !$keyName->hasSubKey() && (KeyType::LIST === $keyInfo->getType());
 	}
 
+	/**
+	 * @param ProvidesKeyInfo $keyInfo
+	 * @param ProvidesKeyName $keyName
+	 *
+	 * @throws ConnectionFailedException
+	 * @return ProvidesKeyData
+	 */
 	public function buildKeyData( ProvidesKeyInfo $keyInfo, ProvidesKeyName $keyName ) : ProvidesKeyData
 	{
+		$elements = $this->manager->getAllListElements( $keyName->getKeyName() );
+
 		$rawElements = [];
-		foreach ( $keyInfo->getSubItems() as $index => $element )
+		foreach ( $elements as $index => $element )
 		{
 			$rawElements[] = $this->getElementOutput( $index, $element );
 		}
 
 		$prettyElements = [];
-		foreach ( $keyInfo->getSubItems() as $index => $element )
+		foreach ( $elements as $index => $element )
 		{
 			$prettyElement    = $this->prettifier->prettify( $element );
 			$prettyElements[] = $this->getElementOutput( $index, $prettyElement );

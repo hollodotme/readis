@@ -9,6 +9,7 @@ use hollodotme\Readis\Application\ReadModel\Interfaces\BuildsKeyData;
 use hollodotme\Readis\Application\ReadModel\Interfaces\PrettifiesString;
 use hollodotme\Readis\Application\ReadModel\Interfaces\ProvidesKeyData;
 use hollodotme\Readis\Application\ReadModel\Interfaces\ProvidesKeyName;
+use hollodotme\Readis\Infrastructure\Redis\Exceptions\ConnectionFailedException;
 use hollodotme\Readis\Infrastructure\Redis\ServerManager;
 
 final class SortedSetKeyDataBuilder implements BuildsKeyData
@@ -32,19 +33,27 @@ final class SortedSetKeyDataBuilder implements BuildsKeyData
 		return !$keyName->hasSubKey() && (KeyType::SORTED_SET === $keyInfo->getType());
 	}
 
+	/**
+	 * @param ProvidesKeyInfo $keyInfo
+	 * @param ProvidesKeyName $keyName
+	 *
+	 * @throws ConnectionFailedException
+	 * @return ProvidesKeyData
+	 */
 	public function buildKeyData( ProvidesKeyInfo $keyInfo, ProvidesKeyName $keyName ) : ProvidesKeyData
 	{
-		$setMembers = $keyInfo->getSubItems();
+		$members = $this->manager->getAllSortedSetMembers( $keyName->getKeyName() );
+
 		$rawMembers = [];
 		$index      = 0;
-		foreach ( $setMembers as $member => $score )
+		foreach ( $members as $member => $score )
 		{
 			$rawMembers[] = $this->getMemberOutput( $index++, $member, $score );
 		}
 
 		$prettyMembers = [];
 		$index         = 0;
-		foreach ( $setMembers as $member => $score )
+		foreach ( $members as $member => $score )
 		{
 			$prettyMember    = $this->prettifier->prettify( $member );
 			$prettyMembers[] = $this->getMemberOutput( $index++, $prettyMember, $score );
