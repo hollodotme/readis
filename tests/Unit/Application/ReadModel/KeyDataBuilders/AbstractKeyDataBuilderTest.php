@@ -4,6 +4,7 @@ namespace hollodotme\Readis\Tests\Unit\Application\ReadModel\KeyDataBuilders;
 
 use hollodotme\Readis\Application\Interfaces\ProvidesRedisData;
 use hollodotme\Readis\Application\ReadModel\Interfaces\PrettifiesString;
+use hollodotme\Readis\Exceptions\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
 abstract class AbstractKeyDataBuilderTest extends TestCase
@@ -26,6 +27,21 @@ abstract class AbstractKeyDataBuilderTest extends TestCase
 				              'one'                        => 1.0,
 				              '{"json": {"key": "value"}}' => 2.0,
 			              ]
+		              );
+
+		$this->manager->method( 'getSetMember' )
+		              ->will(
+			              $this->returnCallback(
+				              function ( string $key, int $index )
+				              {
+					              if ( 0 === $index )
+					              {
+						              return '{"json": {"key": "value"}}';
+					              }
+
+					              throw new RuntimeException( 'Could not find key in set anymore.' );
+				              }
+			              )
 		              );
 
 		$this->prettifier = new class implements PrettifiesString
