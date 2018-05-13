@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php /** @noinspection HtmlUnknownTag */
+
+declare(strict_types=1);
 
 namespace hollodotme\Readis\Application\Configs;
 
