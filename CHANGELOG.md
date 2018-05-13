@@ -3,9 +3,14 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/) and [Keep a CHANGELOG](http://keepachangelog.com).
 
-## [2.1.0] - YYYY-MM-DD
+## [2.1.0] - 2018-05-13
 
 ### Added
+
+**Related to [issue #8]:**
+
+* Fallback handling for disabled commands CONFIG, INFO and SLOWLOG
+* Verbose error descriptions or hints, if commands are disabled
 
 **Related to [issue #9]:**
 
@@ -70,6 +75,7 @@ This project adheres to [Semantic Versioning](http://semver.org/) and [Keep a CH
 
 First stable release.
 
+[2.1.0]: https://github.com/hollodotme/readis/compare/v2.0.0...v2.1.0
 [2.0.0]: https://github.com/hollodotme/readis/compare/v1.1.3...v2.0.0
 [1.1.3]: https://github.com/hollodotme/readis/compare/v1.1.2...v1.1.3
 [1.1.2]: https://github.com/hollodotme/readis/compare/v1.1.1...v1.1.2
@@ -78,4 +84,5 @@ First stable release.
 [1.0.1]: https://github.com/hollodotme/readis/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/hollodotme/readis/tree/v1.0.0
 
+[issue #8]: https://github.com/hollodotme/readis/issues/8
 [issue #9]: https://github.com/hollodotme/readis/issues/9
