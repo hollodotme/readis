@@ -3,6 +3,7 @@
 namespace hollodotme\Readis\Application\ReadModel\KeyDataBuilders;
 
 use hollodotme\Readis\Application\Interfaces\ProvidesKeyInfo;
+use hollodotme\Readis\Application\Interfaces\ProvidesRedisData;
 use hollodotme\Readis\Application\ReadModel\Constants\KeyType;
 use hollodotme\Readis\Application\ReadModel\DTO\KeyData;
 use hollodotme\Readis\Application\ReadModel\Interfaces\BuildsKeyData;
@@ -10,19 +11,18 @@ use hollodotme\Readis\Application\ReadModel\Interfaces\PrettifiesString;
 use hollodotme\Readis\Application\ReadModel\Interfaces\ProvidesKeyData;
 use hollodotme\Readis\Application\ReadModel\Interfaces\ProvidesKeyName;
 use hollodotme\Readis\Infrastructure\Redis\Exceptions\ConnectionFailedException;
-use hollodotme\Readis\Infrastructure\Redis\ServerManager;
 
 final class SetKeyDataBuilder implements BuildsKeyData
 {
 	private const MEMBER_SEPARATOR = "\n\n---\n\n";
 
-	/** @var ServerManager */
+	/** @var ProvidesRedisData */
 	private $manager;
 
 	/** @var PrettifiesString */
 	private $prettifier;
 
-	public function __construct( ServerManager $manager, PrettifiesString $prettifier )
+	public function __construct( ProvidesRedisData $manager, PrettifiesString $prettifier )
 	{
 		$this->manager    = $manager;
 		$this->prettifier = $prettifier;

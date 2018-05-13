@@ -2,6 +2,7 @@
 
 namespace hollodotme\Readis\Application\ReadModel\QueryHandlers;
 
+use hollodotme\Readis\Application\Interfaces\ProvidesRedisData;
 use hollodotme\Readis\Application\ReadModel\Constants\ResultType;
 use hollodotme\Readis\Application\ReadModel\DTO\KeyName;
 use hollodotme\Readis\Application\ReadModel\Interfaces\BuildsKeyData;
@@ -22,17 +23,16 @@ use hollodotme\Readis\Application\ReadModel\Queries\FetchKeyInformationQuery;
 use hollodotme\Readis\Application\ReadModel\Results\FetchKeyInformationResult;
 use hollodotme\Readis\Exceptions\KeyTypeNotImplemented;
 use hollodotme\Readis\Infrastructure\Redis\Exceptions\ConnectionFailedException;
-use hollodotme\Readis\Infrastructure\Redis\ServerManager;
 
 final class FetchKeyInformationQueryHandler
 {
-	/** @var ServerManager */
+	/** @var ProvidesRedisData */
 	private $manager;
 
 	/** @var BuildsKeyData */
 	private $keyDataBuilder;
 
-	public function __construct( ServerManager $manager )
+	public function __construct( ProvidesRedisData $manager )
 	{
 		$this->manager = $manager;
 
