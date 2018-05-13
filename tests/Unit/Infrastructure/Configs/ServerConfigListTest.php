@@ -2,6 +2,7 @@
 
 namespace hollodotme\Readis\Tests\Unit\Infrastructure\Configs;
 
+use hollodotme\Readis\Exceptions\NoServersConfigured;
 use hollodotme\Readis\Exceptions\ServerConfigNotFound;
 use hollodotme\Readis\Exceptions\ServersConfigNotFound;
 use hollodotme\Readis\Infrastructure\Configs\ServerConfigList;
@@ -84,6 +85,7 @@ final class ServerConfigListTest extends TestCase
 	 *
 	 * @throws ExpectationFailedException
 	 * @throws InvalidArgumentException
+	 * @throws NoServersConfigured
 	 *
 	 * @dataProvider serverConfigsProvider
 	 */
@@ -92,6 +94,19 @@ final class ServerConfigListTest extends TestCase
 		$serverConfigList = new ServerConfigList( $serverConfigs );
 
 		$this->assertContainsOnlyInstancesOf( ProvidesServerConfig::class, $serverConfigList->getServerConfigs() );
+	}
+
+	/**
+	 * @throws NoServersConfigured
+	 */
+	public function testThrowsExceptionIfNoServersWereConfigured() : void
+	{
+		$serverConfigList = new ServerConfigList( [] );
+
+		$this->expectException( NoServersConfigured::class );
+		$this->expectExceptionMessage( 'No servers were configured.' );
+
+		$serverConfigList->getServerConfigs();
 	}
 
 	/**
