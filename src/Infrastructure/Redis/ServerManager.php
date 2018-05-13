@@ -3,6 +3,7 @@
 namespace hollodotme\Readis\Infrastructure\Redis;
 
 use hollodotme\Readis\Application\Interfaces\ProvidesKeyInfo;
+use hollodotme\Readis\Application\Interfaces\ProvidesRedisData;
 use hollodotme\Readis\Application\Interfaces\ProvidesSlowLogData;
 use hollodotme\Readis\Infrastructure\Interfaces\ProvidesConnectionData;
 use hollodotme\Readis\Infrastructure\Redis\DTO\KeyInfo;
@@ -12,7 +13,7 @@ use Redis;
 use function array_map;
 use function array_slice;
 
-final class ServerManager
+final class ServerManager implements ProvidesRedisData
 {
 	/** @var RedisWrapper */
 	private $redis;

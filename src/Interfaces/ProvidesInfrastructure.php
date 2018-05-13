@@ -3,9 +3,9 @@
 namespace hollodotme\Readis\Interfaces;
 
 use hollodotme\Readis\Application\Configs\AppConfig;
+use hollodotme\Readis\Application\Interfaces\ProvidesRedisData;
 use hollodotme\Readis\Infrastructure\Interfaces\ProvidesServerConfig;
 use hollodotme\Readis\Infrastructure\Interfaces\ProvidesServerConfigList;
-use hollodotme\Readis\Infrastructure\Redis\ServerManager;
 
 interface ProvidesInfrastructure
 {
@@ -13,7 +13,7 @@ interface ProvidesInfrastructure
 
 	public function getServerConfigList() : ProvidesServerConfigList;
 
-	public function getServerManager( ProvidesServerConfig $serverConfig ) : ServerManager;
+	public function getServerManager( ProvidesServerConfig $serverConfig ) : ProvidesRedisData;
 
-	public function getServerManagerForServerKey( string $serverKey ) : ServerManager;
+	public function getServerManagerForServerKey( string $serverKey ) : ProvidesRedisData;
 }
