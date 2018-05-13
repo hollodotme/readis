@@ -2,6 +2,7 @@
 
 namespace hollodotme\Readis\Tests\Integration\Application\ReadModel\QueryHandlers;
 
+use hollodotme\Readis\Application\Interfaces\ProvidesRedisData;
 use hollodotme\Readis\Exceptions\NoServersConfigured;
 use hollodotme\Readis\Exceptions\ServerConfigNotFound;
 use hollodotme\Readis\Infrastructure\Configs\ServerConfigList;
@@ -90,9 +91,9 @@ abstract class AbstractQueryHandlerTest extends TestCase
 	 *
 	 * @throws ServerConfigNotFound
 	 * @throws NoServersConfigured
-	 * @return ServerManager
+	 * @return ProvidesRedisData
 	 */
-	protected function getServerManagerMock( string $serverKey ) : ServerManager
+	protected function getServerManagerMock( string $serverKey ) : ProvidesRedisData
 	{
 		$serverConfigList = $this->getServerConfigListMock();
 		$serverConfig     = $serverConfigList->getServerConfig(
