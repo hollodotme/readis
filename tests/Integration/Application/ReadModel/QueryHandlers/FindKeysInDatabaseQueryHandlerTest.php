@@ -5,6 +5,7 @@ namespace hollodotme\Readis\Tests\Integration\Application\ReadModel\QueryHandler
 use hollodotme\Readis\Application\Interfaces\ProvidesKeyInfo;
 use hollodotme\Readis\Application\ReadModel\Queries\FindKeysInDatabaseQuery;
 use hollodotme\Readis\Application\ReadModel\QueryHandlers\FindKeysInDatabaseQueryHandler;
+use hollodotme\Readis\Exceptions\NoServersConfigured;
 use hollodotme\Readis\Exceptions\ServerConfigNotFound;
 use PHPUnit\Framework\ExpectationFailedException;
 use SebastianBergmann\RecursionContext\InvalidArgumentException;
@@ -21,6 +22,7 @@ final class FindKeysInDatabaseQueryHandlerTest extends AbstractQueryHandlerTest
 	 * @throws ExpectationFailedException
 	 * @throws InvalidArgumentException
 	 * @throws ServerConfigNotFound
+	 * @throws NoServersConfigured
 	 * @dataProvider keySearchProvider
 	 */
 	public function testCanFindKeysInDatabase(
@@ -48,7 +50,7 @@ final class FindKeysInDatabaseQueryHandlerTest extends AbstractQueryHandlerTest
 				'database'         => 0,
 				'searchPattern'    => '*',
 				'limit'            => null,
-				'expectedKeyCount' => 2,
+				'expectedKeyCount' => 7,
 			],
 			[
 				'serverKey'        => '0',
@@ -60,14 +62,14 @@ final class FindKeysInDatabaseQueryHandlerTest extends AbstractQueryHandlerTest
 			[
 				'serverKey'        => '0',
 				'database'         => 0,
-				'searchPattern'    => '*ni*',
+				'searchPattern'    => '*as*',
 				'limit'            => null,
 				'expectedKeyCount' => 1,
 			],
 			[
 				'serverKey'        => '0',
 				'database'         => 0,
-				'searchPattern'    => '*es*',
+				'searchPattern'    => '*tri*',
 				'limit'            => null,
 				'expectedKeyCount' => 1,
 			],
