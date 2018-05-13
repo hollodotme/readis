@@ -19,6 +19,14 @@ abstract class AbstractKeyDataBuilderTest extends TestCase
 		$this->manager = $this->getMockBuilder( ProvidesRedisData::class )
 		                      ->getMockForAbstractClass();
 		$this->manager->method( 'getValue' )->with( 'string' )->willReturn( '{"json": {"key": "value"}}' );
+		$this->manager->method( 'getAllSortedSetMembers' )
+		              ->with( 'sorted set' )
+		              ->willReturn(
+			              [
+				              'one'                        => 1.0,
+				              '{"json": {"key": "value"}}' => 2.0,
+			              ]
+		              );
 
 		$this->prettifier = new class implements PrettifiesString
 		{
