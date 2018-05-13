@@ -59,6 +59,21 @@ abstract class AbstractKeyDataBuilderTest extends TestCase
 			              )
 		              );
 
+		$this->manager->method( 'getHashValue' )
+		              ->will(
+			              $this->returnCallback(
+				              function ( string $key, string $hashKey )
+				              {
+					              if ( 'hash' === $key && 'json' === $hashKey )
+					              {
+						              return '{"json": {"key": "value"}}';
+					              }
+
+					              throw new RuntimeException( 'Could not find field in hash anymore.' );
+				              }
+			              )
+		              );
+
 		$this->prettifier = new class implements PrettifiesString
 		{
 			public function canPrettify( string $data ) : bool
