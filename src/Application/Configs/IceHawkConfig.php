@@ -60,14 +60,12 @@ final class IceHawkConfig implements ConfiguresIceHawk
 		$quotedBaseUri = preg_quote( $baseUrl, '!' );
 
 		$this->readRoutes = [
-			'^' . $quotedBaseUri . '/?$'                                                                        => ServerSelectionRequestHandler::class,
-			'^' . $quotedBaseUri . '/server/(?<serverKey>\d+)/stats/?$'                                         => ServerStatsRequestHandler::class,
-			'^' . $quotedBaseUri . '/server/(?<serverKey>\d+)(?:/database/(?<database>\d+))?/?$'                => ServerDetailsRequestHandler::class,
-			'^' . $quotedBaseUri . '/server/(?<serverKey>\d+)/database/(?<database>\d+)/keys/?$'                => AjaxSearchKeysRequestHandler::class,
-			'^'
-			. $quotedBaseUri
-			. '/server/(?<serverKey>\d+)/database/(?<database>\d+)/keys/(?<keyName>.+)/hash/(?<subKey>.+)/?$'   => AjaxKeyDetailsRequestHandler::class,
-			'^' . $quotedBaseUri . '/server/(?<serverKey>\d+)/database/(?<database>\d+)/keys/(?<keyName>.+)/?$' => AjaxKeyDetailsRequestHandler::class,
+			"^{$quotedBaseUri}/?$"                                                                                           => ServerSelectionRequestHandler::class,
+			"^{$quotedBaseUri}/server/(?<serverKey>\d+)/stats/?$"                                                            => ServerStatsRequestHandler::class,
+			"^{$quotedBaseUri}/server/(?<serverKey>\d+)(?:/database/(?<database>\d+))?/?$"                                   => ServerDetailsRequestHandler::class,
+			"^{$quotedBaseUri}/server/(?<serverKey>\d+)/database/(?<database>\d+)/keys/?$"                                   => AjaxSearchKeysRequestHandler::class,
+			"^{$quotedBaseUri}/server/(?<serverKey>\d+)/database/(?<database>\d+)/keys/(?<keyName>.+)/hash/(?<subKey>.+)/?$" => AjaxKeyDetailsRequestHandler::class,
+			"^{$quotedBaseUri}/server/(?<serverKey>\d+)/database/(?<database>\d+)/keys/(?<keyName>.+)/?$"                    => AjaxKeyDetailsRequestHandler::class,
 		];
 	}
 
