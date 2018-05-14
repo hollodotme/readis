@@ -200,12 +200,20 @@ final class ServerManager implements ProvidesRedisData
 	 * @param string $key
 	 *
 	 * @throws ConnectionFailedException
+	 * @throws RuntimeException
 	 * @return string
 	 */
 	public function getValue( string $key ) : string
 	{
 		/** @noinspection PhpUndefinedMethodInspection */
-		return (string)$this->redis->get( $key );
+		$value = $this->redis->get( $key );
+
+		if ( $value !== false )
+		{
+			return (string)$value;
+		}
+
+		throw new RuntimeException( 'Could not find key anymore.' );
 	}
 
 	/**
@@ -213,24 +221,40 @@ final class ServerManager implements ProvidesRedisData
 	 * @param string $hashKey
 	 *
 	 * @throws ConnectionFailedException
+	 * @throws RuntimeException
 	 * @return string
 	 */
 	public function getHashValue( string $key, string $hashKey ) : string
 	{
 		/** @noinspection PhpUndefinedMethodInspection */
-		return (string)$this->redis->hGet( $key, $hashKey );
+		$hashValue = $this->redis->hGet( $key, $hashKey );
+
+		if ( $hashValue !== false )
+		{
+			return (string)$hashValue;
+		}
+
+		throw new RuntimeException( 'Could not find field in hash anymore.' );
 	}
 
 	/**
 	 * @param string $key
 	 *
 	 * @throws ConnectionFailedException
+	 * @throws RuntimeException
 	 * @return array
 	 */
 	public function getAllHashValues( string $key ) : array
 	{
 		/** @noinspection PhpUndefinedMethodInspection */
-		return (array)$this->redis->hGetAll( $key );
+		$hashValues = $this->redis->hGetAll( $key );
+
+		if ( $hashValues !== false )
+		{
+			return (array)$hashValues;
+		}
+
+		throw new RuntimeException( 'Could not find key: ' . $key );
 	}
 
 	/**
@@ -238,18 +262,27 @@ final class ServerManager implements ProvidesRedisData
 	 * @param int    $index
 	 *
 	 * @throws ConnectionFailedException
+	 * @throws RuntimeException
 	 * @return string
 	 */
 	public function getListElement( string $key, int $index ) : string
 	{
 		/** @noinspection PhpUndefinedMethodInspection */
-		return (string)$this->redis->lindex( $key, $index );
+		$listElement = $this->redis->lindex( $key, $index );
+
+		if ( $listElement !== false )
+		{
+			return (string)$listElement;
+		}
+
+		throw new RuntimeException( 'Could not find element in list anymore.' );
 	}
 
 	/**
 	 * @param string $key
 	 *
 	 * @throws ConnectionFailedException
+	 * @throws RuntimeException
 	 * @return array
 	 */
 	public function getAllListElements( string $key ) : array
@@ -257,8 +290,13 @@ final class ServerManager implements ProvidesRedisData
 		/** @noinspection PhpUndefinedMethodInspection */
 		$count = $this->redis->llen( $key );
 
-		/** @noinspection PhpUndefinedMethodInspection */
-		return (array)$this->redis->lrange( $key, 0, $count - 1 );
+		if ( $count !== false )
+		{
+			/** @noinspection PhpUndefinedMethodInspection */
+			return (array)$this->redis->lrange( $key, 0, $count - 1 );
+		}
+
+		throw new RuntimeException( 'Could not find key: ' . $key );
 	}
 
 	/**
@@ -285,18 +323,27 @@ final class ServerManager implements ProvidesRedisData
 	 * @param string $key
 	 *
 	 * @throws ConnectionFailedException
+	 * @throws RuntimeException
 	 * @return array
 	 */
 	public function getAllSetMembers( string $key ) : array
 	{
 		/** @noinspection PhpUndefinedMethodInspection */
-		return (array)$this->redis->smembers( $key );
+		$setMembers = $this->redis->smembers( $key );
+
+		if ( $setMembers !== false )
+		{
+			return (array)$setMembers;
+		}
+
+		throw new RuntimeException( 'Could not find key: ' . $key );
 	}
 
 	/**
 	 * @param string $key
 	 *
 	 * @throws ConnectionFailedException
+	 * @throws RuntimeException
 	 * @return array
 	 */
 	public function getAllSortedSetMembers( string $key ) : array
@@ -304,8 +351,13 @@ final class ServerManager implements ProvidesRedisData
 		/** @noinspection PhpUndefinedMethodInspection */
 		$setLength = $this->redis->zcard( $key );
 
-		/** @noinspection PhpUndefinedMethodInspection */
-		return (array)$this->redis->zrange( $key, 0, $setLength - 1, true );
+		if ( $setLength !== false )
+		{
+			/** @noinspection PhpUndefinedMethodInspection */
+			return (array)$this->redis->zrange( $key, 0, $setLength - 1, true );
+		}
+
+		throw new RuntimeException( 'Could not find key: ' . $key );
 	}
 
 	/**
