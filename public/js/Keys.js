@@ -23,9 +23,9 @@ $(document).ready(function () {
         let newAction = keySelectForm.attr('action').replace(searchRegExp, '/database/' + database + '/');
         keySelectForm.attr('action', newAction);
         keysContainer.find('#current-db').html($(this).html());
-        keySelectForm.submit();
-        skipPushState || window.history.pushState(null, null, newAction.substr(-5));
+        skipPushState || window.history.pushState(null, null, newAction.substr(0, newAction.length - 5));
         skipPushState = false;
+        keySelectForm.submit();
     });
 
     $(window).on('popstate', function () {
