@@ -64,3 +64,15 @@ a:focus {
     max-height: 400px;
     overflow-y: auto;
 }
+
+pre {
+    white-space: pre-wrap;
+    word-break: break-word;
+    word-wrap: break-word;
+}
+#database-select .dropdown-item {
+    cursor: pointer;
+}
+#database-select .dropdown-item:hover {
+    background-color: #eee;
+}
