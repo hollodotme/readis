@@ -5,6 +5,7 @@ $(document).ready(function () {
     let limitSelect = keysContainer.find('#limit-select');
     let ajaxSpinner = $('#ajaxSpinner');
     let body = $('body');
+    let skipPushState = false;
     keySelectForm.submit(function (e) {
         let formData = $(this).serialize();
         let formUrl = $(this).attr('action');
@@ -23,6 +24,14 @@ $(document).ready(function () {
         keySelectForm.attr('action', newAction);
         keysContainer.find('#current-db').html($(this).html());
         keySelectForm.submit();
+        skipPushState || window.history.pushState(null, null, newAction.substr(-5));
+        skipPushState = false;
+    });
+
+    $(window).on('popstate', function () {
+        let testDb = window.location.href.match(/\/database\/(\d+)/), db = testDb ? testDb[1] : 0;
+        skipPushState = true;
+        databaseSelect.find('[data-database="' + db + '"]').click();
     });
 
     limitSelect.find('a').click(function () {
