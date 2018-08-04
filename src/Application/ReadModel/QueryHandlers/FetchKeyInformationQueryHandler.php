@@ -21,6 +21,7 @@ use hollodotme\Readis\Application\ReadModel\Prettifiers\JsonPrettifier;
 use hollodotme\Readis\Application\ReadModel\Prettifiers\PrettifierChain;
 use hollodotme\Readis\Application\ReadModel\Queries\FetchKeyInformationQuery;
 use hollodotme\Readis\Application\ReadModel\Results\FetchKeyInformationResult;
+use hollodotme\Readis\Env;
 use hollodotme\Readis\Exceptions\KeyTypeNotImplemented;
 use hollodotme\Readis\Infrastructure\Redis\Exceptions\ConnectionFailedException;
 
@@ -37,10 +38,14 @@ final class FetchKeyInformationQueryHandler
 		$this->manager = $manager;
 
 		$prettifier = new PrettifierChain();
-		$prettifier->addPrettifiers(
-			new JsonPrettifier(),
-			new HyperLogLogPrettifier()
-		);
+		$configData = Env::instance()->getAppConfig()->getConfigData();
+		$prettifiers = $configData['prettifiers'] ?? [
+				JsonPrettifier::class,
+				HyperLogLogPrettifier::class,
+			];
+		foreach ($prettifiers as $class) {
+			$prettifier->addPrettifiers(new $class);
+		}
 
 		$this->keyDataBuilder = new KeyDataBuilder(
 			new HashKeyDataBuilder( $manager, $prettifier ),
