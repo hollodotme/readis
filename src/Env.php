@@ -13,6 +13,23 @@ use hollodotme\Readis\Interfaces\ProvidesInfrastructure;
 
 final class Env extends AbstractObjectPool implements ProvidesInfrastructure
 {
+
+	/**
+	 * @var self
+	 */
+	private static $instance;
+
+	public static function instance()
+	{
+		static::$instance === null and new static();
+		return static::$instance;
+	}
+
+	public function __construct()
+	{
+		static::$instance === null and static::$instance = $this;
+	}
+
 	public function getAppConfig() : AppConfig
 	{
 		return $this->getSharedInstance(

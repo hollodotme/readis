@@ -48,4 +48,9 @@ final class AppConfig
 
 		return $path !== false ? $path : $baseUrl;
 	}
+
+	public function getConfigData(): array
+	{
+		return $this->configData;
+	}
 }
