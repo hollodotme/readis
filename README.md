@@ -125,6 +125,10 @@ Keys that were not mapped will still be displayed as `Database [KEY]`.
 **Please note:** If the `CONFIG` command is disabled in your redis server, the database map becomes the fallback 
 listing of available databases.
 
+**Regarding auth/password:**  
+If your redis server is not started with the `requirepass` option and a password, the value for the `auth` config value
+must be `null` (not an empty string or `false`). 
+
 ### Sample nginx configuration
 
 ```nginx
