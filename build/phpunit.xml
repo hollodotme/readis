@@ -2,7 +2,6 @@
         bootstrap="../tests/bootstrap.php"
         verbose="true"
         beStrictAboutOutputDuringTests="true"
-        beStrictAboutTestSize="true"
         colors="true"
         convertErrorsToExceptions="true"
         convertNoticesToExceptions="true"
