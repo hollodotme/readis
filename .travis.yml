@@ -5,6 +5,8 @@ php:
   - 7.1snapshot
   - 7.2
   - 7.2snapshot
+  - 7.3
+  - 7.3snapshot
 
 git:
   depth: 5
@@ -35,7 +37,7 @@ before_script:
   - composer install -o --prefer-dist --no-interaction
 
 script:
- - php vendor/bin/phpunit.phar -c build/ --coverage-clover build/logs/clover.xml tests/
+  - php vendor/bin/phpunit.phar -c build/ --coverage-clover build/logs/clover.xml
 
 after_success:
- - travis_retry php vendor/bin/coveralls.phar -v --exclude-no-stmt
+  - travis_retry bash <(curl -s https://codecov.io/bash)
