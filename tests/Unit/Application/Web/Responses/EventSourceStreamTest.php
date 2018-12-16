@@ -7,6 +7,7 @@ use hollodotme\Readis\Exceptions\LogicException;
 use PHPUnit\Framework\ExpectationFailedException;
 use PHPUnit\Framework\TestCase;
 use SebastianBergmann\RecursionContext\InvalidArgumentException;
+use function extension_loaded;
 
 final class EventSourceStreamTest extends TestCase
 {
@@ -15,12 +16,19 @@ final class EventSourceStreamTest extends TestCase
 	 * @throws ExpectationFailedException
 	 * @throws InvalidArgumentException
 	 * @throws LogicException
+	 * @throws \PHPUnit\Framework\SkippedTestError
 	 */
 	public function testCanBeginStream() : void
 	{
+		if ( !extension_loaded( 'xdebug' ) )
+		{
+			$this->markTestSkipped( 'No Xdebug installed.' );
+		}
+
 		$stream = new EventSourceStream();
 		$stream->beginStream( false );
 		/** @noinspection ForgottenDebugOutputInspection */
+		/** @noinspection PhpComposerExtensionStubsInspection */
 		$this->assertArraySubset( ['Content-Type: text/event-stream; charset=utf-8'], xdebug_get_headers() );
 		$this->expectOutputString( "id: 1\nevent: beginOfStream\ndata: \n\n" );
 	}
