@@ -57,6 +57,11 @@ final class RedisWrapper
 				'',
 				$this->connectionData->getRetryInterval()
 			);
+
+			if ( null !== $this->connectionData->getAuth() )
+			{
+				$this->redis->auth( $this->connectionData->getAuth() );
+			}
 		}
 			/** @noinspection PhpRedundantCatchClauseInspection */
 		catch ( RedisException $e )
