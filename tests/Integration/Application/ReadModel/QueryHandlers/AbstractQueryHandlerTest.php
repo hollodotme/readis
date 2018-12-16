@@ -21,6 +21,7 @@ abstract class AbstractQueryHandlerTest extends TestCase
 	{
 		$this->redis = new Redis();
 		$this->redis->connect( 'localhost', 6379 );
+		$this->redis->auth( 'password' );
 
 		$this->redis->slowlog( 'reset' );
 		$this->redis->select( 0 );
@@ -114,7 +115,7 @@ abstract class AbstractQueryHandlerTest extends TestCase
 					'port'          => 6379,
 					'timeout'       => 2.5,
 					'retryInterval' => 100,
-					'auth'          => null,
+					'auth'          => 'password',
 					'databaseMap'   => [],
 				],
 				[

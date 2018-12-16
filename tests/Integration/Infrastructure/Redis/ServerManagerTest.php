@@ -4,6 +4,7 @@ namespace hollodotme\Readis\Tests\Integration\Infrastructure\Redis;
 
 use hollodotme\Readis\Application\Interfaces\ProvidesKeyInfo;
 use hollodotme\Readis\Application\Interfaces\ProvidesSlowLogData;
+use hollodotme\Readis\Exceptions\RuntimeException;
 use hollodotme\Readis\Infrastructure\Interfaces\ProvidesConnectionData;
 use hollodotme\Readis\Infrastructure\Redis\Exceptions\ConnectionFailedException;
 use hollodotme\Readis\Infrastructure\Redis\ServerManager;
@@ -22,6 +23,7 @@ final class ServerManagerTest extends TestCase
 	{
 		$this->redis = new Redis();
 		$this->redis->connect( 'localhost', 6379 );
+		$this->redis->auth( 'password' );
 
 		$this->redis->slowlog( 'reset' );
 		$this->redis->select( 0 );
@@ -84,7 +86,7 @@ final class ServerManagerTest extends TestCase
 
 			public function getAuth() : ?string
 			{
-				return null;
+				return 'password';
 			}
 		};
 	}
@@ -98,7 +100,7 @@ final class ServerManagerTest extends TestCase
 
 		$this->expectException( ConnectionFailedException::class );
 		$this->expectExceptionMessage(
-			'host: localhost, port: 9999, timeout: 2.5, retryInterval: 100, using auth: no'
+			'host: localhost, port: 9999, timeout: 2.5, retryInterval: 100, using auth: yes'
 		);
 
 		$serverManager->getKeys( '*' );
@@ -108,6 +110,7 @@ final class ServerManagerTest extends TestCase
 	 * @throws ExpectationFailedException
 	 * @throws InvalidArgumentException
 	 * @throws ConnectionFailedException
+	 * @throws RuntimeException
 	 */
 	public function testCanGetValueForKey() : void
 	{
@@ -228,6 +231,7 @@ final class ServerManagerTest extends TestCase
 	 * @throws ConnectionFailedException
 	 * @throws ExpectationFailedException
 	 * @throws InvalidArgumentException
+	 * @throws RuntimeException
 	 */
 	public function testCanGetHashValue() : void
 	{
