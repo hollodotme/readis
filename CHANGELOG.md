@@ -102,4 +102,4 @@ First stable release.
 
 [issue #8]: https://github.com/hollodotme/readis/issues/8
 [issue #9]: https://github.com/hollodotme/readis/issues/9
-[issue #18]: https://github.com/hollodotme/readis/issues/18
+[#18]: https://github.com/hollodotme/readis/issues/18
