@@ -22,7 +22,7 @@
   },
   "require-dev": {
     "roave/security-advisories": "dev-master",
-    "tm/tooly-composer-script": "~1.2.6"
+    "tm/tooly-composer-script": "~1.4.1"
   },
   "autoload": {
     "psr-4": {
