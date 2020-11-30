@@ -3,8 +3,8 @@
 namespace hollodotme\Readis\Application\Web\Server\Read;
 
 use hollodotme\Readis\Application\Web\AbstractRequestHandler;
+use hollodotme\Readis\Application\Web\Responses\TwigPage;
 use hollodotme\Readis\Exceptions\RuntimeException;
-use hollodotme\Readis\TwigPage;
 use IceHawk\IceHawk\Interfaces\HandlesGetRequest;
 use IceHawk\IceHawk\Interfaces\ProvidesReadRequestData;
 
@@ -15,11 +15,13 @@ final class ServerSelectionRequestHandler extends AbstractRequestHandler impleme
 	 *
 	 * @throws RuntimeException
 	 */
-	public function handle( ProvidesReadRequestData $request )
+	public function handle( ProvidesReadRequestData $request ) : void
 	{
+		$env = $this->getEnv();
+
 		$data = [
-			'appConfig' => $this->getEnv()->getAppConfig(),
-			'servers'   => $this->getEnv()->getServerConfigList()->getServerConfigs(),
+			'appConfig' => $env->getAppConfig(),
+			'servers'   => $env->getServerConfigList()->getServerConfigs(),
 		];
 
 		(new TwigPage())->respond( 'Server/Read/Pages/ServerSelection.twig', $data );

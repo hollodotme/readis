@@ -4,9 +4,6 @@ namespace hollodotme\Readis\Application\Web\Server\Read;
 
 use hollodotme\Readis\Application\Web\AbstractRequestHandler;
 use hollodotme\Readis\Application\Web\Responses\EventSourceStream;
-use hollodotme\Readis\Exceptions\LogicException;
-use hollodotme\Readis\Exceptions\ServerConfigNotFound;
-use hollodotme\Readis\Infrastructure\Redis\Exceptions\ConnectionFailedException;
 use IceHawk\IceHawk\Interfaces\HandlesGetRequest;
 use IceHawk\IceHawk\Interfaces\ProvidesReadRequestData;
 use function ignore_user_abort;
@@ -16,20 +13,15 @@ final class ServerStatsRequestHandler extends AbstractRequestHandler implements 
 {
 	/**
 	 * @param ProvidesReadRequestData $request
-	 *
-	 * @throws ServerConfigNotFound
-	 * @throws ConnectionFailedException
-	 * @throws LogicException
 	 */
-	public function handle( ProvidesReadRequestData $request )
+	public function handle( ProvidesReadRequestData $request ) : void
 	{
 		ignore_user_abort( false );
 
-		$input            = $request->getInput();
-		$serverKey        = (string)$input->get( 'serverKey', '0' );
-		$serverConfigList = $this->getEnv()->getServerConfigList();
-		$serverConfig     = $serverConfigList->getServerConfig( $serverKey );
-		$serverManager    = $this->getEnv()->getServerManager( $serverConfig );
+		$input         = $request->getInput();
+		$serverKey     = (string)$input->get( 'serverKey', '0' );
+		$serverConfig  = $this->getEnv()->getServerConfigList()->getServerConfig( $serverKey );
+		$serverManager = $this->getEnv()->getServerManager( $serverConfig );
 
 		$stream = new EventSourceStream();
 		$stream->beginStream();
@@ -51,6 +43,7 @@ final class ServerStatsRequestHandler extends AbstractRequestHandler implements 
 			usleep( 500000 );
 		}
 
+		/** @noinspection PhpUnreachableStatementInspection */
 		$stream->endStream();
 	}
 }

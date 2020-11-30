@@ -5,8 +5,8 @@ namespace hollodotme\Readis\Application\Web\Server\Read;
 use hollodotme\Readis\Application\ReadModel\Queries\FindKeysInDatabaseQuery;
 use hollodotme\Readis\Application\ReadModel\QueryHandlers\FindKeysInDatabaseQueryHandler;
 use hollodotme\Readis\Application\Web\AbstractRequestHandler;
+use hollodotme\Readis\Application\Web\Responses\TwigPage;
 use hollodotme\Readis\Exceptions\RuntimeException;
-use hollodotme\Readis\TwigPage;
 use IceHawk\IceHawk\Interfaces\HandlesGetRequest;
 use IceHawk\IceHawk\Interfaces\ProvidesReadRequestData;
 use function abs;
@@ -18,7 +18,7 @@ final class AjaxSearchKeysRequestHandler extends AbstractRequestHandler implemen
 	 *
 	 * @throws RuntimeException
 	 */
-	public function handle( ProvidesReadRequestData $request )
+	public function handle( ProvidesReadRequestData $request ) : void
 	{
 		$input         = $request->getInput();
 		$serverKey     = (string)$input->get( 'serverKey', '0' );

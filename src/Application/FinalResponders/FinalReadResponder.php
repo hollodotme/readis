@@ -2,21 +2,22 @@
 
 namespace hollodotme\Readis\Application\FinalResponders;
 
+use hollodotme\Readis\Application\Web\Responses\TwigPage;
 use hollodotme\Readis\Exceptions\RuntimeException;
-use hollodotme\Readis\TwigPage;
 use IceHawk\IceHawk\Constants\HttpCode;
 use IceHawk\IceHawk\Interfaces\ProvidesReadRequestData;
 use IceHawk\IceHawk\Interfaces\RespondsFinallyToReadRequest;
+use Throwable;
 
 final class FinalReadResponder implements RespondsFinallyToReadRequest
 {
 	/**
-	 * @param \Throwable              $throwable
+	 * @param Throwable               $throwable
 	 * @param ProvidesReadRequestData $request
 	 *
 	 * @throws RuntimeException
 	 */
-	public function handleUncaughtException( \Throwable $throwable, ProvidesReadRequestData $request )
+	public function handleUncaughtException( Throwable $throwable, ProvidesReadRequestData $request ) : void
 	{
 		$data = [
 			'errorMessage' => $throwable->getMessage(),

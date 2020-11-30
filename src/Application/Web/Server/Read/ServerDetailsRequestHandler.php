@@ -2,10 +2,11 @@
 
 namespace hollodotme\Readis\Application\Web\Server\Read;
 
+use Exception;
 use hollodotme\Readis\Application\ReadModel\QueryHandlers\FetchServerInformationQueryHandler;
 use hollodotme\Readis\Application\Web\AbstractRequestHandler;
+use hollodotme\Readis\Application\Web\Responses\TwigPage;
 use hollodotme\Readis\Exceptions\RuntimeException;
-use hollodotme\Readis\TwigPage;
 use IceHawk\IceHawk\Interfaces\HandlesGetRequest;
 use IceHawk\IceHawk\Interfaces\ProvidesReadRequestData;
 
@@ -15,9 +16,9 @@ final class ServerDetailsRequestHandler extends AbstractRequestHandler implement
 	 * @param ProvidesReadRequestData $request
 	 *
 	 * @throws RuntimeException
-	 * @throws \Exception
+	 * @throws Exception
 	 */
-	public function handle( ProvidesReadRequestData $request )
+	public function handle( ProvidesReadRequestData $request ) : void
 	{
 		$input     = $request->getInput();
 		$appConfig = $this->getEnv()->getAppConfig();

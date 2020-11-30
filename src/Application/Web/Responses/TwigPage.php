@@ -1,17 +1,15 @@
 <?php declare(strict_types=1);
 
-namespace hollodotme\Readis;
+namespace hollodotme\Readis\Application\Web\Responses;
 
 use DateTimeInterface;
 use hollodotme\Readis\Exceptions\RuntimeException;
 use IntlDateFormatter;
+use Twig\Environment;
+use Twig\Error\Error;
+use Twig\Extension\DebugExtension;
+use Twig\Loader\FilesystemLoader;
 use Twig\TwigFilter;
-use Twig_Environment;
-use Twig_Error_Loader;
-use Twig_Error_Runtime;
-use Twig_Error_Syntax;
-use Twig_Extension_Debug;
-use Twig_Loader_Filesystem;
 use function base64_encode;
 use function dirname;
 use function flush;
@@ -19,7 +17,7 @@ use function is_string;
 
 final class TwigPage
 {
-	/** @var Twig_Environment */
+	/** @var Environment */
 	private $renderer;
 
 	public function __construct()
@@ -43,17 +41,17 @@ final class TwigPage
 			echo $this->renderer->render( $template, $this->getMergedData( $data ) );
 			flush();
 		}
-		catch ( Twig_Error_Loader | Twig_Error_Runtime | Twig_Error_Syntax $e )
+		catch ( Error $e )
 		{
 			throw new RuntimeException( $e->getMessage(), $e->getCode(), $e );
 		}
 	}
 
-	private function getTwigInstance() : Twig_Environment
+	private function getTwigInstance() : Environment
 	{
-		$twigLoader      = new Twig_Loader_Filesystem( [dirname( __DIR__ )] );
-		$twigEnvironment = new Twig_Environment( $twigLoader );
-		$twigEnvironment->addExtension( new Twig_Extension_Debug() );
+		$twigLoader      = new FilesystemLoader( [dirname( __DIR__ )] );
+		$twigEnvironment = new Environment( $twigLoader );
+		$twigEnvironment->addExtension( new DebugExtension() );
 
 		$dateFormatter = new IntlDateFormatter(
 			'en_GB',
@@ -78,7 +76,7 @@ final class TwigPage
 	{
 		return new TwigFilter(
 			$name,
-			function ( $dateValue ) use ( $formatter )
+			static function ( $dateValue ) use ( $formatter )
 			{
 				if ( $dateValue instanceof DateTimeInterface )
 				{
@@ -99,7 +97,7 @@ final class TwigPage
 	{
 		return new TwigFilter(
 			$name,
-			function ( $value )
+			static function ( $value )
 			{
 				return base64_encode( (string)$value );
 			}

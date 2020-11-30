@@ -2,6 +2,7 @@
 
 namespace hollodotme\Readis\Application\ReadModel\QueryHandlers;
 
+use Exception;
 use hollodotme\Readis\Application\Interfaces\ProvidesRedisData;
 use hollodotme\Readis\Application\ReadModel\Constants\ResultType;
 use hollodotme\Readis\Application\ReadModel\DTO\ServerInformation;
@@ -19,8 +20,8 @@ final class FetchServerInformationQueryHandler
 	}
 
 	/**
-	 * @throws \Exception
 	 * @return FetchServerInformationResult
+	 * @throws Exception
 	 */
 	public function handle() : FetchServerInformationResult
 	{
