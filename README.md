@@ -6,10 +6,6 @@
 
 A web interface to read data from redis server(s)
 
-## Public demo
-
-**[See the public demo on readis.hollo.me](https://readis.hollo.me)**
-
 ## Docker image
 
 **[You can find a ready to run docker image here.](https://hub.docker.com/r/hollodotme/readis/)**
@@ -165,5 +161,5 @@ In order to run re<sup style="color: #ff0000;">a</sup>dis locally, follow these 
 4. `$ cp config/app.sample.php config/app.php` 
 5. `$ cp config/servers.sample.php config/servers.php`
 6. `$ php -S 127.0.0.1:8080 -t public/` (starts local webserver)
-7. `$ docker-compose up -d` (starts redis-server instance on `localhost:6379`)
+7. `$ docker-compose up -d redis` (starts redis-server instance on `localhost:6379`)
 8. Open: http://127.0.0.1:8080
