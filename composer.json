@@ -17,12 +17,13 @@
   "require": {
     "php": ">=7.1",
     "ext-redis": "*",
+    "ext-intl": "*",
     "icehawk/icehawk": "~2.2.0",
     "twig/twig": "~2.0"
   },
   "require-dev": {
     "roave/security-advisories": "dev-master",
-    "tm/tooly-composer-script": "~1.2.6"
+    "tm/tooly-composer-script": "~1.4.1"
   },
   "autoload": {
     "psr-4": {
