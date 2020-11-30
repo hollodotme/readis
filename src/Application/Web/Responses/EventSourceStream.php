@@ -3,6 +3,7 @@
 namespace hollodotme\Readis\Application\Web\Responses;
 
 use hollodotme\Readis\Exceptions\LogicException;
+use function flush;
 
 /**
  * Class EventSourceStream
@@ -20,6 +21,9 @@ final class EventSourceStream
 	/** @var bool */
 	private $active = false;
 
+	/** @var bool */
+	private $flushBuffer = false;
+
 	/**
 	 * @param bool $flushBuffer
 	 *
@@ -27,18 +31,17 @@ final class EventSourceStream
 	 */
 	public function beginStream( bool $flushBuffer = true ) : void
 	{
-		$this->active = true;
+		$this->active      = true;
+		$this->flushBuffer = $flushBuffer;
 
 		header( 'Content-Type: text/event-stream; charset=utf-8' );
 		header( 'Access-Control-Allow-Origin: *' );
 
-		if ( $flushBuffer )
+		if ( $this->flushBuffer )
 		{
 			@ob_end_flush();
 			@ob_end_clean();
 		}
-
-		@ob_implicit_flush( 1 );
 
 		$this->streamEvent( '', self::BEGIN_OF_STREAM_EVENT );
 	}
@@ -67,6 +70,11 @@ final class EventSourceStream
 		echo (null !== $eventName) ? ('event: ' . $eventName . PHP_EOL) : '';
 
 		echo 'data: ' . $data . PHP_EOL . PHP_EOL;
+
+		if ( $this->flushBuffer )
+		{
+			flush();
+		}
 	}
 
 	/**
@@ -89,8 +97,11 @@ final class EventSourceStream
 
 		$this->streamEvent( '', self::END_OF_STREAM_EVENT );
 
-		$this->active = false;
+		if ( $this->flushBuffer )
+		{
+			flush();
+		}
 
-		@ob_implicit_flush( 0 );
+		$this->active = false;
 	}
 }

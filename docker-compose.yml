@@ -10,6 +10,42 @@ services:
       - ./:/repo
     working_dir: /repo
 
+  php72:
+    build:
+      dockerfile: Dockerfile
+      context: .docker/php/7.2
+    restart: 'on-failure'
+    volumes:
+      - ./:/repo
+    working_dir: /repo
+
+  php73:
+    build:
+      dockerfile: Dockerfile
+      context: .docker/php/7.3
+    restart: 'on-failure'
+    volumes:
+      - ./:/repo
+    working_dir: /repo
+
+  php74:
+    build:
+      dockerfile: Dockerfile
+      context: .docker/php/7.4
+    restart: 'on-failure'
+    volumes:
+      - ./:/repo
+    working_dir: /repo
+
+  php80:
+    build:
+      dockerfile: Dockerfile
+      context: .docker/php/8.0
+    restart: 'on-failure'
+    volumes:
+      - ./:/repo
+    working_dir: /repo
+
   redis:
     image: redis
     ports:
