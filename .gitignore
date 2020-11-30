@@ -1,6 +1,7 @@
 .idea/
 /vendor/
 /build/logs/
+/build/.phpunit.result.cache
 # local configs
 /config/servers.php
 /config/app.php
