@@ -27,6 +27,9 @@ test-php-71: composer-php71 start-redis
 	--testdox
 .PHONY: test-php-71
 
+tests: test-php-71 test-php-72 test-php-73 test-php-74 test-php-80
+.PHONY: tests
+
 test-php-72: composer-php72 start-redis
 	docker-compose run --rm php72 \
 	php -d error_reporting=-1 \
