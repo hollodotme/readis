@@ -1,5 +1,4 @@
-[![Build Status](https://travis-ci.org/hollodotme/readis.svg?branch=master)](https://travis-ci.org/hollodotme/readis)
-[![codecov](https://codecov.io/gh/hollodotme/readis/branch/master/graph/badge.svg)](https://codecov.io/gh/hollodotme/readis)
+![Build](https://github.com/hollodotme/readis/workflows/Build/badge.svg)
 [![Latest Stable Version](https://poser.pugx.org/hollodotme/readis/v/stable)](https://packagist.org/packages/hollodotme/readis) 
 [![License](https://poser.pugx.org/hollodotme/readis/license)](https://packagist.org/packages/hollodotme/readis)
 
