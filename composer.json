@@ -1,50 +1,38 @@
 {
-  "name": "hollodotme/readis",
-  "description": "A web interface to read data from redis server(s)",
-  "minimum-stability": "dev",
-  "prefer-stable": true,
-  "license": "MIT",
-  "authors": [
-    {
-      "name": "Holger Woltersdorf",
-      "email": "hw@hollo.me"
+    "name": "hollodotme/readis",
+    "description": "A web interface to read data from redis server(s)",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Holger Woltersdorf",
+            "email": "hw@hollo.me"
+        }
+    ],
+    "support": {
+        "email": "hw@hollo.me",
+        "source": "https://github.com/hollodotme/readis"
+    },
+    "require": {
+        "php": ">=7.1",
+        "ext-redis": "*",
+        "ext-intl": "*",
+        "icehawk/icehawk": "~2.2.0",
+        "twig/twig": "~2.0"
+    },
+    "require-dev": {
+        "ext-xdebug": ">=2.9.0",
+        "roave/security-advisories": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "hollodotme\\Readis\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "hollodotme\\Readis\\Tests\\": "tests/"
+        }
     }
-  ],
-  "support": {
-    "email": "hw@hollo.me",
-    "source": "https://github.com/hollodotme/readis"
-  },
-  "require": {
-    "php": ">=7.1",
-    "ext-redis": "*",
-    "ext-intl": "*",
-    "icehawk/icehawk": "~2.2.0",
-    "twig/twig": "~2.0"
-  },
-  "require-dev": {
-    "roave/security-advisories": "dev-master",
-    "tm/tooly-composer-script": "~1.4.1"
-  },
-  "autoload": {
-    "psr-4": {
-      "hollodotme\\Readis\\": "src/"
-    }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "hollodotme\\Readis\\Tests\\": "tests/"
-    }
-  },
-  "scripts": {
-    "post-install-cmd": "Tooly\\ScriptHandler::installPharTools",
-    "post-update-cmd": "Tooly\\ScriptHandler::installPharTools"
-  },
-  "extra": {
-    "tools": {
-      "phpunit": {
-        "url": "https://phar.phpunit.de/phpunit-7.phar",
-        "only-dev": true
-      }
-    }
-  }
 }
