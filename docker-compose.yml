@@ -2,45 +2,35 @@ version: '3'
 services:
 
   php71:
-    build:
-      dockerfile: Dockerfile
-      context: .docker/php/7.1
+    image: ghcr.io/hollodotme/readis-php-71
     restart: 'on-failure'
     volumes:
       - ./:/repo
     working_dir: /repo
 
   php72:
-    build:
-      dockerfile: Dockerfile
-      context: .docker/php/7.2
+    image: ghcr.io/hollodotme/readis-php-72
     restart: 'on-failure'
     volumes:
       - ./:/repo
     working_dir: /repo
 
   php73:
-    build:
-      dockerfile: Dockerfile
-      context: .docker/php/7.3
+    image: ghcr.io/hollodotme/readis-php-73
     restart: 'on-failure'
     volumes:
       - ./:/repo
     working_dir: /repo
 
   php74:
-    build:
-      dockerfile: Dockerfile
-      context: .docker/php/7.4
+    image: ghcr.io/hollodotme/readis-php-74
     restart: 'on-failure'
     volumes:
       - ./:/repo
     working_dir: /repo
 
   php80:
-    build:
-      dockerfile: Dockerfile
-      context: .docker/php/8.0
+    image: ghcr.io/hollodotme/readis-php-80
     restart: 'on-failure'
     volumes:
       - ./:/repo
