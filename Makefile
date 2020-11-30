@@ -10,6 +10,10 @@ composer-php73:
 	docker-compose run --rm php73 composer update -o -v
 .PHONY: composer-php73
 
+composer-php74:
+	docker-compose run --rm php74 composer update -o -v
+.PHONY: composer-php74
+
 test-php-71: composer-php71 start-redis
 	docker-compose run --rm php71 \
 	php -d error_reporting=-1 \
@@ -34,6 +38,14 @@ test-php-73: composer-php73 start-redis
 	-c /repo/build/phpunit9.xml \
 	--testdox
 .PHONY: test-php-73
+
+test-php-74: composer-php74 start-redis
+	docker-compose run --rm php74 \
+	php -d error_reporting=-1 \
+	/usr/bin/phpunit \
+	-c /repo/build/phpunit9.xml \
+	--testdox
+.PHONY: test-php-74
 
 start-redis:
 	docker-compose up -d redis

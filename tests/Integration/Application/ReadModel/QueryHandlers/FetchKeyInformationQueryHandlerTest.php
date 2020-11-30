@@ -8,6 +8,7 @@ use hollodotme\Readis\Exceptions\NoServersConfigured;
 use hollodotme\Readis\Exceptions\ServerConfigNotFound;
 use PHPUnit\Framework\ExpectationFailedException;
 use function preg_quote;
+use const PHP_VERSION_ID;
 
 final class FetchKeyInformationQueryHandlerTest extends AbstractQueryHandlerTest
 {
@@ -183,7 +184,7 @@ final class FetchKeyInformationQueryHandlerTest extends AbstractQueryHandlerTest
 				'expectedKeyData'    => 'Palermo',
 				'expectedRawKeyData' => 'Palermo',
 				'expectedHasScore'   => true,
-				'expectedScore'      => 3479099956231200,
+				'expectedScore'      => PHP_VERSION_ID < 70400 ? 3479099956231200 : 3479099956230700,
 			],
 			[
 				'key'                => 'geo',
@@ -192,7 +193,7 @@ final class FetchKeyInformationQueryHandlerTest extends AbstractQueryHandlerTest
 				'expectedKeyData'    => 'Catania',
 				'expectedRawKeyData' => 'Catania',
 				'expectedHasScore'   => true,
-				'expectedScore'      => 3479447370797100,
+				'expectedScore'      => PHP_VERSION_ID < 70400 ? 3479447370797100 : 3479447370796900,
 			],
 			[
 				'key'                => 'hyperLogLog',
