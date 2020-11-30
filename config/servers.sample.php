@@ -7,7 +7,7 @@ return [
 		'port'          => 6379,
 		'timeout'       => 2.5,
 		'retryInterval' => 100,
-		'auth'          => null,
+		'auth'          => 'password',
 		'databaseMap'   => [
 			'0' => 'Sessions',
 			'1' => 'Application data',
