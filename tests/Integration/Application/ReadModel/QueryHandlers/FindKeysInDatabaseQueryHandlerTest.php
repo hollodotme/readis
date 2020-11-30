@@ -2,13 +2,14 @@
 
 namespace hollodotme\Readis\Tests\Integration\Application\ReadModel\QueryHandlers;
 
+use Exception;
 use hollodotme\Readis\Application\Interfaces\ProvidesKeyInfo;
 use hollodotme\Readis\Application\ReadModel\Queries\FindKeysInDatabaseQuery;
 use hollodotme\Readis\Application\ReadModel\QueryHandlers\FindKeysInDatabaseQueryHandler;
 use hollodotme\Readis\Exceptions\NoServersConfigured;
 use hollodotme\Readis\Exceptions\ServerConfigNotFound;
 use PHPUnit\Framework\ExpectationFailedException;
-use SebastianBergmann\RecursionContext\InvalidArgumentException;
+use function sprintf;
 
 final class FindKeysInDatabaseQueryHandlerTest extends AbstractQueryHandlerTest
 {
@@ -20,9 +21,9 @@ final class FindKeysInDatabaseQueryHandlerTest extends AbstractQueryHandlerTest
 	 * @param int      $expectedKeyCount
 	 *
 	 * @throws ExpectationFailedException
-	 * @throws InvalidArgumentException
-	 * @throws ServerConfigNotFound
 	 * @throws NoServersConfigured
+	 * @throws ServerConfigNotFound
+	 * @throws \PHPUnit\Framework\Exception
 	 * @dataProvider keySearchProvider
 	 */
 	public function testCanFindKeysInDatabase(
@@ -38,10 +39,10 @@ final class FindKeysInDatabaseQueryHandlerTest extends AbstractQueryHandlerTest
 		$query  = new FindKeysInDatabaseQuery( $database, $searchPattern, $limit );
 		$result = (new FindKeysInDatabaseQueryHandler( $serverManager ))->handle( $query );
 
-		$this->assertTrue( $result->succeeded() );
-		$this->assertFalse( $result->failed() );
-		$this->assertCount( $expectedKeyCount, $result->getKeyInfoObjects() );
-		$this->assertContainsOnlyInstancesOf( ProvidesKeyInfo::class, $result->getKeyInfoObjects() );
+		self::assertTrue( $result->succeeded() );
+		self::assertFalse( $result->failed() );
+		self::assertCount( $expectedKeyCount, $result->getKeyInfoObjects() );
+		self::assertContainsOnlyInstancesOf( ProvidesKeyInfo::class, $result->getKeyInfoObjects() );
 	}
 
 	public function keySearchProvider() : array
@@ -94,9 +95,8 @@ final class FindKeysInDatabaseQueryHandlerTest extends AbstractQueryHandlerTest
 
 	/**
 	 * @throws ExpectationFailedException
-	 * @throws InvalidArgumentException
 	 * @throws ServerConfigNotFound
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 	public function testResultFailsIfConnectionToServerFailed() : void
 	{
@@ -106,10 +106,13 @@ final class FindKeysInDatabaseQueryHandlerTest extends AbstractQueryHandlerTest
 		$query  = new FindKeysInDatabaseQuery( 0, '*', null );
 		$result = (new FindKeysInDatabaseQueryHandler( $serverManager ))->handle( $query );
 
-		$this->assertFalse( $result->succeeded() );
-		$this->assertTrue( $result->failed() );
-		$this->assertSame(
-			'Could not connect to redis server: host: localhost, port: 9999, timeout: 2.5, retryInterval: 100, using auth: no',
+		self::assertFalse( $result->succeeded() );
+		self::assertTrue( $result->failed() );
+		self::assertSame(
+			sprintf(
+				'Could not connect to redis server: host: %s, port: 9999, timeout: 2.5, retryInterval: 100, using auth: no',
+				(string)$_ENV['redis-host']
+			),
 			$result->getMessage()
 		);
 	}

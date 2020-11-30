@@ -6,7 +6,6 @@ use hollodotme\Readis\Application\Configs\AppConfig;
 use hollodotme\Readis\Exceptions\ApplicationConfigNotFound;
 use PHPUnit\Framework\ExpectationFailedException;
 use PHPUnit\Framework\TestCase;
-use SebastianBergmann\RecursionContext\InvalidArgumentException;
 
 final class AppConfigTest extends TestCase
 {
@@ -15,7 +14,6 @@ final class AppConfigTest extends TestCase
 	 * @param string $expectedBaseUrl
 	 *
 	 * @throws ExpectationFailedException
-	 * @throws InvalidArgumentException
 	 *
 	 * @dataProvider baseUrlProvider
 	 */
@@ -23,7 +21,7 @@ final class AppConfigTest extends TestCase
 	{
 		$appConfig = new AppConfig( $configData );
 
-		$this->assertSame( $expectedBaseUrl, $appConfig->getBaseUrl() );
+		self::assertSame( $expectedBaseUrl, $appConfig->getBaseUrl() );
 	}
 
 	public function baseUrlProvider() : array
@@ -61,7 +59,6 @@ final class AppConfigTest extends TestCase
 	 * @param string $expectedBaseUri
 	 *
 	 * @throws ExpectationFailedException
-	 * @throws InvalidArgumentException
 	 *
 	 * @dataProvider baseUriProvider
 	 */
@@ -69,7 +66,7 @@ final class AppConfigTest extends TestCase
 	{
 		$appConfig = new AppConfig( $configData );
 
-		$this->assertSame( $expectedBaseUri, $appConfig->getBaseUri() );
+		self::assertSame( $expectedBaseUri, $appConfig->getBaseUri() );
 	}
 
 	public function baseUriProvider() : array

@@ -5,7 +5,7 @@ namespace hollodotme\Readis\Tests\Integration;
 use hollodotme\Readis\Application\Interfaces\ProvidesRedisData;
 use hollodotme\Readis\Env;
 use hollodotme\Readis\Exceptions\ServerConfigNotFound;
-use InvalidArgumentException;
+use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\ExpectationFailedException;
 use PHPUnit\Framework\TestCase;
 use function copy;
@@ -48,15 +48,14 @@ final class EnvTest extends TestCase
 
 	/**
 	 * @throws ExpectationFailedException
-	 * @throws InvalidArgumentException
 	 * @throws ServerConfigNotFound
+	 * @throws Exception
 	 */
 	public function testCanGetServerManagerForServerKey() : void
 	{
-		$env = new Env();
+		$serverManager = (new Env())->getServerManagerForServerKey( '0' );
 
-		$serverManager = $env->getServerManagerForServerKey( '0' );
-
-		$this->assertInstanceOf( ProvidesRedisData::class, $serverManager );
+		/** @noinspection UnnecessaryAssertionInspection */
+		self::assertInstanceOf( ProvidesRedisData::class, $serverManager );
 	}
 }

@@ -8,16 +8,20 @@ use hollodotme\Readis\Application\ReadModel\Interfaces\ProvidesKeyData;
 use hollodotme\Readis\Application\ReadModel\Interfaces\ProvidesKeyName;
 use hollodotme\Readis\Application\ReadModel\KeyDataBuilders\KeyDataBuilder;
 use hollodotme\Readis\Exceptions\KeyTypeNotImplemented;
+use PHPUnit\Framework\Exception;
+use PHPUnit\Framework\ExpectationFailedException;
+use PHPUnit\Framework\MockObject\RuntimeException;
 use PHPUnit\Framework\TestCase;
 
 final class KeyDataBuilderTest extends TestCase
 {
 	/**
-	 * @throws \PHPUnit\Framework\ExpectationFailedException
-	 * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+	 * @throws ExpectationFailedException
 	 * @throws KeyTypeNotImplemented
+	 * @throws Exception
+	 * @throws RuntimeException
 	 */
-	public function testBuildKeyData()
+	public function testBuildKeyData() : void
 	{
 		$keyDataBuilder = new KeyDataBuilder( $this->getBuilderMock() );
 
@@ -29,16 +33,15 @@ final class KeyDataBuilderTest extends TestCase
 		/** @var ProvidesKeyName $keysNameStub */
 		$keyData = $keyDataBuilder->buildKeyData( $keyInfoStub, $keysNameStub );
 
-		$this->assertSame( 'keyData', $keyData->getKeyData() );
-		$this->assertSame( 'rawKeyData', $keyData->getRawKeyData() );
-		$this->assertFalse( $keyData->hasScore() );
-		$this->assertNull( $keyData->getScore() );
+		self::assertSame( 'keyData', $keyData->getKeyData() );
+		self::assertSame( 'rawKeyData', $keyData->getRawKeyData() );
+		self::assertFalse( $keyData->hasScore() );
+		self::assertNull( $keyData->getScore() );
 	}
 
 	private function getBuilderMock() : BuildsKeyData
 	{
-		return new class implements BuildsKeyData
-		{
+		return new class implements BuildsKeyData {
 			public function canBuildKeyData( ProvidesKeyInfo $keyInfo, ProvidesKeyName $keyName ) : bool
 			{
 				return ($keyInfo->getType() !== 'unknown');
@@ -46,8 +49,7 @@ final class KeyDataBuilderTest extends TestCase
 
 			public function buildKeyData( ProvidesKeyInfo $keyInfo, ProvidesKeyName $keyName ) : ProvidesKeyData
 			{
-				return new class implements ProvidesKeyData
-				{
+				return new class implements ProvidesKeyData {
 					public function getKeyData() : string
 					{
 						return 'keyData';
@@ -73,9 +75,11 @@ final class KeyDataBuilderTest extends TestCase
 	}
 
 	/**
+	 * @throws Exception
 	 * @throws KeyTypeNotImplemented
+	 * @throws RuntimeException
 	 */
-	public function testBuildKeyDataThrowsExceptionForUnknownKeyType()
+	public function testBuildKeyDataThrowsExceptionForUnknownKeyType() : void
 	{
 		$keyDataBuilder = new KeyDataBuilder( $this->getBuilderMock() );
 
@@ -88,14 +92,16 @@ final class KeyDataBuilderTest extends TestCase
 
 		/** @var ProvidesKeyInfo $keyInfoStub */
 		/** @var ProvidesKeyName $keysNameStub */
+		/** @noinspection UnusedFunctionResultInspection */
 		$keyDataBuilder->buildKeyData( $keyInfoStub, $keysNameStub );
 	}
 
 	/**
-	 * @throws \PHPUnit\Framework\ExpectationFailedException
-	 * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+	 * @throws Exception
+	 * @throws ExpectationFailedException
+	 * @throws RuntimeException
 	 */
-	public function testCanBuildKeyData()
+	public function testCanBuildKeyData() : void
 	{
 		$keyDataBuilder = new KeyDataBuilder( $this->getBuilderMock() );
 
@@ -104,6 +110,6 @@ final class KeyDataBuilderTest extends TestCase
 		/** @var ProvidesKeyName $keysNameStub */
 		$keysNameStub = $this->getMockBuilder( ProvidesKeyName::class )->getMockForAbstractClass();
 
-		$this->assertTrue( $keyDataBuilder->canBuildKeyData( $keyInfoStub, $keysNameStub ) );
+		self::assertTrue( $keyDataBuilder->canBuildKeyData( $keyInfoStub, $keysNameStub ) );
 	}
 }

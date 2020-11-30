@@ -9,6 +9,8 @@ use hollodotme\Readis\Infrastructure\Configs\ServerConfigList;
 use hollodotme\Readis\Infrastructure\Redis\ServerConnection;
 use hollodotme\Readis\Infrastructure\Redis\ServerManager;
 use hollodotme\Readis\Interfaces\ProvidesInfrastructure;
+use PHPUnit\Framework\Exception;
+use PHPUnit\Framework\MockObject\RuntimeException;
 use PHPUnit\Framework\TestCase;
 use Redis;
 
@@ -20,8 +22,8 @@ abstract class AbstractQueryHandlerTest extends TestCase
 	protected function setUp() : void
 	{
 		$this->redis = new Redis();
-		$this->redis->connect( 'localhost', 6379 );
-		$this->redis->auth( 'password' );
+		$this->redis->connect( (string)$_ENV['redis-host'], (int)$_ENV['redis-port'] );
+		$this->redis->auth( (string)$_ENV['redis-auth'] );
 
 		$this->redis->slowlog( 'reset' );
 		$this->redis->select( 0 );
@@ -42,7 +44,7 @@ abstract class AbstractQueryHandlerTest extends TestCase
 			3,
 			'{"json": {"key": "value"}}'
 		);
-		/** @noinspection PhpUndefinedMethodInspection */
+		/** @noinspection PhpMethodParametersCountMismatchInspection */
 		$this->redis->geoAdd(
 			'geo',
 			13.361389,
@@ -53,7 +55,6 @@ abstract class AbstractQueryHandlerTest extends TestCase
 			'Catania'
 		);
 		/** @noinspection PhpMethodParametersCountMismatchInspection */
-		/** @noinspection PhpParamsInspection */
 		$this->redis->rawCommand( 'PFADD', 'hyperLogLog', 'a', 'b', 'c', 'd', 'e', 'f' );
 	}
 
@@ -66,9 +67,11 @@ abstract class AbstractQueryHandlerTest extends TestCase
 	/**
 	 * @param string $serverKey
 	 *
-	 * @throws NoServersConfigured
 	 * @return ProvidesInfrastructure
 	 * @throws ServerConfigNotFound
+	 * @throws Exception
+	 * @throws RuntimeException
+	 * @throws NoServersConfigured
 	 */
 	protected function getEnvMock( string $serverKey ) : ProvidesInfrastructure
 	{
@@ -90,9 +93,9 @@ abstract class AbstractQueryHandlerTest extends TestCase
 	/**
 	 * @param string $serverKey
 	 *
-	 * @throws ServerConfigNotFound
-	 * @throws NoServersConfigured
 	 * @return ProvidesRedisData
+	 * @throws NoServersConfigured
+	 * @throws ServerConfigNotFound
 	 */
 	protected function getServerManagerMock( string $serverKey ) : ProvidesRedisData
 	{
@@ -111,16 +114,16 @@ abstract class AbstractQueryHandlerTest extends TestCase
 			[
 				[
 					'name'          => 'Test Redis1',
-					'host'          => 'localhost',
-					'port'          => 6379,
+					'host'          => (string)$_ENV['redis-host'],
+					'port'          => (int)$_ENV['redis-port'],
 					'timeout'       => 2.5,
 					'retryInterval' => 100,
-					'auth'          => 'password',
+					'auth'          => (string)$_ENV['redis-auth'],
 					'databaseMap'   => [],
 				],
 				[
 					'name'          => 'Test Redis2',
-					'host'          => 'localhost',
+					'host'          => (string)$_ENV['redis-host'],
 					'port'          => 9999,
 					'timeout'       => 2.5,
 					'retryInterval' => 100,

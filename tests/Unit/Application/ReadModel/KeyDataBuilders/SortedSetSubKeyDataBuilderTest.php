@@ -6,13 +6,16 @@ use hollodotme\Readis\Application\Interfaces\ProvidesKeyInfo;
 use hollodotme\Readis\Application\ReadModel\Interfaces\ProvidesKeyName;
 use hollodotme\Readis\Application\ReadModel\KeyDataBuilders\SortedSetSubKeyDataBuilder;
 use hollodotme\Readis\Exceptions\RuntimeException;
+use PHPUnit\Framework\Exception;
+use PHPUnit\Framework\ExpectationFailedException;
 
 final class SortedSetSubKeyDataBuilderTest extends AbstractKeyDataBuilderTest
 {
 	/**
-	 * @throws \PHPUnit\Framework\ExpectationFailedException
-	 * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-	 * @throws \hollodotme\Readis\Exceptions\RuntimeException
+	 * @throws ExpectationFailedException
+	 * @throws RuntimeException
+	 * @throws Exception
+	 * @throws \PHPUnit\Framework\MockObject\RuntimeException
 	 */
 	public function testBuildKeyData() : void
 	{
@@ -32,14 +35,16 @@ final class SortedSetSubKeyDataBuilderTest extends AbstractKeyDataBuilderTest
 		$expectedKeyData    = 'Pretty: {"json": {"key": "value"}}';
 		$expectedRawKeyData = '{"json": {"key": "value"}}';
 
-		$this->assertSame( $expectedKeyData, $keyData->getKeyData() );
-		$this->assertSame( $expectedRawKeyData, $keyData->getRawKeyData() );
-		$this->assertTrue( $keyData->hasScore() );
-		$this->assertSame( 2.0, $keyData->getScore() );
+		self::assertSame( $expectedKeyData, $keyData->getKeyData() );
+		self::assertSame( $expectedRawKeyData, $keyData->getRawKeyData() );
+		self::assertTrue( $keyData->hasScore() );
+		self::assertSame( 2.0, $keyData->getScore() );
 	}
 
 	/**
+	 * @throws Exception
 	 * @throws RuntimeException
+	 * @throws \PHPUnit\Framework\MockObject\RuntimeException
 	 */
 	public function testBuildKeyDataThrowsExceptionForNotExistingSubKey() : void
 	{
@@ -57,12 +62,14 @@ final class SortedSetSubKeyDataBuilderTest extends AbstractKeyDataBuilderTest
 		/** @var ProvidesKeyInfo $keyInfoStub */
 		/** @var ProvidesKeyName $keyNameStub */
 
+		/** @noinspection UnusedFunctionResultInspection */
 		$keyDataBuilder->buildKeyData( $keyInfoStub, $keyNameStub );
 	}
 
 	/**
-	 * @throws \PHPUnit\Framework\ExpectationFailedException
-	 * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+	 * @throws Exception
+	 * @throws ExpectationFailedException
+	 * @throws \PHPUnit\Framework\MockObject\RuntimeException
 	 */
 	public function testCanBuildKeyData() : void
 	{
@@ -76,12 +83,13 @@ final class SortedSetSubKeyDataBuilderTest extends AbstractKeyDataBuilderTest
 		/** @var ProvidesKeyInfo $keyInfoStub */
 		/** @var ProvidesKeyName $keyNameStub */
 
-		$this->assertTrue( $keyDataBuilder->canBuildKeyData( $keyInfoStub, $keyNameStub ) );
+		self::assertTrue( $keyDataBuilder->canBuildKeyData( $keyInfoStub, $keyNameStub ) );
 	}
 
 	/**
-	 * @throws \PHPUnit\Framework\ExpectationFailedException
-	 * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+	 * @throws Exception
+	 * @throws ExpectationFailedException
+	 * @throws \PHPUnit\Framework\MockObject\RuntimeException
 	 */
 	public function testCanNotBuildKeyData() : void
 	{
@@ -95,11 +103,11 @@ final class SortedSetSubKeyDataBuilderTest extends AbstractKeyDataBuilderTest
 		/** @var ProvidesKeyInfo $keyInfoStub */
 		/** @var ProvidesKeyName $keyNameStub */
 
-		$this->assertFalse( $keyDataBuilder->canBuildKeyData( $keyInfoStub, $keyNameStub ) );
+		self::assertFalse( $keyDataBuilder->canBuildKeyData( $keyInfoStub, $keyNameStub ) );
 
 		$keyInfoStub->method( 'getType' )->willReturn( 'string' );
 		$keyNameStub->method( 'hasSubKey' )->willReturn( true );
 
-		$this->assertFalse( $keyDataBuilder->canBuildKeyData( $keyInfoStub, $keyNameStub ) );
+		self::assertFalse( $keyDataBuilder->canBuildKeyData( $keyInfoStub, $keyNameStub ) );
 	}
 }

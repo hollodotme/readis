@@ -6,13 +6,17 @@ use hollodotme\Readis\Application\Interfaces\ProvidesKeyInfo;
 use hollodotme\Readis\Application\ReadModel\Interfaces\ProvidesKeyName;
 use hollodotme\Readis\Application\ReadModel\KeyDataBuilders\SetSubKeyDataBuilder;
 use hollodotme\Readis\Exceptions\RuntimeException;
+use hollodotme\Readis\Infrastructure\Redis\Exceptions\ConnectionFailedException;
+use PHPUnit\Framework\Exception;
+use PHPUnit\Framework\ExpectationFailedException;
 
 final class SetSubKeyDataBuilderTest extends AbstractKeyDataBuilderTest
 {
 	/**
-	 * @throws \PHPUnit\Framework\ExpectationFailedException
-	 * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-	 * @throws \hollodotme\Readis\Infrastructure\Redis\Exceptions\ConnectionFailedException
+	 * @throws ConnectionFailedException
+	 * @throws ExpectationFailedException
+	 * @throws Exception
+	 * @throws \PHPUnit\Framework\MockObject\RuntimeException
 	 */
 	public function testBuildKeyData() : void
 	{
@@ -32,14 +36,16 @@ final class SetSubKeyDataBuilderTest extends AbstractKeyDataBuilderTest
 		$expectedKeyData    = 'Pretty: {"json": {"key": "value"}}';
 		$expectedRawKeyData = '{"json": {"key": "value"}}';
 
-		$this->assertSame( $expectedKeyData, $keyData->getKeyData() );
-		$this->assertSame( $expectedRawKeyData, $keyData->getRawKeyData() );
-		$this->assertFalse( $keyData->hasScore() );
-		$this->assertNull( $keyData->getScore() );
+		self::assertSame( $expectedKeyData, $keyData->getKeyData() );
+		self::assertSame( $expectedRawKeyData, $keyData->getRawKeyData() );
+		self::assertFalse( $keyData->hasScore() );
+		self::assertNull( $keyData->getScore() );
 	}
 
 	/**
-	 * @throws RuntimeException
+	 * @throws ConnectionFailedException
+	 * @throws Exception
+	 * @throws \PHPUnit\Framework\MockObject\RuntimeException
 	 */
 	public function testBuildKeyDataThrowsExceptionForNotExistingSubKey() : void
 	{
@@ -57,12 +63,14 @@ final class SetSubKeyDataBuilderTest extends AbstractKeyDataBuilderTest
 		/** @var ProvidesKeyInfo $keyInfoStub */
 		/** @var ProvidesKeyName $keyNameStub */
 
+		/** @noinspection UnusedFunctionResultInspection */
 		$keyDataBuilder->buildKeyData( $keyInfoStub, $keyNameStub );
 	}
 
 	/**
-	 * @throws \PHPUnit\Framework\ExpectationFailedException
-	 * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+	 * @throws Exception
+	 * @throws ExpectationFailedException
+	 * @throws \PHPUnit\Framework\MockObject\RuntimeException
 	 */
 	public function testCanBuildKeyData() : void
 	{
@@ -76,12 +84,13 @@ final class SetSubKeyDataBuilderTest extends AbstractKeyDataBuilderTest
 		/** @var ProvidesKeyInfo $keyInfoStub */
 		/** @var ProvidesKeyName $keyNameStub */
 
-		$this->assertTrue( $keyDataBuilder->canBuildKeyData( $keyInfoStub, $keyNameStub ) );
+		self::assertTrue( $keyDataBuilder->canBuildKeyData( $keyInfoStub, $keyNameStub ) );
 	}
 
 	/**
-	 * @throws \PHPUnit\Framework\ExpectationFailedException
-	 * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+	 * @throws Exception
+	 * @throws ExpectationFailedException
+	 * @throws \PHPUnit\Framework\MockObject\RuntimeException
 	 */
 	public function testCanNotBuildKeyData() : void
 	{
@@ -95,11 +104,11 @@ final class SetSubKeyDataBuilderTest extends AbstractKeyDataBuilderTest
 		/** @var ProvidesKeyInfo $keyInfoStub */
 		/** @var ProvidesKeyName $keyNameStub */
 
-		$this->assertFalse( $keyDataBuilder->canBuildKeyData( $keyInfoStub, $keyNameStub ) );
+		self::assertFalse( $keyDataBuilder->canBuildKeyData( $keyInfoStub, $keyNameStub ) );
 
 		$keyInfoStub->method( 'getType' )->willReturn( 'string' );
 		$keyNameStub->method( 'hasSubKey' )->willReturn( true );
 
-		$this->assertFalse( $keyDataBuilder->canBuildKeyData( $keyInfoStub, $keyNameStub ) );
+		self::assertFalse( $keyDataBuilder->canBuildKeyData( $keyInfoStub, $keyNameStub ) );
 	}
 }

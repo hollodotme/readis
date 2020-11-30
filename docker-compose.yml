@@ -1,5 +1,15 @@
 version: '3'
 services:
+
+  php71:
+    build:
+      dockerfile: Dockerfile
+      context: .docker/php/7.1
+    restart: 'on-failure'
+    volumes:
+      - ./:/repo
+    working_dir: /repo
+
   redis:
     image: redis
     ports:

@@ -2,16 +2,17 @@
 
 namespace hollodotme\Readis\Tests\Integration\Application\ReadModel\QueryHandlers;
 
+use Exception;
 use hollodotme\Readis\Application\ReadModel\QueryHandlers\FetchServerInformationQueryHandler;
 use hollodotme\Readis\Exceptions\ServerConfigNotFound;
 use PHPUnit\Framework\ExpectationFailedException;
-use SebastianBergmann\RecursionContext\InvalidArgumentException;
+use function sprintf;
 
 final class FetchServerInformationQueryHandlerTest extends AbstractQueryHandlerTest
 {
 	/**
 	 * @throws ServerConfigNotFound
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 	public function testCanFetchServerInformation() : void
 	{
@@ -20,20 +21,19 @@ final class FetchServerInformationQueryHandlerTest extends AbstractQueryHandlerT
 
 		$result = (new FetchServerInformationQueryHandler( $serverManager ))->handle();
 
-		$this->assertTrue( $result->succeeded() );
-		$this->assertFalse( $result->failed() );
+		self::assertTrue( $result->succeeded() );
+		self::assertFalse( $result->failed() );
 
-		$this->assertNotEmpty( $result->getServerInformation()->getServerConfig() );
-		$this->assertNotEmpty( $result->getServerInformation()->getServerInfo() );
-		$this->assertSame( 0, $result->getServerInformation()->getSlowLogCount() );
-		$this->assertCount( 0, $result->getServerInformation()->getSlowLogEntries() );
+		self::assertNotEmpty( $result->getServerInformation()->getServerConfig() );
+		self::assertNotEmpty( $result->getServerInformation()->getServerInfo() );
+		self::assertSame( 0, $result->getServerInformation()->getSlowLogCount() );
+		self::assertCount( 0, $result->getServerInformation()->getSlowLogEntries() );
 	}
 
 	/**
 	 * @throws ExpectationFailedException
-	 * @throws InvalidArgumentException
 	 * @throws ServerConfigNotFound
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 	public function testResultFailsIfConnectionToServerFailed() : void
 	{
@@ -42,10 +42,13 @@ final class FetchServerInformationQueryHandlerTest extends AbstractQueryHandlerT
 
 		$result = (new FetchServerInformationQueryHandler( $serverManager ))->handle();
 
-		$this->assertFalse( $result->succeeded() );
-		$this->assertTrue( $result->failed() );
-		$this->assertSame(
-			'Could not connect to redis server: host: localhost, port: 9999, timeout: 2.5, retryInterval: 100, using auth: no',
+		self::assertFalse( $result->succeeded() );
+		self::assertTrue( $result->failed() );
+		self::assertSame(
+			sprintf(
+				'Could not connect to redis server: host: %s, port: 9999, timeout: 2.5, retryInterval: 100, using auth: no',
+				(string)$_ENV['redis-host']
+			),
 			$result->getMessage()
 		);
 	}

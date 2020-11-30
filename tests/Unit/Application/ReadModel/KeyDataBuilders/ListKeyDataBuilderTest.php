@@ -5,13 +5,18 @@ namespace hollodotme\Readis\Tests\Unit\Application\ReadModel\KeyDataBuilders;
 use hollodotme\Readis\Application\Interfaces\ProvidesKeyInfo;
 use hollodotme\Readis\Application\ReadModel\Interfaces\ProvidesKeyName;
 use hollodotme\Readis\Application\ReadModel\KeyDataBuilders\ListKeyDataBuilder;
+use hollodotme\Readis\Infrastructure\Redis\Exceptions\ConnectionFailedException;
+use PHPUnit\Framework\Exception;
+use PHPUnit\Framework\ExpectationFailedException;
+use PHPUnit\Framework\MockObject\RuntimeException;
 
 final class ListKeyDataBuilderTest extends AbstractKeyDataBuilderTest
 {
 	/**
-	 * @throws \PHPUnit\Framework\ExpectationFailedException
-	 * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-	 * @throws \hollodotme\Readis\Infrastructure\Redis\Exceptions\ConnectionFailedException
+	 * @throws ConnectionFailedException
+	 * @throws ExpectationFailedException
+	 * @throws Exception
+	 * @throws RuntimeException
 	 */
 	public function testBuildKeyData() : void
 	{
@@ -36,15 +41,16 @@ final class ListKeyDataBuilderTest extends AbstractKeyDataBuilderTest
 		                      . "\n\n---\n\n"
 		                      . "Element 1:\n==========\n{\"json\": {\"key\": \"value\"}}";
 
-		$this->assertSame( $expectedKeyData, $keyData->getKeyData() );
-		$this->assertSame( $expectedRawKeyData, $keyData->getRawKeyData() );
-		$this->assertFalse( $keyData->hasScore() );
-		$this->assertNull( $keyData->getScore() );
+		self::assertSame( $expectedKeyData, $keyData->getKeyData() );
+		self::assertSame( $expectedRawKeyData, $keyData->getRawKeyData() );
+		self::assertFalse( $keyData->hasScore() );
+		self::assertNull( $keyData->getScore() );
 	}
 
 	/**
-	 * @throws \PHPUnit\Framework\ExpectationFailedException
-	 * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+	 * @throws Exception
+	 * @throws ExpectationFailedException
+	 * @throws RuntimeException
 	 */
 	public function testCanBuildKeyData() : void
 	{
@@ -59,12 +65,13 @@ final class ListKeyDataBuilderTest extends AbstractKeyDataBuilderTest
 		/** @var ProvidesKeyInfo $keyInfoStub */
 		/** @var ProvidesKeyName $keyNameStub */
 
-		$this->assertTrue( $keyDataBuilder->canBuildKeyData( $keyInfoStub, $keyNameStub ) );
+		self::assertTrue( $keyDataBuilder->canBuildKeyData( $keyInfoStub, $keyNameStub ) );
 	}
 
 	/**
-	 * @throws \PHPUnit\Framework\ExpectationFailedException
-	 * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+	 * @throws Exception
+	 * @throws ExpectationFailedException
+	 * @throws RuntimeException
 	 */
 	public function testCanNotBuildKeyData() : void
 	{
@@ -78,11 +85,11 @@ final class ListKeyDataBuilderTest extends AbstractKeyDataBuilderTest
 		/** @var ProvidesKeyInfo $keyInfoStub */
 		/** @var ProvidesKeyName $keyNameStub */
 
-		$this->assertFalse( $keyDataBuilder->canBuildKeyData( $keyInfoStub, $keyNameStub ) );
+		self::assertFalse( $keyDataBuilder->canBuildKeyData( $keyInfoStub, $keyNameStub ) );
 
 		$keyInfoStub->method( 'getType' )->willReturn( 'string' );
 		$keyNameStub->method( 'hasSubKey' )->willReturn( false );
 
-		$this->assertFalse( $keyDataBuilder->canBuildKeyData( $keyInfoStub, $keyNameStub ) );
+		self::assertFalse( $keyDataBuilder->canBuildKeyData( $keyInfoStub, $keyNameStub ) );
 	}
 }

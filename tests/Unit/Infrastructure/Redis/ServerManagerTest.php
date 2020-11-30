@@ -8,6 +8,8 @@ use hollodotme\Readis\Infrastructure\Interfaces\ProvidesConnectionData;
 use hollodotme\Readis\Infrastructure\Redis\DTO\SlowLogEntry;
 use hollodotme\Readis\Infrastructure\Redis\Exceptions\ConnectionFailedException;
 use hollodotme\Readis\Infrastructure\Redis\ServerManager;
+use PHPUnit\Framework\Exception;
+use PHPUnit\Framework\ExpectationFailedException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Redis;
@@ -20,16 +22,15 @@ final class ServerManagerTest extends TestCase
 	/**
 	 * @param MockObject $redisStub
 	 *
-	 * @throws ReflectionException
 	 * @return ServerManager
+	 * @throws ReflectionException
 	 */
-	protected function getServerManagerWithRedisStub( MockObject $redisStub ) : ServerManager
+	private function getServerManagerWithRedisStub( MockObject $redisStub ) : ServerManager
 	{
 		$serverConnectionStub = $this->getServerConnectionStub();
 		$serverManager        = new ServerManager( $serverConnectionStub );
 
-		$serverManagerReflection = new ReflectionClass( $serverManager );
-		$redisProperty           = $serverManagerReflection->getProperty( 'redis' );
+		$redisProperty = (new ReflectionClass( $serverManager ))->getProperty( 'redis' );
 		$redisProperty->setAccessible( true );
 		$redisProperty->setValue( $serverManager, $redisStub );
 
@@ -38,8 +39,7 @@ final class ServerManagerTest extends TestCase
 
 	private function getServerConnectionStub() : ProvidesConnectionData
 	{
-		return new class implements ProvidesConnectionData
-		{
+		return new class implements ProvidesConnectionData {
 			public function getHost() : string
 			{
 				return 'localhost';
@@ -68,11 +68,11 @@ final class ServerManagerTest extends TestCase
 	}
 
 	/**
-	 * @throws ReflectionException
-	 * @throws \PHPUnit\Framework\ExpectationFailedException
-	 * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
 	 * @throws ConnectionFailedException
+	 * @throws ExpectationFailedException
+	 * @throws ReflectionException
 	 * @throws RuntimeException
+	 * @throws \PHPUnit\Framework\MockObject\RuntimeException
 	 */
 	public function testGetAllSortedSetMembers() : void
 	{
@@ -88,13 +88,14 @@ final class ServerManagerTest extends TestCase
 
 		$serverManager = $this->getServerManagerWithRedisStub( $redisStub );
 
-		$this->assertSame( $sortedSet, $serverManager->getAllSortedSetMembers( $key ) );
+		self::assertSame( $sortedSet, $serverManager->getAllSortedSetMembers( $key ) );
 	}
 
 	/**
 	 * @throws ConnectionFailedException
 	 * @throws ReflectionException
 	 * @throws RuntimeException
+	 * @throws \PHPUnit\Framework\MockObject\RuntimeException
 	 */
 	public function testGetAllSortedSetMembersThrowsExceptionIfKeyDoesNotExist() : void
 	{
@@ -108,15 +109,16 @@ final class ServerManagerTest extends TestCase
 		$this->expectException( RuntimeException::class );
 		$this->expectExceptionMessage( 'Could not find key: unit.test' );
 
+		/** @noinspection UnusedFunctionResultInspection */
 		$serverManager->getAllSortedSetMembers( $key );
 	}
 
 	/**
 	 * @throws ConnectionFailedException
+	 * @throws ExpectationFailedException
 	 * @throws ReflectionException
-	 * @throws \PHPUnit\Framework\ExpectationFailedException
-	 * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
 	 * @throws RuntimeException
+	 * @throws \PHPUnit\Framework\MockObject\RuntimeException
 	 */
 	public function testGetListElement() : void
 	{
@@ -129,13 +131,14 @@ final class ServerManagerTest extends TestCase
 
 		$serverManager = $this->getServerManagerWithRedisStub( $redisStub );
 
-		$this->assertSame( $element, $serverManager->getListElement( $key, $elementIndex ) );
+		self::assertSame( $element, $serverManager->getListElement( $key, $elementIndex ) );
 	}
 
 	/**
 	 * @throws ConnectionFailedException
 	 * @throws ReflectionException
 	 * @throws RuntimeException
+	 * @throws \PHPUnit\Framework\MockObject\RuntimeException
 	 */
 	public function testGetListElementThrowsExceptionIfKeyDoesNotExist() : void
 	{
@@ -151,15 +154,16 @@ final class ServerManagerTest extends TestCase
 		$this->expectException( RuntimeException::class );
 		$this->expectExceptionMessage( 'Could not find element in list anymore.' );
 
+		/** @noinspection UnusedFunctionResultInspection */
 		$serverManager->getListElement( $key, $elementIndex );
 	}
 
 	/**
 	 * @throws ConnectionFailedException
+	 * @throws ExpectationFailedException
 	 * @throws ReflectionException
-	 * @throws \PHPUnit\Framework\ExpectationFailedException
-	 * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
 	 * @throws RuntimeException
+	 * @throws \PHPUnit\Framework\MockObject\RuntimeException
 	 */
 	public function testGetAllHashValues() : void
 	{
@@ -174,13 +178,14 @@ final class ServerManagerTest extends TestCase
 
 		$serverManager = $this->getServerManagerWithRedisStub( $redisStub );
 
-		$this->assertSame( $hashFields, $serverManager->getAllHashValues( $key ) );
+		self::assertSame( $hashFields, $serverManager->getAllHashValues( $key ) );
 	}
 
 	/**
 	 * @throws ConnectionFailedException
-	 * @throws ReflectionException
 	 * @throws RuntimeException
+	 * @throws \PHPUnit\Framework\MockObject\RuntimeException
+	 * @throws ReflectionException
 	 */
 	public function testGetAllHashValuesThrowsExceptionIfKeyDoesNotExist() : void
 	{
@@ -195,15 +200,16 @@ final class ServerManagerTest extends TestCase
 		$this->expectException( RuntimeException::class );
 		$this->expectExceptionMessage( 'Could not find key: unit.test' );
 
+		/** @noinspection UnusedFunctionResultInspection */
 		$serverManager->getAllHashValues( $key );
 	}
 
 	/**
 	 * @throws ConnectionFailedException
-	 * @throws ReflectionException
-	 * @throws \PHPUnit\Framework\ExpectationFailedException
-	 * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+	 * @throws ExpectationFailedException
 	 * @throws RuntimeException
+	 * @throws \PHPUnit\Framework\MockObject\RuntimeException
+	 * @throws ReflectionException
 	 */
 	public function testGetAllListElements() : void
 	{
@@ -219,13 +225,14 @@ final class ServerManagerTest extends TestCase
 
 		$serverManager = $this->getServerManagerWithRedisStub( $redisStub );
 
-		$this->assertSame( $listElements, $serverManager->getAllListElements( $key ) );
+		self::assertSame( $listElements, $serverManager->getAllListElements( $key ) );
 	}
 
 	/**
 	 * @throws ConnectionFailedException
-	 * @throws ReflectionException
 	 * @throws RuntimeException
+	 * @throws \PHPUnit\Framework\MockObject\RuntimeException
+	 * @throws ReflectionException
 	 */
 	public function testGetAllListElementsThrowsExceptionIfKeyDoesNotExist() : void
 	{
@@ -239,14 +246,15 @@ final class ServerManagerTest extends TestCase
 		$this->expectException( RuntimeException::class );
 		$this->expectExceptionMessage( 'Could not find key: unit.test' );
 
+		/** @noinspection UnusedFunctionResultInspection */
 		$serverManager->getAllListElements( $key );
 	}
 
 	/**
 	 * @throws ConnectionFailedException
+	 * @throws ExpectationFailedException
+	 * @throws \PHPUnit\Framework\MockObject\RuntimeException
 	 * @throws ReflectionException
-	 * @throws \PHPUnit\Framework\ExpectationFailedException
-	 * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
 	 */
 	public function testGetServerConfig() : void
 	{
@@ -259,14 +267,14 @@ final class ServerManagerTest extends TestCase
 
 		$serverManager = $this->getServerManagerWithRedisStub( $redisStub );
 
-		$this->assertSame( $serverConfig, $serverManager->getServerConfig() );
+		self::assertSame( $serverConfig, $serverManager->getServerConfig() );
 	}
 
 	/**
 	 * @throws ConnectionFailedException
+	 * @throws ExpectationFailedException
+	 * @throws \PHPUnit\Framework\MockObject\RuntimeException
 	 * @throws ReflectionException
-	 * @throws \PHPUnit\Framework\ExpectationFailedException
-	 * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
 	 */
 	public function testCanGetFallbackServerConfigIfConfigCommandIsDisabled() : void
 	{
@@ -280,14 +288,15 @@ final class ServerManagerTest extends TestCase
 
 		$serverManager = $this->getServerManagerWithRedisStub( $redisStub );
 
-		$this->assertSame( $serverConfig, $serverManager->getServerConfig() );
+		self::assertSame( $serverConfig, $serverManager->getServerConfig() );
 	}
 
 	/**
 	 * @throws ConnectionFailedException
+	 * @throws ExpectationFailedException
+	 * @throws \PHPUnit\Framework\MockObject\RuntimeException
 	 * @throws ReflectionException
-	 * @throws \PHPUnit\Framework\ExpectationFailedException
-	 * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+	 * @throws ReflectionException
 	 */
 	public function testCommandExists() : void
 	{
@@ -297,7 +306,7 @@ final class ServerManagerTest extends TestCase
 
 		$serverManager = $this->getServerManagerWithRedisStub( $redisStub );
 
-		$this->assertTrue( $serverManager->commandExists( 'CONFIG' ) );
+		self::assertTrue( $serverManager->commandExists( 'CONFIG' ) );
 
 		$redisStub = $this->getMockBuilder( Redis::class )->getMock();
 		$redisStub->method( 'rawCommand' )->with( 'CONFIG' )->willReturn( false );
@@ -305,14 +314,14 @@ final class ServerManagerTest extends TestCase
 
 		$serverManager = $this->getServerManagerWithRedisStub( $redisStub );
 
-		$this->assertFalse( $serverManager->commandExists( 'CONFIG' ) );
+		self::assertFalse( $serverManager->commandExists( 'CONFIG' ) );
 	}
 
 	/**
 	 * @throws ConnectionFailedException
+	 * @throws ExpectationFailedException
+	 * @throws \PHPUnit\Framework\MockObject\RuntimeException
 	 * @throws ReflectionException
-	 * @throws \PHPUnit\Framework\ExpectationFailedException
-	 * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
 	 */
 	public function testGetServerInfo() : void
 	{
@@ -325,14 +334,14 @@ final class ServerManagerTest extends TestCase
 
 		$serverManager = $this->getServerManagerWithRedisStub( $redisStub );
 
-		$this->assertSame( $serverInfo, $serverManager->getServerInfo() );
+		self::assertSame( $serverInfo, $serverManager->getServerInfo() );
 	}
 
 	/**
 	 * @throws ConnectionFailedException
+	 * @throws ExpectationFailedException
+	 * @throws \PHPUnit\Framework\MockObject\RuntimeException
 	 * @throws ReflectionException
-	 * @throws \PHPUnit\Framework\ExpectationFailedException
-	 * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
 	 */
 	public function testCanGetFallbackServerInfoIfInfoCommandIsDisabled() : void
 	{
@@ -346,14 +355,14 @@ final class ServerManagerTest extends TestCase
 
 		$serverManager = $this->getServerManagerWithRedisStub( $redisStub );
 
-		$this->assertSame( $serverInfo, $serverManager->getServerInfo() );
+		self::assertSame( $serverInfo, $serverManager->getServerInfo() );
 	}
 
 	/**
 	 * @throws ConnectionFailedException
+	 * @throws ExpectationFailedException
+	 * @throws \PHPUnit\Framework\MockObject\RuntimeException
 	 * @throws ReflectionException
-	 * @throws \PHPUnit\Framework\ExpectationFailedException
-	 * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
 	 */
 	public function testGetSlowLogCount() : void
 	{
@@ -366,14 +375,14 @@ final class ServerManagerTest extends TestCase
 
 		$serverManager = $this->getServerManagerWithRedisStub( $redisStub );
 
-		$this->assertSame( $slowLogCount, $serverManager->getSlowLogCount() );
+		self::assertSame( $slowLogCount, $serverManager->getSlowLogCount() );
 	}
 
 	/**
 	 * @throws ConnectionFailedException
+	 * @throws ExpectationFailedException
+	 * @throws \PHPUnit\Framework\MockObject\RuntimeException
 	 * @throws ReflectionException
-	 * @throws \PHPUnit\Framework\ExpectationFailedException
-	 * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
 	 */
 	public function testCanGetFallbackSlowLogCountIfSlowlogCommandIsDisabled() : void
 	{
@@ -385,18 +394,19 @@ final class ServerManagerTest extends TestCase
 
 		$serverManager = $this->getServerManagerWithRedisStub( $redisStub );
 
-		$this->assertSame( $slowLogCount, $serverManager->getSlowLogCount() );
+		self::assertSame( $slowLogCount, $serverManager->getSlowLogCount() );
 	}
 
 	/**
 	 * @throws ConnectionFailedException
+	 * @throws \PHPUnit\Framework\MockObject\RuntimeException
 	 * @throws ReflectionException
 	 */
 	public function testSelectDatabase() : void
 	{
 		$database  = 1;
 		$redisStub = $this->getMockBuilder( Redis::class )->getMock();
-		$redisStub->expects( $this->once() )->method( 'select' )->with( $database );
+		$redisStub->expects( self::once() )->method( 'select' )->with( $database );
 
 		$serverManager = $this->getServerManagerWithRedisStub( $redisStub );
 
@@ -405,10 +415,10 @@ final class ServerManagerTest extends TestCase
 
 	/**
 	 * @throws ConnectionFailedException
+	 * @throws ExpectationFailedException
+	 * @throws RuntimeException
+	 * @throws \PHPUnit\Framework\MockObject\RuntimeException
 	 * @throws ReflectionException
-	 * @throws \PHPUnit\Framework\ExpectationFailedException
-	 * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
-	 * @throws \hollodotme\Readis\Exceptions\RuntimeException
 	 */
 	public function testGetSetMember() : void
 	{
@@ -424,13 +434,14 @@ final class ServerManagerTest extends TestCase
 
 		$serverManager = $this->getServerManagerWithRedisStub( $redisStub );
 
-		$this->assertSame( 'unit', $serverManager->getSetMember( $key, $memberIndex ) );
+		self::assertSame( 'unit', $serverManager->getSetMember( $key, $memberIndex ) );
 	}
 
 	/**
 	 * @throws ConnectionFailedException
-	 * @throws ReflectionException
 	 * @throws RuntimeException
+	 * @throws \PHPUnit\Framework\MockObject\RuntimeException
+	 * @throws ReflectionException
 	 */
 	public function testGetSetMemberThrowsExceptionIfNoMemberWasFoundAtIndex() : void
 	{
@@ -449,14 +460,15 @@ final class ServerManagerTest extends TestCase
 		$this->expectException( RuntimeException::class );
 		$this->expectExceptionMessage( 'Could not find member in set anymore.' );
 
+		/** @noinspection UnusedFunctionResultInspection */
 		$serverManager->getSetMember( $key, $memberIndex );
 	}
 
 	/**
 	 * @throws ConnectionFailedException
+	 * @throws ExpectationFailedException
+	 * @throws \PHPUnit\Framework\MockObject\RuntimeException
 	 * @throws ReflectionException
-	 * @throws \PHPUnit\Framework\ExpectationFailedException
-	 * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
 	 */
 	public function testGetSlowLogEntries() : void
 	{
@@ -482,14 +494,14 @@ final class ServerManagerTest extends TestCase
 
 		$serverManager = $this->getServerManagerWithRedisStub( $redisStub );
 
-		$this->assertContainsOnlyInstancesOf( SlowLogEntry::class, $serverManager->getSlowLogEntries() );
+		self::assertContainsOnlyInstancesOf( SlowLogEntry::class, $serverManager->getSlowLogEntries() );
 	}
 
 	/**
 	 * @throws ConnectionFailedException
+	 * @throws ExpectationFailedException
+	 * @throws \PHPUnit\Framework\MockObject\RuntimeException
 	 * @throws ReflectionException
-	 * @throws \PHPUnit\Framework\ExpectationFailedException
-	 * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
 	 */
 	public function testCanGetFallbackSlowLogEntriesIfSlowlogCommandIsDisabled() : void
 	{
@@ -501,42 +513,43 @@ final class ServerManagerTest extends TestCase
 
 		$serverManager = $this->getServerManagerWithRedisStub( $redisStub );
 
-		$this->assertSame( $slowLogEntries, $serverManager->getSlowLogEntries() );
+		self::assertSame( $slowLogEntries, $serverManager->getSlowLogEntries() );
 	}
 
 	/**
 	 * @throws ConnectionFailedException
+	 * @throws Exception
+	 * @throws ExpectationFailedException
+	 * @throws \PHPUnit\Framework\MockObject\RuntimeException
 	 * @throws ReflectionException
-	 * @throws \PHPUnit\Framework\ExpectationFailedException
-	 * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
 	 */
 	public function testGetKeyInfoObjectForKeysOfTypeString() : void
 	{
 		$key = 'string';
 
 		$redisStub = $this->getMockBuilder( Redis::class )->getMock();
-		$redisStub->expects( $this->once() )->method( 'multi' )->willReturn( $redisStub );
-		$redisStub->expects( $this->once() )->method( 'type' )->with( $key )->willReturnSelf();
-		$redisStub->expects( $this->once() )->method( 'pttl' )->with( $key )->willReturnSelf();
-		$redisStub->expects( $this->once() )->method( 'exec' )->willReturn( [Redis::REDIS_STRING, -1.0] );
+		$redisStub->expects( self::once() )->method( 'multi' )->willReturn( $redisStub );
+		$redisStub->expects( self::once() )->method( 'type' )->with( $key )->willReturnSelf();
+		$redisStub->expects( self::once() )->method( 'pttl' )->with( $key )->willReturnSelf();
+		$redisStub->expects( self::once() )->method( 'exec' )->willReturn( [Redis::REDIS_STRING, -1.0] );
 
-		$serverManager = $this->getServerManagerWithRedisStub( $redisStub );
+		$keyInfoObject = $this->getServerManagerWithRedisStub( $redisStub )->getKeyInfoObject( $key );
 
-		$keyInfoObject = $serverManager->getKeyInfoObject( $key );
-
-		$this->assertInstanceOf( ProvidesKeyInfo::class, $keyInfoObject );
-		$this->assertSame( 'string', $keyInfoObject->getType() );
-		$this->assertSame( -1.0, $keyInfoObject->getTimeToLive() );
-		$this->assertSame( 'string', $keyInfoObject->getName() );
-		$this->assertSame( 0, $keyInfoObject->countSubItems() );
-		$this->assertSame( [], $keyInfoObject->getSubItems() );
+		/** @noinspection UnnecessaryAssertionInspection */
+		self::assertInstanceOf( ProvidesKeyInfo::class, $keyInfoObject );
+		self::assertSame( 'string', $keyInfoObject->getType() );
+		self::assertSame( -1.0, $keyInfoObject->getTimeToLive() );
+		self::assertSame( 'string', $keyInfoObject->getName() );
+		self::assertSame( 0, $keyInfoObject->countSubItems() );
+		self::assertSame( [], $keyInfoObject->getSubItems() );
 	}
 
 	/**
 	 * @throws ConnectionFailedException
+	 * @throws Exception
+	 * @throws ExpectationFailedException
+	 * @throws \PHPUnit\Framework\MockObject\RuntimeException
 	 * @throws ReflectionException
-	 * @throws \PHPUnit\Framework\ExpectationFailedException
-	 * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
 	 */
 	public function testGetKeyInfoObjectForKeysOfTypeHash() : void
 	{
@@ -544,29 +557,29 @@ final class ServerManagerTest extends TestCase
 		$hashKeys = ['field', 'unit'];
 
 		$redisStub = $this->getMockBuilder( Redis::class )->getMock();
-		$redisStub->expects( $this->once() )->method( 'multi' )->willReturn( $redisStub );
-		$redisStub->expects( $this->once() )->method( 'type' )->with( $key )->willReturnSelf();
-		$redisStub->expects( $this->once() )->method( 'pttl' )->with( $key )->willReturnSelf();
-		$redisStub->expects( $this->once() )->method( 'exec' )->willReturn( [Redis::REDIS_HASH, -1.0] );
-		$redisStub->expects( $this->once() )->method( 'hKeys' )->with( $key )->willReturn( $hashKeys );
+		$redisStub->expects( self::once() )->method( 'multi' )->willReturn( $redisStub );
+		$redisStub->expects( self::once() )->method( 'type' )->with( $key )->willReturnSelf();
+		$redisStub->expects( self::once() )->method( 'pttl' )->with( $key )->willReturnSelf();
+		$redisStub->expects( self::once() )->method( 'exec' )->willReturn( [Redis::REDIS_HASH, -1.0] );
+		$redisStub->expects( self::once() )->method( 'hKeys' )->with( $key )->willReturn( $hashKeys );
 
-		$serverManager = $this->getServerManagerWithRedisStub( $redisStub );
+		$keyInfoObject = $this->getServerManagerWithRedisStub( $redisStub )->getKeyInfoObject( $key );
 
-		$keyInfoObject = $serverManager->getKeyInfoObject( $key );
-
-		$this->assertInstanceOf( ProvidesKeyInfo::class, $keyInfoObject );
-		$this->assertSame( 'hash', $keyInfoObject->getType() );
-		$this->assertSame( -1.0, $keyInfoObject->getTimeToLive() );
-		$this->assertSame( 'hash', $keyInfoObject->getName() );
-		$this->assertSame( 2, $keyInfoObject->countSubItems() );
-		$this->assertSame( $hashKeys, $keyInfoObject->getSubItems() );
+		/** @noinspection UnnecessaryAssertionInspection */
+		self::assertInstanceOf( ProvidesKeyInfo::class, $keyInfoObject );
+		self::assertSame( 'hash', $keyInfoObject->getType() );
+		self::assertSame( -1.0, $keyInfoObject->getTimeToLive() );
+		self::assertSame( 'hash', $keyInfoObject->getName() );
+		self::assertSame( 2, $keyInfoObject->countSubItems() );
+		self::assertSame( $hashKeys, $keyInfoObject->getSubItems() );
 	}
 
 	/**
 	 * @throws ConnectionFailedException
+	 * @throws Exception
+	 * @throws ExpectationFailedException
+	 * @throws \PHPUnit\Framework\MockObject\RuntimeException
 	 * @throws ReflectionException
-	 * @throws \PHPUnit\Framework\ExpectationFailedException
-	 * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
 	 */
 	public function testGetKeyInfoObjectForKeysOfTypeList() : void
 	{
@@ -574,29 +587,29 @@ final class ServerManagerTest extends TestCase
 		$listKeys = [0, 1];
 
 		$redisStub = $this->getMockBuilder( Redis::class )->getMock();
-		$redisStub->expects( $this->once() )->method( 'multi' )->willReturn( $redisStub );
-		$redisStub->expects( $this->once() )->method( 'type' )->with( $key )->willReturnSelf();
-		$redisStub->expects( $this->once() )->method( 'pttl' )->with( $key )->willReturnSelf();
-		$redisStub->expects( $this->once() )->method( 'exec' )->willReturn( [Redis::REDIS_LIST, -1.0] );
-		$redisStub->expects( $this->once() )->method( 'llen' )->with( $key )->willReturn( 2 );
+		$redisStub->expects( self::once() )->method( 'multi' )->willReturn( $redisStub );
+		$redisStub->expects( self::once() )->method( 'type' )->with( $key )->willReturnSelf();
+		$redisStub->expects( self::once() )->method( 'pttl' )->with( $key )->willReturnSelf();
+		$redisStub->expects( self::once() )->method( 'exec' )->willReturn( [Redis::REDIS_LIST, -1.0] );
+		$redisStub->expects( self::once() )->method( 'llen' )->with( $key )->willReturn( 2 );
 
-		$serverManager = $this->getServerManagerWithRedisStub( $redisStub );
+		$keyInfoObject = $this->getServerManagerWithRedisStub( $redisStub )->getKeyInfoObject( $key );
 
-		$keyInfoObject = $serverManager->getKeyInfoObject( $key );
-
-		$this->assertInstanceOf( ProvidesKeyInfo::class, $keyInfoObject );
-		$this->assertSame( 'list', $keyInfoObject->getType() );
-		$this->assertSame( -1.0, $keyInfoObject->getTimeToLive() );
-		$this->assertSame( 'list', $keyInfoObject->getName() );
-		$this->assertSame( 2, $keyInfoObject->countSubItems() );
-		$this->assertSame( $listKeys, $keyInfoObject->getSubItems() );
+		/** @noinspection UnnecessaryAssertionInspection */
+		self::assertInstanceOf( ProvidesKeyInfo::class, $keyInfoObject );
+		self::assertSame( 'list', $keyInfoObject->getType() );
+		self::assertSame( -1.0, $keyInfoObject->getTimeToLive() );
+		self::assertSame( 'list', $keyInfoObject->getName() );
+		self::assertSame( 2, $keyInfoObject->countSubItems() );
+		self::assertSame( $listKeys, $keyInfoObject->getSubItems() );
 	}
 
 	/**
 	 * @throws ConnectionFailedException
+	 * @throws Exception
+	 * @throws ExpectationFailedException
+	 * @throws \PHPUnit\Framework\MockObject\RuntimeException
 	 * @throws ReflectionException
-	 * @throws \PHPUnit\Framework\ExpectationFailedException
-	 * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
 	 */
 	public function testGetKeyInfoObjectForKeysOfTypeSet() : void
 	{
@@ -604,29 +617,29 @@ final class ServerManagerTest extends TestCase
 		$setKeys = [0, 1];
 
 		$redisStub = $this->getMockBuilder( Redis::class )->getMock();
-		$redisStub->expects( $this->once() )->method( 'multi' )->willReturn( $redisStub );
-		$redisStub->expects( $this->once() )->method( 'type' )->with( $key )->willReturnSelf();
-		$redisStub->expects( $this->once() )->method( 'pttl' )->with( $key )->willReturnSelf();
-		$redisStub->expects( $this->once() )->method( 'exec' )->willReturn( [Redis::REDIS_SET, -1.0] );
-		$redisStub->expects( $this->once() )->method( 'scard' )->with( $key )->willReturn( 2 );
+		$redisStub->expects( self::once() )->method( 'multi' )->willReturn( $redisStub );
+		$redisStub->expects( self::once() )->method( 'type' )->with( $key )->willReturnSelf();
+		$redisStub->expects( self::once() )->method( 'pttl' )->with( $key )->willReturnSelf();
+		$redisStub->expects( self::once() )->method( 'exec' )->willReturn( [Redis::REDIS_SET, -1.0] );
+		$redisStub->expects( self::once() )->method( 'scard' )->with( $key )->willReturn( 2 );
 
-		$serverManager = $this->getServerManagerWithRedisStub( $redisStub );
+		$keyInfoObject = $this->getServerManagerWithRedisStub( $redisStub )->getKeyInfoObject( $key );
 
-		$keyInfoObject = $serverManager->getKeyInfoObject( $key );
-
-		$this->assertInstanceOf( ProvidesKeyInfo::class, $keyInfoObject );
-		$this->assertSame( 'set', $keyInfoObject->getType() );
-		$this->assertSame( -1.0, $keyInfoObject->getTimeToLive() );
-		$this->assertSame( 'set', $keyInfoObject->getName() );
-		$this->assertSame( 2, $keyInfoObject->countSubItems() );
-		$this->assertSame( $setKeys, $keyInfoObject->getSubItems() );
+		/** @noinspection UnnecessaryAssertionInspection */
+		self::assertInstanceOf( ProvidesKeyInfo::class, $keyInfoObject );
+		self::assertSame( 'set', $keyInfoObject->getType() );
+		self::assertSame( -1.0, $keyInfoObject->getTimeToLive() );
+		self::assertSame( 'set', $keyInfoObject->getName() );
+		self::assertSame( 2, $keyInfoObject->countSubItems() );
+		self::assertSame( $setKeys, $keyInfoObject->getSubItems() );
 	}
 
 	/**
 	 * @throws ConnectionFailedException
+	 * @throws Exception
+	 * @throws ExpectationFailedException
+	 * @throws \PHPUnit\Framework\MockObject\RuntimeException
 	 * @throws ReflectionException
-	 * @throws \PHPUnit\Framework\ExpectationFailedException
-	 * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
 	 */
 	public function testGetKeyInfoObjectForKeysOfTypeSortedSet() : void
 	{
@@ -637,31 +650,30 @@ final class ServerManagerTest extends TestCase
 		];
 
 		$redisStub = $this->getMockBuilder( Redis::class )->getMock();
-		$redisStub->expects( $this->once() )->method( 'multi' )->willReturn( $redisStub );
-		$redisStub->expects( $this->once() )->method( 'type' )->with( $key )->willReturnSelf();
-		$redisStub->expects( $this->once() )->method( 'pttl' )->with( $key )->willReturnSelf();
-		$redisStub->expects( $this->once() )->method( 'exec' )->willReturn( [Redis::REDIS_ZSET, -1.0] );
-		$redisStub->expects( $this->once() )->method( 'zcard' )->with( $key )->willReturn( 2 );
-		$redisStub->expects( $this->once() )->method( 'zrange' )->with( $key )->willReturn( $setKeysAndScores );
+		$redisStub->expects( self::once() )->method( 'multi' )->willReturn( $redisStub );
+		$redisStub->expects( self::once() )->method( 'type' )->with( $key )->willReturnSelf();
+		$redisStub->expects( self::once() )->method( 'pttl' )->with( $key )->willReturnSelf();
+		$redisStub->expects( self::once() )->method( 'exec' )->willReturn( [Redis::REDIS_ZSET, -1.0] );
+		$redisStub->expects( self::once() )->method( 'zcard' )->with( $key )->willReturn( 2 );
+		$redisStub->expects( self::once() )->method( 'zrange' )->with( $key )->willReturn( $setKeysAndScores );
 
-		$serverManager = $this->getServerManagerWithRedisStub( $redisStub );
+		$keyInfoObject = $this->getServerManagerWithRedisStub( $redisStub )->getKeyInfoObject( $key );
 
-		$keyInfoObject = $serverManager->getKeyInfoObject( $key );
-
-		$this->assertInstanceOf( ProvidesKeyInfo::class, $keyInfoObject );
-		$this->assertSame( 'zset', $keyInfoObject->getType() );
-		$this->assertSame( -1.0, $keyInfoObject->getTimeToLive() );
-		$this->assertSame( 'sorted set', $keyInfoObject->getName() );
-		$this->assertSame( 2, $keyInfoObject->countSubItems() );
-		$this->assertSame( $setKeysAndScores, $keyInfoObject->getSubItems() );
+		/** @noinspection UnnecessaryAssertionInspection */
+		self::assertInstanceOf( ProvidesKeyInfo::class, $keyInfoObject );
+		self::assertSame( 'zset', $keyInfoObject->getType() );
+		self::assertSame( -1.0, $keyInfoObject->getTimeToLive() );
+		self::assertSame( 'sorted set', $keyInfoObject->getName() );
+		self::assertSame( 2, $keyInfoObject->countSubItems() );
+		self::assertSame( $setKeysAndScores, $keyInfoObject->getSubItems() );
 	}
 
 	/**
 	 * @throws ConnectionFailedException
-	 * @throws ReflectionException
-	 * @throws \PHPUnit\Framework\ExpectationFailedException
-	 * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+	 * @throws ExpectationFailedException
 	 * @throws RuntimeException
+	 * @throws \PHPUnit\Framework\MockObject\RuntimeException
+	 * @throws ReflectionException
 	 */
 	public function testGetHashValue() : void
 	{
@@ -670,17 +682,18 @@ final class ServerManagerTest extends TestCase
 		$hashValue = 'value';
 
 		$redisStub = $this->getMockBuilder( Redis::class )->getMock();
-		$redisStub->expects( $this->once() )->method( 'hGet' )->with( $key, $hashField )->willReturn( $hashValue );
+		$redisStub->expects( self::once() )->method( 'hGet' )->with( $key, $hashField )->willReturn( $hashValue );
 
 		$serverManager = $this->getServerManagerWithRedisStub( $redisStub );
 
-		$this->assertSame( $hashValue, $serverManager->getHashValue( $key, $hashField ) );
+		self::assertSame( $hashValue, $serverManager->getHashValue( $key, $hashField ) );
 	}
 
 	/**
 	 * @throws ConnectionFailedException
-	 * @throws ReflectionException
 	 * @throws RuntimeException
+	 * @throws \PHPUnit\Framework\MockObject\RuntimeException
+	 * @throws ReflectionException
 	 */
 	public function testGetHashValueThrowsExceptionForNotExistingField() : void
 	{
@@ -689,21 +702,22 @@ final class ServerManagerTest extends TestCase
 		$hashValue = false;
 
 		$redisStub = $this->getMockBuilder( Redis::class )->getMock();
-		$redisStub->expects( $this->once() )->method( 'hGet' )->with( $key, $hashField )->willReturn( $hashValue );
+		$redisStub->expects( self::once() )->method( 'hGet' )->with( $key, $hashField )->willReturn( $hashValue );
 
 		$serverManager = $this->getServerManagerWithRedisStub( $redisStub );
 
 		$this->expectException( RuntimeException::class );
 		$this->expectExceptionMessage( 'Could not find field in hash anymore.' );
 
+		/** @noinspection UnusedFunctionResultInspection */
 		$serverManager->getHashValue( $key, $hashField );
 	}
 
 	/**
 	 * @throws ConnectionFailedException
+	 * @throws ExpectationFailedException
+	 * @throws \PHPUnit\Framework\MockObject\RuntimeException
 	 * @throws ReflectionException
-	 * @throws \PHPUnit\Framework\ExpectationFailedException
-	 * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
 	 */
 	public function testGetKeys() : void
 	{
@@ -711,19 +725,19 @@ final class ServerManagerTest extends TestCase
 		$keys    = ['string', 'hash', 'list', 'set', 'sorted set'];
 
 		$redisStub = $this->getMockBuilder( Redis::class )->getMock();
-		$redisStub->expects( $this->once() )->method( 'keys' )->with( $pattern )->willReturn( $keys );
+		$redisStub->expects( self::once() )->method( 'keys' )->with( $pattern )->willReturn( $keys );
 
 		$serverManager = $this->getServerManagerWithRedisStub( $redisStub );
 
-		$this->assertSame( $keys, $serverManager->getKeys( $pattern ) );
+		self::assertSame( $keys, $serverManager->getKeys( $pattern ) );
 	}
 
 	/**
 	 * @throws ConnectionFailedException
-	 * @throws ReflectionException
+	 * @throws ExpectationFailedException
 	 * @throws RuntimeException
-	 * @throws \PHPUnit\Framework\ExpectationFailedException
-	 * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+	 * @throws \PHPUnit\Framework\MockObject\RuntimeException
+	 * @throws ReflectionException
 	 */
 	public function testGetValue() : void
 	{
@@ -731,17 +745,18 @@ final class ServerManagerTest extends TestCase
 		$value = 'value';
 
 		$redisStub = $this->getMockBuilder( Redis::class )->getMock();
-		$redisStub->expects( $this->once() )->method( 'get' )->with( $key )->willReturn( $value );
+		$redisStub->expects( self::once() )->method( 'get' )->with( $key )->willReturn( $value );
 
 		$serverManager = $this->getServerManagerWithRedisStub( $redisStub );
 
-		$this->assertSame( $value, $serverManager->getValue( $key ) );
+		self::assertSame( $value, $serverManager->getValue( $key ) );
 	}
 
 	/**
 	 * @throws ConnectionFailedException
-	 * @throws ReflectionException
 	 * @throws RuntimeException
+	 * @throws \PHPUnit\Framework\MockObject\RuntimeException
+	 * @throws ReflectionException
 	 */
 	public function testGetValueThrowsExceptionIfKeyDoesNotExist() : void
 	{
@@ -749,21 +764,23 @@ final class ServerManagerTest extends TestCase
 		$value = false;
 
 		$redisStub = $this->getMockBuilder( Redis::class )->getMock();
-		$redisStub->expects( $this->once() )->method( 'get' )->with( $key )->willReturn( $value );
+		$redisStub->expects( self::once() )->method( 'get' )->with( $key )->willReturn( $value );
 
 		$serverManager = $this->getServerManagerWithRedisStub( $redisStub );
 
 		$this->expectException( RuntimeException::class );
 		$this->expectExceptionMessage( 'Could not find key anymore.' );
 
+		/** @noinspection UnusedFunctionResultInspection */
 		$serverManager->getValue( $key );
 	}
 
 	/**
 	 * @throws ConnectionFailedException
+	 * @throws Exception
+	 * @throws ExpectationFailedException
+	 * @throws \PHPUnit\Framework\MockObject\RuntimeException
 	 * @throws ReflectionException
-	 * @throws \PHPUnit\Framework\ExpectationFailedException
-	 * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
 	 */
 	public function testGetKeyInfoObjects() : void
 	{
@@ -771,26 +788,24 @@ final class ServerManagerTest extends TestCase
 		$keys    = ['string'];
 
 		$redisStub = $this->getMockBuilder( Redis::class )->getMock();
-		$redisStub->expects( $this->once() )->method( 'keys' )->with( $pattern )->willReturn( $keys );
-		$redisStub->expects( $this->once() )->method( 'multi' )->willReturn( $redisStub );
-		$redisStub->expects( $this->once() )->method( 'type' )->with( $keys[0] )->willReturnSelf();
-		$redisStub->expects( $this->once() )->method( 'pttl' )->with( $keys[0] )->willReturnSelf();
-		$redisStub->expects( $this->once() )->method( 'exec' )->willReturn( [Redis::REDIS_STRING, -1.0] );
+		$redisStub->expects( self::once() )->method( 'keys' )->with( $pattern )->willReturn( $keys );
+		$redisStub->expects( self::once() )->method( 'multi' )->willReturn( $redisStub );
+		$redisStub->expects( self::once() )->method( 'type' )->with( $keys[0] )->willReturnSelf();
+		$redisStub->expects( self::once() )->method( 'pttl' )->with( $keys[0] )->willReturnSelf();
+		$redisStub->expects( self::once() )->method( 'exec' )->willReturn( [Redis::REDIS_STRING, -1.0] );
 
-		$serverManager = $this->getServerManagerWithRedisStub( $redisStub );
+		$keyInfoObjects = $this->getServerManagerWithRedisStub( $redisStub )->getKeyInfoObjects( $pattern, 1 );
 
-		$keyInfoObjects = $serverManager->getKeyInfoObjects( $pattern, 1 );
-
-		$this->assertCount( 1, $keyInfoObjects );
-		$this->assertContainsOnlyInstancesOf( ProvidesKeyInfo::class, $keyInfoObjects );
+		self::assertCount( 1, $keyInfoObjects );
+		self::assertContainsOnlyInstancesOf( ProvidesKeyInfo::class, $keyInfoObjects );
 	}
 
 	/**
 	 * @throws ConnectionFailedException
-	 * @throws ReflectionException
-	 * @throws \PHPUnit\Framework\ExpectationFailedException
-	 * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+	 * @throws ExpectationFailedException
 	 * @throws RuntimeException
+	 * @throws \PHPUnit\Framework\MockObject\RuntimeException
+	 * @throws ReflectionException
 	 */
 	public function testGetAllSetMembers() : void
 	{
@@ -805,13 +820,14 @@ final class ServerManagerTest extends TestCase
 
 		$serverManager = $this->getServerManagerWithRedisStub( $redisStub );
 
-		$this->assertSame( $setMembers, $serverManager->getAllSetMembers( $key ) );
+		self::assertSame( $setMembers, $serverManager->getAllSetMembers( $key ) );
 	}
 
 	/**
 	 * @throws ConnectionFailedException
-	 * @throws ReflectionException
 	 * @throws RuntimeException
+	 * @throws \PHPUnit\Framework\MockObject\RuntimeException
+	 * @throws ReflectionException
 	 */
 	public function testGetAllSetMembersThrowsExceptionIfKeyNotFound() : void
 	{
@@ -826,6 +842,7 @@ final class ServerManagerTest extends TestCase
 		$this->expectException( RuntimeException::class );
 		$this->expectExceptionMessage( 'Could not find key: unit.test' );
 
+		/** @noinspection UnusedFunctionResultInspection */
 		$serverManager->getAllSetMembers( $key );
 	}
 }

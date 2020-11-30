@@ -1,11 +1,16 @@
 <phpunit
-        bootstrap="../tests/bootstrap.php"
-        verbose="true"
-        beStrictAboutOutputDuringTests="true"
-        colors="true"
-        convertErrorsToExceptions="true"
-        convertNoticesToExceptions="true"
-        convertWarningsToExceptions="true">
+    bootstrap="../vendor/autoload.php"
+    verbose="true"
+    beStrictAboutOutputDuringTests="true"
+    colors="true"
+    convertErrorsToExceptions="true"
+    convertNoticesToExceptions="true"
+    convertWarningsToExceptions="true">
+    <php>
+        <env name="redis-host" value="redis"/>
+        <env name="redis-port" value="6379"/>
+        <env name="redis-auth" value="password"/>
+    </php>
     <testsuites>
         <testsuite name="Readis-Unit">
             <directory suffix="Test.php">../tests/Unit</directory>

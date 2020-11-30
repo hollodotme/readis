@@ -3,6 +3,7 @@
 namespace hollodotme\Readis\Tests\Unit\Application\ReadModel\Prettifiers;
 
 use hollodotme\Readis\Application\ReadModel\Prettifiers\HyperLogLogPrettifier;
+use PHPUnit\Framework\ExpectationFailedException;
 use PHPUnit\Framework\TestCase;
 
 final class HyperLogLogPrettifierTest extends TestCase
@@ -11,8 +12,7 @@ final class HyperLogLogPrettifierTest extends TestCase
 	 * @param string $value
 	 * @param bool   $expectedResult
 	 *
-	 * @throws \PHPUnit\Framework\ExpectationFailedException
-	 * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+	 * @throws ExpectationFailedException
 	 *
 	 * @dataProvider canPrettifyProvider
 	 */
@@ -20,7 +20,7 @@ final class HyperLogLogPrettifierTest extends TestCase
 	{
 		$prettifier = new HyperLogLogPrettifier();
 
-		$this->assertSame( $expectedResult, $prettifier->canPrettify( $value ) );
+		self::assertSame( $expectedResult, $prettifier->canPrettify( $value ) );
 	}
 
 	public function canPrettifyProvider() : array
@@ -41,8 +41,7 @@ final class HyperLogLogPrettifierTest extends TestCase
 	 * @param string $value
 	 * @param string $expectedPrettyValue
 	 *
-	 * @throws \PHPUnit\Framework\ExpectationFailedException
-	 * @throws \SebastianBergmann\RecursionContext\InvalidArgumentException
+	 * @throws ExpectationFailedException
 	 *
 	 * @dataProvider prettifyDataProvider
 	 */
@@ -50,7 +49,7 @@ final class HyperLogLogPrettifierTest extends TestCase
 	{
 		$prettifier = new HyperLogLogPrettifier();
 
-		$this->assertSame( $expectedPrettyValue, $prettifier->prettify( $value ) );
+		self::assertSame( $expectedPrettyValue, $prettifier->prettify( $value ) );
 	}
 
 	public function prettifyDataProvider() : array

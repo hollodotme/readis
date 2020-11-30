@@ -4,9 +4,10 @@ namespace hollodotme\Readis\Tests\Unit\Infrastructure\Configs;
 
 use hollodotme\Readis\Infrastructure\Configs\IceHawkDelegate;
 use IceHawk\IceHawk\Interfaces\ProvidesRequestInfo;
+use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\ExpectationFailedException;
+use PHPUnit\Framework\MockObject\RuntimeException;
 use PHPUnit\Framework\TestCase;
-use SebastianBergmann\RecursionContext\InvalidArgumentException;
 use function error_reporting;
 use function ini_get;
 use function ini_set;
@@ -23,7 +24,8 @@ final class IceHawkDelegateTest extends TestCase
 
 	/**
 	 * @throws ExpectationFailedException
-	 * @throws InvalidArgumentException
+	 * @throws Exception
+	 * @throws RuntimeException
 	 */
 	public function testCanSetUpErrorHandling() : void
 	{
@@ -33,7 +35,7 @@ final class IceHawkDelegateTest extends TestCase
 		$delegate = new IceHawkDelegate();
 		$delegate->setUpErrorHandling( $requestInfo );
 
-		$this->assertSame( E_ALL, error_reporting() );
-		$this->assertSame( 'On', ini_get( 'display_errors' ) );
+		self::assertSame( E_ALL, error_reporting() );
+		self::assertSame( 'On', ini_get( 'display_errors' ) );
 	}
 }

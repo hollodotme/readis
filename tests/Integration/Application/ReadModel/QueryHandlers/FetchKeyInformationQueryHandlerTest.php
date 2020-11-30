@@ -7,7 +7,6 @@ use hollodotme\Readis\Application\ReadModel\QueryHandlers\FetchKeyInformationQue
 use hollodotme\Readis\Exceptions\NoServersConfigured;
 use hollodotme\Readis\Exceptions\ServerConfigNotFound;
 use PHPUnit\Framework\ExpectationFailedException;
-use SebastianBergmann\RecursionContext\InvalidArgumentException;
 use function preg_quote;
 
 final class FetchKeyInformationQueryHandlerTest extends AbstractQueryHandlerTest
@@ -22,7 +21,6 @@ final class FetchKeyInformationQueryHandlerTest extends AbstractQueryHandlerTest
 	 * @param float|null  $expectedScore
 	 *
 	 * @throws ExpectationFailedException
-	 * @throws InvalidArgumentException
 	 * @throws NoServersConfigured
 	 * @throws ServerConfigNotFound
 	 * @dataProvider keyInfoProvider
@@ -42,8 +40,8 @@ final class FetchKeyInformationQueryHandlerTest extends AbstractQueryHandlerTest
 		$query  = new FetchKeyInformationQuery( 0, $key, $subKey );
 		$result = (new FetchKeyInformationQueryHandler( $this->getServerManagerMock( $serverKey ) ))->handle( $query );
 
-		$this->assertTrue( $result->succeeded() );
-		$this->assertFalse( $result->failed() );
+		self::assertTrue( $result->succeeded() );
+		self::assertFalse( $result->failed() );
 
 		$keyInfo = $result->getKeyInfo();
 		$keyData = $result->getKeyData();
@@ -51,11 +49,11 @@ final class FetchKeyInformationQueryHandlerTest extends AbstractQueryHandlerTest
 		$keyDataPattern    = '#' . preg_quote( $expectedKeyData, '#s' ) . '#';
 		$rawKeyDataPattern = '#' . preg_quote( $expectedRawKeyData, '#s' ) . '#';
 
-		$this->assertSame( $expectedKeyType, $keyInfo->getType() );
-		$this->assertRegExp( $keyDataPattern, $keyData->getKeyData() );
-		$this->assertRegExp( $rawKeyDataPattern, $keyData->getRawKeyData() );
-		$this->assertSame( $expectedHasScore, $keyData->hasScore() );
-		$this->assertSame( (string)$expectedScore, (string)$keyData->getScore() );
+		self::assertSame( $expectedKeyType, $keyInfo->getType() );
+		self::assertTrue( (bool)preg_match( $keyDataPattern, $keyData->getKeyData() ) );
+		self::assertTrue( (bool)preg_match( $rawKeyDataPattern, $keyData->getRawKeyData() ) );
+		self::assertSame( $expectedHasScore, $keyData->hasScore() );
+		self::assertSame( (string)$expectedScore, (string)$keyData->getScore() );
 	}
 
 	public function keyInfoProvider() : array
@@ -185,7 +183,7 @@ final class FetchKeyInformationQueryHandlerTest extends AbstractQueryHandlerTest
 				'expectedKeyData'    => 'Palermo',
 				'expectedRawKeyData' => 'Palermo',
 				'expectedHasScore'   => true,
-				'expectedScore'      => 3479099956230700,
+				'expectedScore'      => 3479099956231200,
 			],
 			[
 				'key'                => 'geo',
@@ -194,7 +192,7 @@ final class FetchKeyInformationQueryHandlerTest extends AbstractQueryHandlerTest
 				'expectedKeyData'    => 'Catania',
 				'expectedRawKeyData' => 'Catania',
 				'expectedHasScore'   => true,
-				'expectedScore'      => 3479447370796900,
+				'expectedScore'      => 3479447370797100,
 			],
 			[
 				'key'                => 'hyperLogLog',
@@ -210,7 +208,6 @@ final class FetchKeyInformationQueryHandlerTest extends AbstractQueryHandlerTest
 
 	/**
 	 * @throws ExpectationFailedException
-	 * @throws InvalidArgumentException
 	 * @throws NoServersConfigured
 	 * @throws ServerConfigNotFound
 	 */
@@ -223,14 +220,13 @@ final class FetchKeyInformationQueryHandlerTest extends AbstractQueryHandlerTest
 		$query  = new FetchKeyInformationQuery( 0, $key, $subKey );
 		$result = (new FetchKeyInformationQueryHandler( $this->getServerManagerMock( $serverKey ) ))->handle( $query );
 
-		$this->assertFalse( $result->succeeded() );
-		$this->assertTrue( $result->failed() );
-		$this->assertSame( 'Key type not implemented or supported: unknown', $result->getMessage() );
+		self::assertFalse( $result->succeeded() );
+		self::assertTrue( $result->failed() );
+		self::assertSame( 'Key type not implemented or supported: unknown', $result->getMessage() );
 	}
 
 	/**
 	 * @throws ExpectationFailedException
-	 * @throws InvalidArgumentException
 	 * @throws NoServersConfigured
 	 * @throws ServerConfigNotFound
 	 */
@@ -243,10 +239,13 @@ final class FetchKeyInformationQueryHandlerTest extends AbstractQueryHandlerTest
 		$query  = new FetchKeyInformationQuery( 0, $key, $subKey );
 		$result = (new FetchKeyInformationQueryHandler( $this->getServerManagerMock( $serverKey ) ))->handle( $query );
 
-		$this->assertFalse( $result->succeeded() );
-		$this->assertTrue( $result->failed() );
-		$this->assertSame(
-			'Could not connect to redis server: host: localhost, port: 9999, timeout: 2.5, retryInterval: 100, using auth: no',
+		self::assertFalse( $result->succeeded() );
+		self::assertTrue( $result->failed() );
+		self::assertSame(
+			sprintf(
+				'Could not connect to redis server: host: %s, port: 9999, timeout: 2.5, retryInterval: 100, using auth: no',
+				(string)$_ENV['redis-host']
+			),
 			$result->getMessage()
 		);
 	}

@@ -6,7 +6,6 @@ use hollodotme\Readis\Application\ReadModel\Interfaces\PrettifiesString;
 use hollodotme\Readis\Application\ReadModel\Prettifiers\PrettifierChain;
 use PHPUnit\Framework\ExpectationFailedException;
 use PHPUnit\Framework\TestCase;
-use SebastianBergmann\RecursionContext\InvalidArgumentException;
 
 final class PrettifierChainTest extends TestCase
 {
@@ -15,7 +14,6 @@ final class PrettifierChainTest extends TestCase
 	 * @param string $expectedOutput
 	 *
 	 * @throws ExpectationFailedException
-	 * @throws InvalidArgumentException
 	 *
 	 * @dataProvider inputProvider
 	 */
@@ -27,8 +25,8 @@ final class PrettifierChainTest extends TestCase
 			$this->getPrettifierMock( 'B' )
 		);
 
-		$this->assertTrue( $chain->canPrettify( $input ) );
-		$this->assertSame( $expectedOutput, $chain->prettify( $input ) );
+		self::assertTrue( $chain->canPrettify( $input ) );
+		self::assertSame( $expectedOutput, $chain->prettify( $input ) );
 	}
 
 	public function inputProvider() : array

@@ -2,6 +2,7 @@
 
 namespace hollodotme\Readis\Tests\Integration\Infrastructure\Redis;
 
+use Exception;
 use hollodotme\Readis\Application\Interfaces\ProvidesKeyInfo;
 use hollodotme\Readis\Application\Interfaces\ProvidesSlowLogData;
 use hollodotme\Readis\Exceptions\RuntimeException;
@@ -11,7 +12,7 @@ use hollodotme\Readis\Infrastructure\Redis\ServerManager;
 use PHPUnit\Framework\ExpectationFailedException;
 use PHPUnit\Framework\TestCase;
 use Redis;
-use SebastianBergmann\RecursionContext\InvalidArgumentException;
+use function sprintf;
 use function str_repeat;
 
 final class ServerManagerTest extends TestCase
@@ -22,8 +23,8 @@ final class ServerManagerTest extends TestCase
 	protected function setUp() : void
 	{
 		$this->redis = new Redis();
-		$this->redis->connect( 'localhost', 6379 );
-		$this->redis->auth( 'password' );
+		$this->redis->connect( (string)$_ENV['redis-host'], (int)$_ENV['redis-port'] );
+		$this->redis->auth( (string)$_ENV['redis-auth'] );
 
 		$this->redis->slowlog( 'reset' );
 		$this->redis->select( 0 );
@@ -39,19 +40,20 @@ final class ServerManagerTest extends TestCase
 
 	/**
 	 * @throws ExpectationFailedException
-	 * @throws InvalidArgumentException
+	 * @throws \PHPUnit\Framework\Exception
 	 */
 	public function testCanConstructFromServerConnection() : void
 	{
-		$serverManager = new ServerManager( $this->getServerConnectionMock( 'localhost', 6379 ) );
+		$serverManager = new ServerManager(
+			$this->getServerConnectionMock( (string)$_ENV['redis-host'], (int)$_ENV['redis-port'] )
+		);
 
-		$this->assertInstanceOf( ServerManager::class, $serverManager );
+		self::assertInstanceOf( ServerManager::class, $serverManager );
 	}
 
 	private function getServerConnectionMock( string $host, int $port ) : ProvidesConnectionData
 	{
-		return new class($host, $port) implements ProvidesConnectionData
-		{
+		return new class($host, $port) implements ProvidesConnectionData {
 			/** @var string */
 			private $host;
 
@@ -86,7 +88,7 @@ final class ServerManagerTest extends TestCase
 
 			public function getAuth() : ?string
 			{
-				return 'password';
+				return (string)$_ENV['redis-auth'];
 			}
 		};
 	}
@@ -96,67 +98,74 @@ final class ServerManagerTest extends TestCase
 	 */
 	public function testThrowsExceptionIfConnectionFails() : void
 	{
-		$serverManager = new ServerManager( $this->getServerConnectionMock( 'localhost', 9999 ) );
+		$serverManager = new ServerManager( $this->getServerConnectionMock( (string)$_ENV['redis-host'], 9999 ) );
 
 		$this->expectException( ConnectionFailedException::class );
 		$this->expectExceptionMessage(
-			'host: localhost, port: 9999, timeout: 2.5, retryInterval: 100, using auth: yes'
+			sprintf(
+				'host: %s, port: 9999, timeout: 2.5, retryInterval: 100, using auth: yes',
+				(string)$_ENV['redis-host']
+			)
 		);
 
-		$serverManager->getKeys( '*' );
+		/** @noinspection UnusedFunctionResultInspection */
+		$serverManager->getKeys();
 	}
 
 	/**
 	 * @throws ExpectationFailedException
-	 * @throws InvalidArgumentException
 	 * @throws ConnectionFailedException
 	 * @throws RuntimeException
 	 */
 	public function testCanGetValueForKey() : void
 	{
-		$serverManager = new ServerManager( $this->getServerConnectionMock( 'localhost', 6379 ) );
+		$serverManager = new ServerManager(
+			$this->getServerConnectionMock( (string)$_ENV['redis-host'], (int)$_ENV['redis-port'] )
+		);
 
 		$serverManager->selectDatabase( 0 );
 
-		$this->assertSame( 'test', $serverManager->getValue( 'unit' ) );
-		$this->assertSame( 'test', $serverManager->getValue( 'unit' ) );
+		self::assertSame( 'test', $serverManager->getValue( 'unit' ) );
+		self::assertSame( 'test', $serverManager->getValue( 'unit' ) );
 	}
 
 	/**
 	 * @throws ConnectionFailedException
 	 * @throws ExpectationFailedException
-	 * @throws InvalidArgumentException
 	 */
 	public function testCanGetServerConfig() : void
 	{
-		$serverManager = new ServerManager( $this->getServerConnectionMock( 'localhost', 6379 ) );
+		$serverManager = new ServerManager(
+			$this->getServerConnectionMock( (string)$_ENV['redis-host'], (int)$_ENV['redis-port'] )
+		);
 
-		$this->assertNotEmpty( $serverManager->getServerConfig() );
+		self::assertNotEmpty( $serverManager->getServerConfig() );
 	}
 
 	/**
 	 * @throws ConnectionFailedException
 	 * @throws ExpectationFailedException
-	 * @throws InvalidArgumentException
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 	public function testCanGetSlowLogEntries() : void
 	{
-		$serverManager = new ServerManager( $this->getServerConnectionMock( 'localhost', 6379 ) );
+		$serverManager = new ServerManager(
+			$this->getServerConnectionMock( (string)$_ENV['redis-host'], (int)$_ENV['redis-port'] )
+		);
 
 		$this->provokeSlowLogEntry();
 
 		$slowLogEntries = $serverManager->getSlowLogEntries();
 
-		$this->assertSame( 1, $serverManager->getSlowLogCount() );
-		$this->assertCount( 1, $slowLogEntries );
-		$this->assertContainsOnlyInstancesOf( ProvidesSlowLogData::class, $slowLogEntries );
+		self::assertSame( 1, $serverManager->getSlowLogCount() );
+		self::assertCount( 1, $slowLogEntries );
+		self::assertContainsOnlyInstancesOf( ProvidesSlowLogData::class, $slowLogEntries );
 
 		$slowLogEntry = $slowLogEntries[0];
 
-		$this->assertGreaterThanOrEqual( 0, $slowLogEntry->getSlowLogId() );
-		$this->assertGreaterThan( 0.0, $slowLogEntry->getDuration() );
-		$this->assertSame( 'FLUSHALL()', $slowLogEntry->getCommand() );
+		self::assertGreaterThanOrEqual( 0, $slowLogEntry->getSlowLogId() );
+		self::assertGreaterThan( 0.0, $slowLogEntry->getDuration() );
+		self::assertSame( 'FLUSHALL()', $slowLogEntry->getCommand() );
 	}
 
 	private function provokeSlowLogEntry() : void
@@ -167,14 +176,13 @@ final class ServerManagerTest extends TestCase
 		{
 			$this->redis->select( $db );
 			$this->redis->multi();
-			$keys = [];
 
 			for ( $i = 0; $i < 1000; $i++ )
 			{
-				$keys[] = 'test-' . $i;
 				$this->redis->set( 'test-' . $i, str_repeat( 'a', 4048 ) );
 			}
 
+			/** @noinspection UnusedFunctionResultInspection */
 			$this->redis->exec();
 		}
 
@@ -184,74 +192,80 @@ final class ServerManagerTest extends TestCase
 	/**
 	 * @throws ConnectionFailedException
 	 * @throws ExpectationFailedException
-	 * @throws InvalidArgumentException
 	 */
 	public function testCanGetServerInfo() : void
 	{
-		$serverManager = new ServerManager( $this->getServerConnectionMock( 'localhost', 6379 ) );
+		$serverManager = new ServerManager(
+			$this->getServerConnectionMock( (string)$_ENV['redis-host'], (int)$_ENV['redis-port'] )
+		);
 
-		$this->assertInternalType( 'array', $serverManager->getServerInfo() );
+		self::assertIsArray( $serverManager->getServerInfo() );
 	}
 
 	/**
 	 * @throws ConnectionFailedException
 	 * @throws ExpectationFailedException
-	 * @throws InvalidArgumentException
+	 * @throws \PHPUnit\Framework\Exception
 	 */
 	public function testCanGetKeyInfoObject() : void
 	{
-		$serverManager = new ServerManager( $this->getServerConnectionMock( 'localhost', 6379 ) );
+		$serverManager = new ServerManager(
+			$this->getServerConnectionMock( (string)$_ENV['redis-host'], (int)$_ENV['redis-port'] )
+		);
 
 		$serverManager->selectDatabase( 0 );
 		$keyInfo = $serverManager->getKeyInfoObject( 'unit' );
 
-		$this->assertSame( 'string', $keyInfo->getType() );
-		$this->assertSame( -1.0, $keyInfo->getTimeToLive() );
-		$this->assertCount( 0, $keyInfo->getSubItems() );
-		$this->assertSame( 'unit', $keyInfo->getName() );
-		$this->assertSame( 0, $keyInfo->countSubItems() );
+		self::assertSame( 'string', $keyInfo->getType() );
+		self::assertSame( -1.0, $keyInfo->getTimeToLive() );
+		self::assertCount( 0, $keyInfo->getSubItems() );
+		self::assertSame( 'unit', $keyInfo->getName() );
+		self::assertSame( 0, $keyInfo->countSubItems() );
 	}
 
 	/**
 	 * @throws ConnectionFailedException
 	 * @throws ExpectationFailedException
-	 * @throws InvalidArgumentException
 	 */
 	public function testCanGetKeyInfoObjects() : void
 	{
-		$serverManager = new ServerManager( $this->getServerConnectionMock( 'localhost', 6379 ) );
+		$serverManager = new ServerManager(
+			$this->getServerConnectionMock( (string)$_ENV['redis-host'], (int)$_ENV['redis-port'] )
+		);
 
 		$serverManager->selectDatabase( 0 );
 		$keyInfos = $serverManager->getKeyInfoObjects( '*', 100 );
 
-		$this->assertContainsOnlyInstancesOf( ProvidesKeyInfo::class, $keyInfos );
+		self::assertContainsOnlyInstancesOf( ProvidesKeyInfo::class, $keyInfos );
 	}
 
 	/**
 	 * @throws ConnectionFailedException
 	 * @throws ExpectationFailedException
-	 * @throws InvalidArgumentException
 	 * @throws RuntimeException
 	 */
 	public function testCanGetHashValue() : void
 	{
-		$serverManager = new ServerManager( $this->getServerConnectionMock( 'localhost', 6379 ) );
+		$serverManager = new ServerManager(
+			$this->getServerConnectionMock( (string)$_ENV['redis-host'], (int)$_ENV['redis-port'] )
+		);
 
 		$hashValue = $serverManager->getHashValue( 'test', 'unit' );
 
-		$this->assertSame( '{"json": {"key": "value"}}', $hashValue );
+		self::assertSame( '{"json": {"key": "value"}}', $hashValue );
 	}
 
 	/**
 	 * @throws ConnectionFailedException
 	 * @throws ExpectationFailedException
-	 * @throws InvalidArgumentException
 	 */
 	public function testCanCheckIfCommandExists() : void
 	{
-		$serverManager = new ServerManager( $this->getServerConnectionMock( 'localhost', 6379 ) );
+		$serverManager = new ServerManager(
+			$this->getServerConnectionMock( (string)$_ENV['redis-host'], (int)$_ENV['redis-port'] )
+		);
 
-		$this->assertTrue( $serverManager->commandExists( 'INFO' ) );
-		$this->assertFalse( $serverManager->commandExists( 'UNKNOWN' ) );
+		self::assertTrue( $serverManager->commandExists( 'INFO' ) );
+		self::assertFalse( $serverManager->commandExists( 'UNKNOWN' ) );
 	}
 }

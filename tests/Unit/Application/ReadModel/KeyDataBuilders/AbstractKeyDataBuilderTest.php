@@ -5,6 +5,7 @@ namespace hollodotme\Readis\Tests\Unit\Application\ReadModel\KeyDataBuilders;
 use hollodotme\Readis\Application\Interfaces\ProvidesRedisData;
 use hollodotme\Readis\Application\ReadModel\Interfaces\PrettifiesString;
 use hollodotme\Readis\Exceptions\RuntimeException;
+use PHPUnit\Framework\Exception;
 use PHPUnit\Framework\TestCase;
 
 abstract class AbstractKeyDataBuilderTest extends TestCase
@@ -15,6 +16,10 @@ abstract class AbstractKeyDataBuilderTest extends TestCase
 	/** @var PrettifiesString */
 	private $prettifier;
 
+	/**
+	 * @throws Exception
+	 * @throws \PHPUnit\Framework\MockObject\RuntimeException
+	 */
 	protected function setUp() : void
 	{
 		$this->manager = $this->getMockBuilder( ProvidesRedisData::class )
@@ -30,48 +35,42 @@ abstract class AbstractKeyDataBuilderTest extends TestCase
 		              );
 
 		$this->manager->method( 'getSetMember' )
-		              ->will(
-			              $this->returnCallback(
-				              function ( string $key, int $index )
+		              ->willReturnCallback(
+			              static function ( string $key, int $index )
+			              {
+				              if ( 'set' === $key && 0 === $index )
 				              {
-					              if ( 'set' === $key && 0 === $index )
-					              {
-						              return '{"json": {"key": "value"}}';
-					              }
-
-					              throw new RuntimeException( 'Could not find member in set anymore.' );
+					              return '{"json": {"key": "value"}}';
 				              }
-			              )
+
+				              throw new RuntimeException( 'Could not find member in set anymore.' );
+			              }
 		              );
 
 		$this->manager->method( 'getListElement' )
-		              ->will(
-			              $this->returnCallback(
-				              function ( string $key, int $index )
+		              ->willReturnCallback(
+			              static function ( string $key, int $index )
+			              {
+				              if ( 'list' === $key && 0 === $index )
 				              {
-					              if ( 'list' === $key && 0 === $index )
-					              {
-						              return '{"json": {"key": "value"}}';
-					              }
-
-					              throw new RuntimeException( 'Could not find element in list anymore.' );
+					              return '{"json": {"key": "value"}}';
 				              }
-			              )
+
+				              throw new RuntimeException( 'Could not find element in list anymore.' );
+			              }
 		              );
 
 		$this->manager->method( 'getHashValue' )
-		              ->will(
-			              $this->returnCallback(
-				              function ( string $key, string $hashKey )
+		              ->willReturnCallback(
+			              static function ( string $key, string $hashKey )
+			              {
+				              if ( 'hash' === $key && 'json' === $hashKey )
 				              {
-					              if ( 'hash' === $key && 'json' === $hashKey )
-					              {
-						              return '{"json": {"key": "value"}}';
-					              }
-
-					              throw new RuntimeException( 'Could not find field in hash anymore.' );
+					              return '{"json": {"key": "value"}}';
 				              }
-			              )
+
+				              throw new RuntimeException( 'Could not find field in hash anymore.' );
+			              }
 		              );
 
 		$this->manager->method( 'getAllHashValues' )->willReturn(

@@ -9,7 +9,6 @@ use hollodotme\Readis\Infrastructure\Configs\ServerConfigList;
 use hollodotme\Readis\Infrastructure\Interfaces\ProvidesServerConfig;
 use PHPUnit\Framework\ExpectationFailedException;
 use PHPUnit\Framework\TestCase;
-use SebastianBergmann\RecursionContext\InvalidArgumentException;
 
 final class ServerConfigListTest extends TestCase
 {
@@ -19,7 +18,6 @@ final class ServerConfigListTest extends TestCase
 	 * @param array  $expectedServerConfig
 	 *
 	 * @throws ExpectationFailedException
-	 * @throws InvalidArgumentException
 	 * @throws ServerConfigNotFound
 	 *
 	 * @dataProvider serverConfigsProvider
@@ -30,16 +28,15 @@ final class ServerConfigListTest extends TestCase
 		array $expectedServerConfig
 	) : void
 	{
-		$serverConfigList = new ServerConfigList( $serverConfigs );
-		$serverConfig     = $serverConfigList->getServerConfig( $serverKey );
+		$serverConfig = (new ServerConfigList( $serverConfigs ))->getServerConfig( $serverKey );
 
-		$this->assertSame( $expectedServerConfig['name'], $serverConfig->getName() );
-		$this->assertSame( $expectedServerConfig['host'], $serverConfig->getHost() );
-		$this->assertSame( $expectedServerConfig['port'], $serverConfig->getPort() );
-		$this->assertSame( $expectedServerConfig['timeout'], $serverConfig->getTimeout() );
-		$this->assertSame( $expectedServerConfig['retryInterval'], $serverConfig->getRetryInterval() );
-		$this->assertSame( $expectedServerConfig['auth'], $serverConfig->getAuth() );
-		$this->assertSame( $expectedServerConfig['databaseMap'], $serverConfig->getDatabaseMap() );
+		self::assertSame( $expectedServerConfig['name'], $serverConfig->getName() );
+		self::assertSame( $expectedServerConfig['host'], $serverConfig->getHost() );
+		self::assertSame( $expectedServerConfig['port'], $serverConfig->getPort() );
+		self::assertSame( $expectedServerConfig['timeout'], $serverConfig->getTimeout() );
+		self::assertSame( $expectedServerConfig['retryInterval'], $serverConfig->getRetryInterval() );
+		self::assertSame( $expectedServerConfig['auth'], $serverConfig->getAuth() );
+		self::assertSame( $expectedServerConfig['databaseMap'], $serverConfig->getDatabaseMap() );
 	}
 
 	public function serverConfigsProvider() : array
@@ -84,7 +81,6 @@ final class ServerConfigListTest extends TestCase
 	 * @param array $serverConfigs
 	 *
 	 * @throws ExpectationFailedException
-	 * @throws InvalidArgumentException
 	 * @throws NoServersConfigured
 	 *
 	 * @dataProvider serverConfigsProvider
@@ -93,7 +89,7 @@ final class ServerConfigListTest extends TestCase
 	{
 		$serverConfigList = new ServerConfigList( $serverConfigs );
 
-		$this->assertContainsOnlyInstancesOf( ProvidesServerConfig::class, $serverConfigList->getServerConfigs() );
+		self::assertContainsOnlyInstancesOf( ProvidesServerConfig::class, $serverConfigList->getServerConfigs() );
 	}
 
 	/**
@@ -106,6 +102,7 @@ final class ServerConfigListTest extends TestCase
 		$this->expectException( NoServersConfigured::class );
 		$this->expectExceptionMessage( 'No servers were configured.' );
 
+		/** @noinspection UnusedFunctionResultInspection */
 		$serverConfigList->getServerConfigs();
 	}
 
@@ -122,6 +119,7 @@ final class ServerConfigListTest extends TestCase
 		$this->expectException( ServerConfigNotFound::class );
 		$this->expectExceptionMessage( 'Server config not found for server key: 3' );
 
+		/** @noinspection UnusedFunctionResultInspection */
 		$serverConfigList->getServerConfig( '3' );
 	}
 
