@@ -1,12 +1,36 @@
 version: '3'
 services:
 
+  nginx:
+    image: library/nginx
+    restart: 'on-failure'
+    volumes:
+      - ./.docker/nginx:/etc/nginx/conf.d
+      - ./:/repo
+    networks:
+      - default
+      - readis
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.readis.rule=HostRegexp(`{subdomain:readis-php[0-9]+}.hollo.me`)"
+      - "traefik.http.routers.readis.tls=true"
+    depends_on:
+      - php71
+      - php72
+      - php73
+      - php74
+      - php80
+
   php71:
     image: ghcr.io/hollodotme/readis-php-71
     restart: 'on-failure'
     volumes:
       - ./:/repo
     working_dir: /repo
+    networks:
+      - readis
+    depends_on:
+      - redis
 
   php72:
     image: ghcr.io/hollodotme/readis-php-72
@@ -14,6 +38,10 @@ services:
     volumes:
       - ./:/repo
     working_dir: /repo
+    networks:
+      - readis
+    depends_on:
+      - redis
 
   php73:
     image: ghcr.io/hollodotme/readis-php-73
@@ -21,6 +49,10 @@ services:
     volumes:
       - ./:/repo
     working_dir: /repo
+    networks:
+      - readis
+    depends_on:
+      - redis
 
   php74:
     image: ghcr.io/hollodotme/readis-php-74
@@ -28,6 +60,10 @@ services:
     volumes:
       - ./:/repo
     working_dir: /repo
+    networks:
+      - readis
+    depends_on:
+      - redis
 
   php80:
     image: ghcr.io/hollodotme/readis-php-80
@@ -35,13 +71,28 @@ services:
     volumes:
       - ./:/repo
     working_dir: /repo
+    networks:
+      - readis
+    depends_on:
+      - redis
 
   redis:
     image: redis
     ports:
       - 6379:6379
     volumes:
-      - .redis/data:/data
-      - .redis/redis.default.conf:/usr/local/etc/redis/redis.conf
-      - ./:/repo
+      - redis:/data
+      - .docker/redis/DemoData.txt:/tmp/DemoData.txt
+      - .docker/redis/redis.default.conf:/usr/local/etc/redis/redis.conf
     command: /usr/local/etc/redis/redis.conf
+    networks:
+      - readis
+
+networks:
+  default:
+    external:
+      name: "gateway"
+  readis:
+
+volumes:
+  redis:
