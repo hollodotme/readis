@@ -40,6 +40,9 @@ jobs:
         env:
           GH_REGISTRY_TOKEN: ${{ secrets.GHCR_TOKEN }}
 
+      - name: Create network
+        run: docker network create gateway
+
       - name: Pull containers
         run: docker-compose pull
 
