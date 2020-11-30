@@ -64,5 +64,5 @@ test-php-80: composer-php80 start-redis
 
 start-redis:
 	docker-compose up -d redis
-	COMPOSE_INTERACTIVE_NO_CLI=1 docker-compose exec redis sh -c "cat /tmp/DemoData.txt | redis-cli -a 'password' -n 1 --pipe"
+	COMPOSE_INTERACTIVE_NO_CLI=1 docker-compose exec -T redis sh -c "cat /tmp/DemoData.txt | redis-cli -a 'password' -n 1 --pipe"
 .PHONY: start-redis
