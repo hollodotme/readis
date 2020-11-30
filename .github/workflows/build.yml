@@ -43,6 +43,11 @@ jobs:
       - name: Pull containers
         run: docker-compose pull
 
+      - name: Copy configs
+        run: |
+          cp ./config/app.sample.php ./config/app.php
+          cp ./config/servers.sample.php ./config/servers.php
+
       - name: Run tests
         run: make ${{ matrix.test-name }}
 
