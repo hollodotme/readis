@@ -6,6 +6,10 @@ composer-php72:
 	docker-compose run --rm php72 composer update -o -v
 .PHONY: composer-php72
 
+composer-php73:
+	docker-compose run --rm php73 composer update -o -v
+.PHONY: composer-php73
+
 test-php-71: composer-php71 start-redis
 	docker-compose run --rm php71 \
 	php -d error_reporting=-1 \
@@ -22,6 +26,14 @@ test-php-72: composer-php72 start-redis
 	-c /repo/build/phpunit8.xml \
 	--testdox
 .PHONY: test-php-72
+
+test-php-73: composer-php73 start-redis
+	docker-compose run --rm php73 \
+	php -d error_reporting=-1 \
+	/usr/bin/phpunit \
+	-c /repo/build/phpunit9.xml \
+	--testdox
+.PHONY: test-php-73
 
 start-redis:
 	docker-compose up -d redis
