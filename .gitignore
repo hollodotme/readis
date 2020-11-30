@@ -2,7 +2,7 @@
 /vendor/
 /build/logs/
 /build/.phpunit.result.cache
-# local configs
+/composer.lock
 /config/servers.php
 /config/app.php
 /.redis/data/*
